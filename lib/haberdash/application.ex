@@ -14,7 +14,9 @@ defmodule Haberdash.Application do
       # Start the PubSub system
       {Phoenix.PubSub, name: Haberdash.PubSub},
       # Start the Endpoint (http/https)
-      HaberdashWeb.Endpoint
+      HaberdashWeb.Endpoint,
+
+      Haberdash.Auth.Cache
       # Start a worker by calling: Haberdash.Worker.start_link(arg)
       # {Haberdash.Worker, arg}
     ]

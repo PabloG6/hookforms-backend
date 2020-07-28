@@ -5,9 +5,9 @@ defmodule Haberdash.Account do
 
   import Ecto.Query, warn: false
   alias Haberdash.Repo
-
+  use Nebulex.Caching.Decorators
   alias Haberdash.Account.Developer
-
+  alias Haberdash.Auth.Cache
   @doc """
   Returns the list of developer.
 
@@ -131,6 +131,7 @@ defmodule Haberdash.Account do
       ** (Ecto.NoResultsError)
 
   """
+  @decorate cache(cache: Cache, key: {Owner, id})
   def get_owner!(id), do: Repo.get!(Owner, id)
 
   @doc """
