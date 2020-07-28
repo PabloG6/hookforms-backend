@@ -6,8 +6,18 @@ defmodule Haberdash.AccountTest do
   describe "owner" do
     alias Haberdash.Account.Owner
 
-    @valid_attrs %{email: "some email", name: "some name", phone_number: "some phone_number", password: "some password"}
-    @update_attrs %{email: "some updated email", name: "some updated name", phone_number: "some updated phone_number", password: "some password"}
+    @valid_attrs %{
+      email: "some email",
+      name: "some name",
+      phone_number: "some phone_number",
+      password: "some password"
+    }
+    @update_attrs %{
+      email: "some updated email",
+      name: "some updated name",
+      phone_number: "some updated phone_number",
+      password: "some password"
+    }
     @invalid_attrs %{email: nil, name: nil, phone_number: nil}
 
     def owner_fixture(attrs \\ %{}) do
@@ -69,8 +79,18 @@ defmodule Haberdash.AccountTest do
   describe "developer" do
     alias Haberdash.Account.Developers
 
-    @valid_attrs %{api_key: "some api_key", email: "some email", name: "some name", password_hash: "some password_hash"}
-    @update_attrs %{api_key: "some updated api_key", email: "some updated email", name: "some updated name", password_hash: "some updated password_hash"}
+    @valid_attrs %{
+      api_key: "some api_key",
+      email: "some email",
+      name: "some name",
+      password_hash: "some password_hash"
+    }
+    @update_attrs %{
+      api_key: "some updated api_key",
+      email: "some updated email",
+      name: "some updated name",
+      password_hash: "some updated password_hash"
+    }
     @invalid_attrs %{api_key: nil, email: nil, name: nil, password_hash: nil}
 
     def developers_fixture(attrs \\ %{}) do
@@ -106,7 +126,10 @@ defmodule Haberdash.AccountTest do
 
     test "update_developers/2 with valid data updates the developers" do
       developers = developers_fixture()
-      assert {:ok, %Developers{} = developers} = Account.update_developers(developers, @update_attrs)
+
+      assert {:ok, %Developers{} = developers} =
+               Account.update_developers(developers, @update_attrs)
+
       assert developers.api_key == "some updated api_key"
       assert developers.email == "some updated email"
       assert developers.name == "some updated name"
@@ -130,5 +153,4 @@ defmodule Haberdash.AccountTest do
       assert %Ecto.Changeset{} = Account.change_developers(developers)
     end
   end
-
 end

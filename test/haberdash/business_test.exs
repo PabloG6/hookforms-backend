@@ -6,8 +6,16 @@ defmodule Haberdash.BusinessTest do
   describe "franchise" do
     alias Haberdash.Business.Franchise
 
-    @valid_attrs %{description: "some description", name: "some name", phone_number: "some phone_number"}
-    @update_attrs %{description: "some updated description", name: "some updated name", phone_number: "some updated phone_number"}
+    @valid_attrs %{
+      description: "some description",
+      name: "some name",
+      phone_number: "some phone_number"
+    }
+    @update_attrs %{
+      description: "some updated description",
+      name: "some updated name",
+      phone_number: "some updated phone_number"
+    }
     @invalid_attrs %{description: nil, name: nil, phone_number: nil}
 
     def franchise_fixture(attrs \\ %{}) do

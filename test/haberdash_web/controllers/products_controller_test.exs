@@ -59,7 +59,10 @@ defmodule HaberdashWeb.ProductsControllerTest do
   describe "update products" do
     setup [:create_products]
 
-    test "renders products when data is valid", %{conn: conn, products: %Products{id: id} = products} do
+    test "renders products when data is valid", %{
+      conn: conn,
+      products: %Products{id: id} = products
+    } do
       conn = put(conn, Routes.products_path(conn, :update, products), products: @update_attrs)
       assert %{"id" => ^id} = json_response(conn, 200)["data"]
 

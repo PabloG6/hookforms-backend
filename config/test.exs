@@ -18,5 +18,5 @@ config :haberdash, HaberdashWeb.Endpoint,
   http: [port: 4002],
   server: false
 
-# Print only warnings and errors during test
-config :logger, level: :warn
+# Print only info and wa during test
+config :logger, level: :info

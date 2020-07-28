@@ -11,6 +11,5 @@ defmodule Haberdash.Repo.Migrations.CreateOwner do
 
       timestamps()
     end
-
   end
 end

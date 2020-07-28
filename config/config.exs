@@ -23,6 +23,11 @@ config :logger, :console,
   format: "$time $metadata[$level] $message\n",
   metadata: [:request_id]
 
+# Config Guardian
+config :haberdash, Haberdash.Auth.Guardian,
+  issuer: "haberdash",
+  secret_key: "25GBxhh00vzTHFanitmpfXegn4EkdSt0kJv6XKw/LPDV29IqapXKmIZApvXJ+qeh"
+
 # Use Jason for JSON parsing in Phoenix
 config :phoenix, :json_library, Jason
 config :bcrypt_elixir, log_rounds: 4

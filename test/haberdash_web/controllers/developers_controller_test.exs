@@ -2,7 +2,7 @@ defmodule HaberdashWeb.DevelopersControllerTest do
   use HaberdashWeb.ConnCase
 
   alias Haberdash.Account
-  alias Haberdash.Account.Developers
+  alias Haberdash.Account.Developer
 
   @create_attrs %{
     api_key: "some api_key",
@@ -59,8 +59,13 @@ defmodule HaberdashWeb.DevelopersControllerTest do
   describe "update developers" do
     setup [:create_developers]
 
-    test "renders developers when data is valid", %{conn: conn, developers: %Developers{id: id} = developers} do
-      conn = put(conn, Routes.developers_path(conn, :update, developers), developers: @update_attrs)
+    test "renders developers when data is valid", %{
+      conn: conn,
+      developers: %Developer{id: id} = developers
+    } do
+      conn =
+        put(conn, Routes.developers_path(conn, :update, developers), developers: @update_attrs)
+
       assert %{"id" => ^id} = json_response(conn, 200)["data"]
 
       conn = get(conn, Routes.developers_path(conn, :show, id))
@@ -75,7 +80,9 @@ defmodule HaberdashWeb.DevelopersControllerTest do
     end
 
     test "renders errors when data is invalid", %{conn: conn, developers: developers} do
-      conn = put(conn, Routes.developers_path(conn, :update, developers), developers: @invalid_attrs)
+      conn =
+        put(conn, Routes.developers_path(conn, :update, developers), developers: @invalid_attrs)
+
       assert json_response(conn, 422)["errors"] != %{}
     end
   end

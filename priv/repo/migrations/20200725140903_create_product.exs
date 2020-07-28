@@ -10,6 +10,5 @@ defmodule Haberdash.Repo.Migrations.CreateProduct do
       add :franchise_id, references(:franchise, on_delete: :delete_all, type: :binary_id)
       timestamps()
     end
-
   end
 end

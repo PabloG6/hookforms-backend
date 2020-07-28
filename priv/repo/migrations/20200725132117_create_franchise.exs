@@ -10,6 +10,5 @@ defmodule Haberdash.Repo.Migrations.CreateFranchise do
       add :id, :binary_id, primary_key: true
       timestamps()
     end
-
   end
 end

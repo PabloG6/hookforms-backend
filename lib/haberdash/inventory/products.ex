@@ -2,6 +2,7 @@ defmodule Haberdash.Inventory.Products do
   use Ecto.Schema
   import Ecto.Changeset
   alias Haberdash.{Business.Franchise}
+
   schema "product" do
     field :description, :string
     field :name, :string

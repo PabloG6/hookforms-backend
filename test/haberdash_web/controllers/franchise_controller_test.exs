@@ -56,7 +56,10 @@ defmodule HaberdashWeb.FranchiseControllerTest do
   describe "update franchise" do
     setup [:create_franchise]
 
-    test "renders franchise when data is valid", %{conn: conn, franchise: %Franchise{id: id} = franchise} do
+    test "renders franchise when data is valid", %{
+      conn: conn,
+      franchise: %Franchise{id: id} = franchise
+    } do
       conn = put(conn, Routes.franchise_path(conn, :update, franchise), franchise: @update_attrs)
       assert %{"id" => ^id} = json_response(conn, 200)["data"]
 

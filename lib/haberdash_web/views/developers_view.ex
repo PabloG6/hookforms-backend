@@ -11,10 +11,12 @@ defmodule HaberdashWeb.DevelopersView do
   end
 
   def render("developers.json", %{developers: developers}) do
-    %{id: developers.id,
+    %{
+      id: developers.id,
       name: developers.name,
       email: developers.email,
       password_hash: developers.password_hash,
-      api_key: developers.api_key}
+      api_key: developers.api_key
+    }
   end
 end

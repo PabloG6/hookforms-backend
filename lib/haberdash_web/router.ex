@@ -5,13 +5,22 @@ defmodule HaberdashWeb.Router do
     plug :accepts, ["json"]
   end
 
+  pipeline :auth do
+    plug Haberdash.Auth.Pipeline
+  end
+
   scope "/api", HaberdashWeb do
     pipe_through :api
-    resources "/owner", OwnerController, except: [:new, :edit]
-    resources "product", ProductsController, except: [:new, :edit]
-    resources "/franchise", FranchiseController, except: [:new, :edit]
-    resources "/developer", DevelopersController, except: [:new, :edit]
+    post "/owner", OwnerController, :create
+    resources "/developer", DevelopersController, except: [:new, :edit, :create]
+  end
 
+  scope "/api", HaberdashWeb do
+    pipe_through [:api, :auth]
+    resources "/owner", OwnerController, except: [:new, :edit, :create]
+
+    resources "/product", ProductsController, except: [:new, :edit]
+    resources "/franchise", FranchiseController, except: [:new, :edit]
   end
 
   # Enables LiveDashboard only for development

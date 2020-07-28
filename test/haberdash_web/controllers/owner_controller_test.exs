@@ -1,8 +1,9 @@
 defmodule HaberdashWeb.OwnerControllerTest do
   use HaberdashWeb.ConnCase
-
+  alias Haberdash.{Auth}
   alias Haberdash.Account
   alias Haberdash.Account.Owner
+  require Logger
 
   @create_attrs %{
     email: "some email",
@@ -28,9 +29,19 @@ defmodule HaberdashWeb.OwnerControllerTest do
   end
 
   describe "index" do
-    test "lists all owner", %{conn: conn} do
+    setup [:create_owner, :authenticate_owner]
+
+    test "lists all owners", %{conn: conn, owner: owner} do
       conn = get(conn, Routes.owner_path(conn, :index))
-      assert json_response(conn, 200)["data"] == []
+
+      assert json_response(conn, 200)["data"] == [
+               %{
+                 "id" => owner.id,
+                 "phone_number" => owner.phone_number,
+                 "email" => owner.email,
+                 "name" => owner.name
+               }
+             ]
     end
   end
 
@@ -38,8 +49,11 @@ defmodule HaberdashWeb.OwnerControllerTest do
     test "renders owner when data is valid", %{conn: conn} do
       conn = post(conn, Routes.owner_path(conn, :create), owner: @create_attrs)
       assert %{"id" => id} = json_response(conn, 201)["data"]
+      owner = Account.get_owner!(id)
 
-      conn = get(conn, Routes.owner_path(conn, :show, id))
+      {:ok, token, _claims} = Haberdash.Auth.Guardian.encode_and_sign(owner)
+      conn = put_req_header(recycle(conn), "authorization", "Bearer " <> token)
+      conn = get(conn, Routes.owner_path(conn , :show, id))
 
       assert %{
                "id" => id,
@@ -56,9 +70,10 @@ defmodule HaberdashWeb.OwnerControllerTest do
   end
 
   describe "update owner" do
-    setup [:create_owner]
+    setup [:create_owner, :authenticate_owner]
 
     test "renders owner when data is valid", %{conn: conn, owner: %Owner{id: id} = owner} do
+      Logger.info("current token: #{Guardian.Plug.current_token(conn)}")
       conn = put(conn, Routes.owner_path(conn, :update, owner), owner: @update_attrs)
       assert %{"id" => ^id} = json_response(conn, 200)["data"]
 
@@ -79,7 +94,7 @@ defmodule HaberdashWeb.OwnerControllerTest do
   end
 
   describe "delete owner" do
-    setup [:create_owner]
+    setup [:create_owner, :authenticate_owner]
 
     test "deletes chosen owner", %{conn: conn, owner: owner} do
       conn = delete(conn, Routes.owner_path(conn, :delete, owner))
@@ -94,5 +109,17 @@ defmodule HaberdashWeb.OwnerControllerTest do
   defp create_owner(_) do
     owner = fixture(:owner)
     %{owner: owner}
+  end
+
+  def authenticate_owner(%{conn: conn, owner: owner}) do
+    Logger.debug("debugging claims")
+    {:ok, token, _claims} = Auth.Guardian.encode_and_sign(owner)
+
+    conn =
+      conn
+      |> put_req_header("authorization", "Bearer " <> token)
+      |> put_req_header("accept", "application/json")
+
+    {:ok, conn: conn, owner: owner}
   end
 end

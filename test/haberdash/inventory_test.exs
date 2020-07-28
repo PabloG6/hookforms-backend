@@ -6,8 +6,18 @@ defmodule Haberdash.InventoryTest do
   describe "product" do
     alias Haberdash.Inventory.Products
 
-    @valid_attrs %{description: "some description", name: "some name", price: "120.5", price_id: "some price_id"}
-    @update_attrs %{description: "some updated description", name: "some updated name", price: "456.7", price_id: "some updated price_id"}
+    @valid_attrs %{
+      description: "some description",
+      name: "some name",
+      price: "120.5",
+      price_id: "some price_id"
+    }
+    @update_attrs %{
+      description: "some updated description",
+      name: "some updated name",
+      price: "456.7",
+      price_id: "some updated price_id"
+    }
     @invalid_attrs %{description: nil, name: nil, price: nil, price_id: nil}
 
     def products_fixture(attrs \\ %{}) do

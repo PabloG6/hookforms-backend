@@ -11,9 +11,11 @@ defmodule HaberdashWeb.FranchiseView do
   end
 
   def render("franchise.json", %{franchise: franchise}) do
-    %{id: franchise.id,
+    %{
+      id: franchise.id,
       name: franchise.name,
       description: franchise.description,
-      phone_number: franchise.phone_number}
+      phone_number: franchise.phone_number
+    }
   end
 end

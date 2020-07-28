@@ -22,7 +22,6 @@ defmodule Haberdash.Account.Owner do
     |> validate_required([:name, :email, :phone_number, :password])
   end
 
-
   defp put_password_hash(%Ecto.Changeset{valid?: true, changes: %{password: nil}} = changeset) do
     changeset
   end

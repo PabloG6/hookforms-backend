@@ -6,7 +6,7 @@ defmodule Haberdash.Account do
   import Ecto.Query, warn: false
   alias Haberdash.Repo
 
-  alias Haberdash.Account.Developers
+  alias Haberdash.Account.Developer
 
   @doc """
   Returns the list of developer.
@@ -14,28 +14,28 @@ defmodule Haberdash.Account do
   ## Examples
 
       iex> list_developer()
-      [%Developers{}, ...]
+      [%Developer{}, ...]
 
   """
   def list_developer do
-    Repo.all(Developers)
+    Repo.all(Developer)
   end
 
   @doc """
   Gets a single developers.
 
-  Raises `Ecto.NoResultsError` if the Developers does not exist.
+  Raises `Ecto.NoResultsError` if the Developer does not exist.
 
   ## Examples
 
       iex> get_developers!(123)
-      %Developers{}
+      %Developer{}
 
       iex> get_developers!(456)
       ** (Ecto.NoResultsError)
 
   """
-  def get_developers!(id), do: Repo.get!(Developers, id)
+  def get_developer!(id), do: Repo.get!(Developer, id)
 
   @doc """
   Creates a developers.
@@ -43,15 +43,15 @@ defmodule Haberdash.Account do
   ## Examples
 
       iex> create_developers(%{field: value})
-      {:ok, %Developers{}}
+      {:ok, %Developer{}}
 
       iex> create_developers(%{field: bad_value})
       {:error, %Ecto.Changeset{}}
 
   """
-  def create_developers(attrs \\ %{}) do
-    %Developers{}
-    |> Developers.changeset(attrs)
+  def create_developer(attrs \\ %{}) do
+    %Developer{}
+    |> Developer.changeset(attrs)
     |> Repo.insert()
   end
 
@@ -61,15 +61,15 @@ defmodule Haberdash.Account do
   ## Examples
 
       iex> update_developers(developers, %{field: new_value})
-      {:ok, %Developers{}}
+      {:ok, %Developer{}}
 
       iex> update_developers(developers, %{field: bad_value})
       {:error, %Ecto.Changeset{}}
 
   """
-  def update_developers(%Developers{} = developers, attrs) do
+  def update_developer(%Developer{} = developers, attrs) do
     developers
-    |> Developers.changeset(attrs)
+    |> Developer.changeset(attrs)
     |> Repo.update()
   end
 
@@ -79,13 +79,13 @@ defmodule Haberdash.Account do
   ## Examples
 
       iex> delete_developers(developers)
-      {:ok, %Developers{}}
+      {:ok, %Developer{}}
 
       iex> delete_developers(developers)
       {:error, %Ecto.Changeset{}}
 
   """
-  def delete_developers(%Developers{} = developers) do
+  def delete_developer(%Developer{} = developers) do
     Repo.delete(developers)
   end
 
@@ -95,11 +95,11 @@ defmodule Haberdash.Account do
   ## Examples
 
       iex> change_developers(developers)
-      %Ecto.Changeset{data: %Developers{}}
+      %Ecto.Changeset{data: %Developer{}}
 
   """
-  def change_developers(%Developers{} = developers, attrs \\ %{}) do
-    Developers.changeset(developers, attrs)
+  def change_developer(%Developer{} = developers, attrs \\ %{}) do
+    Developer.changeset(developers, attrs)
   end
 
   alias Haberdash.Account.Owner
