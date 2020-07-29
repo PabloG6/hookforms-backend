@@ -3,6 +3,7 @@ defmodule HaberdashWeb.OwnerControllerTest do
   alias Haberdash.{Auth}
   alias Haberdash.Account
   alias Haberdash.Account.Owner
+
   require Logger
 
   @create_attrs %{
@@ -76,7 +77,7 @@ defmodule HaberdashWeb.OwnerControllerTest do
       Logger.info("current token: #{Guardian.Plug.current_token(conn)}")
       conn = put(conn, Routes.owner_path(conn, :update, owner), owner: @update_attrs)
       assert %{"id" => ^id} = json_response(conn, 200)["data"]
-
+      Logger.info("auth cache: #{Auth.Cache.get(id)}")
       conn = get(conn, Routes.owner_path(conn, :show, id))
 
       assert %{

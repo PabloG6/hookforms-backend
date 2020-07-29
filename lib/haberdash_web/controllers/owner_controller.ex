@@ -1,6 +1,6 @@
 defmodule HaberdashWeb.OwnerController do
   use HaberdashWeb, :controller
-
+  require Logger
   alias Haberdash.Account
   alias Haberdash.Account.Owner
 
@@ -27,10 +27,11 @@ defmodule HaberdashWeb.OwnerController do
 
   def update(conn, %{"id" => id, "owner" => owner_params}) do
     owner = Account.get_owner!(id)
-
     with {:ok, %Owner{} = owner} <- Account.update_owner(owner, owner_params) do
       render(conn, "show.json", owner: owner)
     end
+
+
   end
 
   def delete(conn, %{"id" => id}) do

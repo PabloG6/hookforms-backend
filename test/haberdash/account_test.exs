@@ -77,7 +77,7 @@ defmodule Haberdash.AccountTest do
   end
 
   describe "developer" do
-    alias Haberdash.Account.Developers
+    alias Haberdash.Account.Developer
 
     @valid_attrs %{
       api_key: "some api_key",
@@ -113,7 +113,7 @@ defmodule Haberdash.AccountTest do
     end
 
     test "create_developers/1 with valid data creates a developers" do
-      assert {:ok, %Developers{} = developers} = Account.create_developers(@valid_attrs)
+      assert {:ok, %Developer{} = developers} = Account.create_developers(@valid_attrs)
       assert developers.api_key == "some api_key"
       assert developers.email == "some email"
       assert developers.name == "some name"
@@ -127,7 +127,7 @@ defmodule Haberdash.AccountTest do
     test "update_developers/2 with valid data updates the developers" do
       developers = developers_fixture()
 
-      assert {:ok, %Developers{} = developers} =
+      assert {:ok, %Developer{} = developers} =
                Account.update_developers(developers, @update_attrs)
 
       assert developers.api_key == "some updated api_key"
@@ -144,7 +144,7 @@ defmodule Haberdash.AccountTest do
 
     test "delete_developers/1 deletes the developers" do
       developers = developers_fixture()
-      assert {:ok, %Developers{}} = Account.delete_developers(developers)
+      assert {:ok, %Developer{}} = Account.delete_developers(developers)
       assert_raise Ecto.NoResultsError, fn -> Account.get_developers!(developers.id) end
     end
 

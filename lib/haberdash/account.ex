@@ -5,7 +5,7 @@ defmodule Haberdash.Account do
 
   import Ecto.Query, warn: false
   alias Haberdash.Repo
-  use Nebulex.Caching.Decorators
+  use Nebulex.Caching
   alias Haberdash.Account.Developer
   alias Haberdash.Auth.Cache
   @doc """
@@ -131,7 +131,7 @@ defmodule Haberdash.Account do
       ** (Ecto.NoResultsError)
 
   """
-  @decorate cache(cache: Cache, key: {Owner, id})
+  @decorate cacheable(cache: Cache, key: {Owner, id})
   def get_owner!(id), do: Repo.get!(Owner, id)
 
   @doc """
@@ -164,11 +164,16 @@ defmodule Haberdash.Account do
       {:error, %Ecto.Changeset{}}
 
   """
+  @decorate cache_put(cache: Cache, key: {Owner, owner.id}, match: &match_update_owner/1)
   def update_owner(%Owner{} = owner, attrs) do
-    owner
+     owner
     |> Owner.changeset(attrs)
     |> Repo.update()
+
   end
+
+
+
 
   @doc """
   Deletes a owner.
@@ -182,6 +187,7 @@ defmodule Haberdash.Account do
       {:error, %Ecto.Changeset{}}
 
   """
+  @decorate cache_evict(cache: Cache, key: {Owner, owner.id}, match: &match_delete_owner/1)
   def delete_owner(%Owner{} = owner) do
     Repo.delete(owner)
   end
@@ -198,4 +204,26 @@ defmodule Haberdash.Account do
   def change_owner(%Owner{} = owner, attrs \\ %{}) do
     Owner.changeset(owner, attrs)
   end
+
+  defp match_update_owner({:ok, owner} = value) do
+    {true, owner}
+  end
+
+  defp match_update_owner({:error, %Ecto.Changeset{}} = error) do
+    false
+  end
+
+  defp match_update_owner({:error, _}) do
+    false
+  end
+
+  defp match_delete_owner({:ok, owner}) do
+    {true, owner}
+  end
+
+
+  defp match_delete_owner(_) do
+    false
+  end
+
 end
