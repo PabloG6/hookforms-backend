@@ -192,6 +192,24 @@ defmodule Haberdash.Account do
     Repo.delete(owner)
   end
 
+  def authenticate(email, password) do
+    with %Owner{} = owner <- Repo.get_by(Owner, email: email),
+        {:ok, %Owner{}} = pass <- Bcrypt.check_pass(owner, password) do
+        pass
+    else
+
+      nil ->
+        {:error, :not_found}
+
+       error
+        -> error
+
+
+
+
+    end
+  end
+
   @doc """
   Returns an `%Ecto.Changeset{}` for tracking owner changes.
 

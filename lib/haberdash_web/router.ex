@@ -12,6 +12,8 @@ defmodule HaberdashWeb.Router do
   scope "/api", HaberdashWeb do
     pipe_through :api
     post "/owner", OwnerController, :create
+    post "/login", OwnerController, :login
+
     resources "/developer", DevelopersController, except: [:new, :edit, :create]
   end
 

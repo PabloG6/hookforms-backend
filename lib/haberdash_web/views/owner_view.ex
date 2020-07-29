@@ -10,7 +10,20 @@ defmodule HaberdashWeb.OwnerView do
     %{data: render_one(owner, OwnerView, "owner.json")}
   end
 
+  def render("owner.json", %{owner: owner, token: token}) do
+    %{
+      data: %{
+        id: owner.id,
+        name: owner.name,
+        email: owner.email,
+        phone_number: owner.phone_number,
+        token: token
+      }
+    }
+  end
   def render("owner.json", %{owner: owner}) do
     %{id: owner.id, name: owner.name, email: owner.email, phone_number: owner.phone_number}
   end
+
+
 end

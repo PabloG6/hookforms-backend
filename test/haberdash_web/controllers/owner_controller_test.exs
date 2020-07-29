@@ -7,15 +7,15 @@ defmodule HaberdashWeb.OwnerControllerTest do
   require Logger
 
   @create_attrs %{
-    email: "some email",
+    email: "random@email.com",
     name: "some name",
-    phone_number: "some phone_number",
+    phone_number: "+4588913567",
     password: "password"
   }
   @update_attrs %{
-    email: "some updated email",
+    email: "someupdated@email.com",
     name: "some updated name",
-    phone_number: "some updated phone_number",
+    phone_number: "+4588913560",
     password: "password"
   }
   @invalid_attrs %{email: nil, name: nil, phone_number: nil}
@@ -46,21 +46,28 @@ defmodule HaberdashWeb.OwnerControllerTest do
     end
   end
 
+  describe "login user" do
+    setup [:create_owner]
+    test "test user login with valid credentials", %{conn: conn, owner: owner} do
+      conn = post(conn, Routes.owner_path(conn, :login), owner: %{email: owner.email, password: "password"})
+      assert %{"id" => id} = json_response(conn, 200)["data"]
+    end
+  end
+
   describe "create owner" do
     test "renders owner when data is valid", %{conn: conn} do
       conn = post(conn, Routes.owner_path(conn, :create), owner: @create_attrs)
       assert %{"id" => id} = json_response(conn, 201)["data"]
       owner = Account.get_owner!(id)
-
       {:ok, token, _claims} = Haberdash.Auth.Guardian.encode_and_sign(owner)
       conn = put_req_header(recycle(conn), "authorization", "Bearer " <> token)
       conn = get(conn, Routes.owner_path(conn , :show, id))
 
       assert %{
                "id" => id,
-               "email" => "some email",
+               "email" => "random@email.com",
                "name" => "some name",
-               "phone_number" => "some phone_number"
+               "phone_number" => "+4588913567"
              } = json_response(conn, 200)["data"]
     end
 
@@ -77,14 +84,13 @@ defmodule HaberdashWeb.OwnerControllerTest do
       Logger.info("current token: #{Guardian.Plug.current_token(conn)}")
       conn = put(conn, Routes.owner_path(conn, :update, owner), owner: @update_attrs)
       assert %{"id" => ^id} = json_response(conn, 200)["data"]
-      Logger.info("auth cache: #{Auth.Cache.get(id)}")
       conn = get(conn, Routes.owner_path(conn, :show, id))
 
       assert %{
                "id" => id,
-               "email" => "some updated email",
+               "email" => "someupdated@email.com",
                "name" => "some updated name",
-               "phone_number" => "some updated phone_number"
+               "phone_number" => "+4588913560"
              } = json_response(conn, 200)["data"]
     end
 
@@ -106,6 +112,7 @@ defmodule HaberdashWeb.OwnerControllerTest do
       end
     end
   end
+
 
   defp create_owner(_) do
     owner = fixture(:owner)

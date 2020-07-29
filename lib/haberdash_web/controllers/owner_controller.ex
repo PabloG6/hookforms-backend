@@ -1,7 +1,7 @@
 defmodule HaberdashWeb.OwnerController do
   use HaberdashWeb, :controller
   require Logger
-  alias Haberdash.Account
+  alias Haberdash.{Account, Auth}
   alias Haberdash.Account.Owner
 
   action_fallback HaberdashWeb.FallbackController
@@ -20,6 +20,25 @@ defmodule HaberdashWeb.OwnerController do
     end
   end
 
+  def login(conn, %{"owner" => %{"email" => email, "password" => password}}) do
+    with {:ok, %Owner{} = owner} <- Account.authenticate(email, password) do
+      login_reply(conn, owner)
+    else
+      error ->
+           conn
+           |> resp(:not_found, Poison.encode!(%{code: :invalid, message: "Invalid email or password."}))
+           |> send_resp()
+    end
+  end
+
+  defp login_reply(conn, owner) do
+    {:ok, token, _claims} = Auth.Guardian.encode_and_sign(owner)
+
+    conn
+    |> put_status(:ok)
+    |> render(:owner, owner: owner, token: token)
+  end
+
   def show(conn, %{"id" => id}) do
     owner = Account.get_owner!(id)
     render(conn, "show.json", owner: owner)
@@ -30,7 +49,6 @@ defmodule HaberdashWeb.OwnerController do
     with {:ok, %Owner{} = owner} <- Account.update_owner(owner, owner_params) do
       render(conn, "show.json", owner: owner)
     end
-
 
   end
 
