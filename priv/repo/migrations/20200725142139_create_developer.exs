@@ -8,7 +8,7 @@ defmodule Haberdash.Repo.Migrations.CreateDeveloper do
       add :password_hash, :string
       add :api_key, :string
       add :id, :binary_id, primary_key: true
-      add :owner_id, references(:owner, on_delete: :nothing)
+      add :owner_id, references(:owner, on_delete: :nothing, type: :binary_id)
       timestamps()
     end
   end

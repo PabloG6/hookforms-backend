@@ -11,6 +11,7 @@ defmodule Haberdash.Repo.Migrations.CreateProduct do
       timestamps()
     end
 
+    #make sure that every product's name isn't duplicated or created multiple times
     create unique_index(:product, [:name, :franchise_id])
   end
 end

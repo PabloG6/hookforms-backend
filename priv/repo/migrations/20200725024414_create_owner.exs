@@ -3,11 +3,11 @@ defmodule Haberdash.Repo.Migrations.CreateOwner do
 
   def change do
     create table(:owner, primary_key: false) do
-      add :name, :text
-      add :email, :text
-      add :phone_number, :text
+      add :name, :string
+      add :email, :string
+      add :phone_number, :string
       add :id, :binary_id, primary_key: true
-      add :password_hash, :text
+      add :password_hash, :string
 
       timestamps()
     end
