@@ -1,7 +1,7 @@
 defmodule Haberdash.BusinessTest do
   use Haberdash.DataCase
 
-  alias Haberdash.Business
+  alias Haberdash.{Business, Account}
 
   describe "franchise" do
     alias Haberdash.Business.Franchise
@@ -11,6 +11,14 @@ defmodule Haberdash.BusinessTest do
       name: "some name",
       phone_number: "some phone_number"
     }
+
+    @owner_attrs %{
+      email: "random@email.com",
+      name: "some name",
+      phone_number: "+4588913567",
+      password: "password"
+    }
+
     @update_attrs %{
       description: "some updated description",
       name: "some updated name",
@@ -19,9 +27,11 @@ defmodule Haberdash.BusinessTest do
     @invalid_attrs %{description: nil, name: nil, phone_number: nil}
 
     def franchise_fixture(attrs \\ %{}) do
+      {:ok, owner} = Account.create_owner(@owner_attrs)
       {:ok, franchise} =
         attrs
         |> Enum.into(@valid_attrs)
+        |> Enum.into(%{owner_id: owner.id})
         |> Business.create_franchise()
 
       franchise
@@ -38,7 +48,8 @@ defmodule Haberdash.BusinessTest do
     end
 
     test "create_franchise/1 with valid data creates a franchise" do
-      assert {:ok, %Franchise{} = franchise} = Business.create_franchise(@valid_attrs)
+      assert {:ok, %Account.Owner{} = owner} = Account.create_owner(@owner_attrs)
+      assert {:ok, %Franchise{} = franchise} = Business.create_franchise(@valid_attrs |> Enum.into(%{owner_id: owner.id}))
       assert franchise.description == "some description"
       assert franchise.name == "some name"
       assert franchise.phone_number == "some phone_number"

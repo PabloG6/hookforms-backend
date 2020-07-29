@@ -16,7 +16,7 @@ defmodule Haberdash.Business.Franchise do
   @doc false
   def changeset(franchise, attrs) do
     franchise
-    |> cast(attrs, [:name, :description, :phone_number])
-    |> validate_required([:name, :description, :phone_number])
+    |> cast(attrs, [:name, :description, :phone_number, :owner_id])
+    |> validate_required([:name, :description, :phone_number, :owner_id])
   end
 end

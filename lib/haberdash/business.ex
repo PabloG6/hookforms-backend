@@ -36,6 +36,13 @@ defmodule Haberdash.Business do
 
   """
   def get_franchise!(id), do: Repo.get!(Franchise, id)
+  def get_franchise_by(opts) do
+    with %Franchise{} = franchise <-  Repo.get_by(Franchise, opts) do
+      {:ok, franchise}
+    else
+      nil -> {:error, :not_found}
+    end
+  end
 
   @doc """
   Creates a franchise.
@@ -101,4 +108,6 @@ defmodule Haberdash.Business do
   def change_franchise(%Franchise{} = franchise, attrs \\ %{}) do
     Franchise.changeset(franchise, attrs)
   end
+
+
 end
