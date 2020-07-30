@@ -19,7 +19,7 @@ defmodule Haberdash.Plug.ApiKey do
     else
       _ ->
         # check if api key exists in the database
-        with {:ok, developer} <- Account.get_developer(api_key: head) do
+        with {:ok, developer} <- Account.get_developer_by(api_key: head) do
           # retrieve the owner as well.
           %Account.Owner{} = owner = Repo.preload(developer, :owner)
           %Business.Franchise{} = franchise = Repo.preload(owner, :franchise)
