@@ -9,19 +9,37 @@ defmodule HaberdashWeb.Router do
     plug Haberdash.Auth.Pipeline
   end
 
+  pipeline :franchise do
+    plug Haberdash.Auth.Pipeline
+    plug Haberdash.Plug.Franchise
+  end
+
   scope "/api", HaberdashWeb do
     pipe_through :api
     post "/owner", OwnerController, :create
     post "/login", OwnerController, :login
 
-    resources "/developer", DevelopersController, except: [:new, :edit, :create]
+
+  end
+
+  scope "/api", HaberdashWeb do
+    post "/developer/:id", DeveloperController, :create
+    get "/developer/:id", DeveloperController, :show
+    put "/developer/:id", DeveloperController, :update
+    get "/developer", DeveloperController, :index
+    patch "/developer/:id", DeveloperController, :index
+    delete "/developer/:id", DeveloperController, :delete
+  end
+
+  scope "/api", Haberdash do
+    pipe_through [:api, :auth, :franchise]
+    resources "/product", ProductsController, except: [:new, :edit]
+
   end
 
   scope "/api", HaberdashWeb do
     pipe_through [:api, :auth]
     resources "/owner", OwnerController, except: [:new, :edit, :create]
-
-    resources "/product", ProductsController, except: [:new, :edit]
     resources "/franchise", FranchiseController, except: [:new, :edit]
   end
 

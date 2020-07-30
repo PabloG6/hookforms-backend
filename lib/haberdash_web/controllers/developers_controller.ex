@@ -1,7 +1,7 @@
-defmodule HaberdashWeb.DevelopersController do
+defmodule HaberdashWeb.DeveloperController do
   use HaberdashWeb, :controller
 
-  alias Haberdash.Account
+  alias Haberdash.{Account, Auth}
   alias Haberdash.Account.Developer
 
   action_fallback HaberdashWeb.FallbackController
@@ -11,11 +11,11 @@ defmodule HaberdashWeb.DevelopersController do
     render(conn, "index.json", developer: developer)
   end
 
-  def create(conn, %{"developers" => developers_params}) do
-    with {:ok, %Developer{} = developers} <- Account.create_developer(developers_params) do
+  def create(conn, %{"id" => id, "developers" => developers_params}) do
+    with {:ok, %Developer{} = developers} <- Account.create_developer(developers_params |> Enum.into(%{"owner_id" => id})) do
       conn
       |> put_status(:created)
-      |> put_resp_header("location", Routes.developers_path(conn, :show, developers))
+      |> put_resp_header("location", Routes.developer_path(conn, :show, developers))
       |> render("show.json", developers: developers)
     end
   end
