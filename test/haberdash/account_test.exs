@@ -44,6 +44,8 @@ defmodule Haberdash.AccountTest do
       assert owner.email == "some@email.com"
       assert owner.name == "some name"
       assert owner.phone_number == "+4915843854"
+      assert Bcrypt.verify_pass("some password", owner.password_hash)
+
     end
 
     test "create_owner/1 with invalid data returns error changeset" do
@@ -96,7 +98,7 @@ defmodule Haberdash.AccountTest do
       name: "some updated name",
       password: "some updated password_hash"
     }
-    @invalid_attrs %{api_key: nil, email: nil, name: nil, password_hash: nil}
+    @invalid_attrs %{api_key: nil, email: nil, name: nil, password: nil}
 
     def developers_fixture(attrs \\ %{}) do
       {:ok, owner} = Account.create_owner(@owner_attrs)
@@ -112,12 +114,12 @@ defmodule Haberdash.AccountTest do
 
     test "list_developer/0 returns all developer" do
       developers = developers_fixture()
-      assert Account.list_developer() == [developers]
+      assert Account.list_developer() == [%{developers | password: nil}]
     end
 
     test "get_developers!/1 returns the developers with given id" do
       developers = developers_fixture()
-      assert Account.get_developer!(developers.id) == developers
+      assert Account.get_developer!(developers.id) == %{ developers | password: nil}
     end
 
     test "create_developers/1 with valid data creates a developers" do
@@ -126,7 +128,7 @@ defmodule Haberdash.AccountTest do
       assert developers.api_key == "some api_key"
       assert developers.email == "some@email.com"
       assert developers.name == "some name"
-      assert developers.password_hash == "some password_hash"
+      assert Bcrypt.verify_pass("some password_hash", developers.password_hash)
     end
 
     test "create_developers/1 with invalid data returns error changeset" do
@@ -142,13 +144,13 @@ defmodule Haberdash.AccountTest do
       assert developers.api_key == "some updated api_key"
       assert developers.email == "someupdated@email.com"
       assert developers.name == "some updated name"
-      assert developers.password_hash == "some updated password_hash"
+      assert Bcrypt.verify_pass("some updated password_hash", developers.password_hash)
     end
 
     test "update_developers/2 with invalid data returns error changeset" do
       developers = developers_fixture()
       assert {:error, %Ecto.Changeset{}} = Account.update_developer(developers, @invalid_attrs)
-      assert developers == Account.get_developer!(developers.id)
+      assert %{developers | password: nil} == Account.get_developer!(developers.id)
     end
 
     test "delete_developers/1 deletes the developers" do

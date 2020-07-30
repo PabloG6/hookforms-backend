@@ -1,7 +1,7 @@
 defmodule HaberdashWeb.ProductsControllerTest do
   use HaberdashWeb.ConnCase
 
-  alias Haberdash.Inventory
+  alias Haberdash.{Inventory, Auth, Account, Business}
   alias Haberdash.Inventory.Products
 
   @create_attrs %{
@@ -16,15 +16,42 @@ defmodule HaberdashWeb.ProductsControllerTest do
     price: "456.7",
     price_id: "some updated price_id"
   }
+
+  @owner_attrs %{
+    email: "some@email.com",
+    name: "some name",
+    phone_number: "+4915843854",
+    password: "some password"
+  }
+
+  @franchise_attrs %{
+    description: "some description",
+    name: "some name",
+    phone_number: "+4588913544"
+  }
+
   @invalid_attrs %{description: nil, name: nil, price: nil, price_id: nil}
 
-  def fixture(:products) do
-    {:ok, products} = Inventory.create_products(@create_attrs)
+  def fixture(attrs \\ %{}) do
+    {:ok, products} =  attrs |> Enum.into(@create_attrs) |> Inventory.create_products()
     products
   end
 
   setup %{conn: conn} do
-    {:ok, conn: put_req_header(conn, "accept", "application/json")}
+    {:ok, owner} = Account.create_owner(@owner_attrs)
+
+    {:ok, franchise} =
+      Business.create_franchise(@franchise_attrs |> Enum.into(%{owner_id: owner.id}))
+
+    {:ok, token, _claims} = Auth.Guardian.encode_and_sign(owner)
+
+    {:ok,
+     conn:
+       put_req_header(conn, "accept", "application/json")
+       |> put_req_header("authorization", "Bearer " <> token),
+      franchise: franchise
+      }
+
   end
 
   describe "index" do
@@ -96,8 +123,8 @@ defmodule HaberdashWeb.ProductsControllerTest do
     end
   end
 
-  defp create_products(_) do
-    products = fixture(:products)
+  defp create_products(%{franchise: franchise}) do
+    products = fixture(%{franchise_id: franchise.id})
     %{products: products}
   end
 end

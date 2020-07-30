@@ -31,7 +31,7 @@ defmodule HaberdashWeb.Router do
     delete "/developer/:id", DeveloperController, :delete
   end
 
-  scope "/api", Haberdash do
+  scope "/api", HaberdashWeb do
     pipe_through [:api, :auth, :franchise]
     resources "/product", ProductsController, except: [:new, :edit]
 

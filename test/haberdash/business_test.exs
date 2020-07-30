@@ -52,7 +52,7 @@ defmodule Haberdash.BusinessTest do
       assert {:ok, %Franchise{} = franchise} = Business.create_franchise(@valid_attrs |> Enum.into(%{owner_id: owner.id}))
       assert franchise.description == "some description"
       assert franchise.name == "some name"
-      assert franchise.phone_number == "some phone_number"
+      assert franchise.phone_number == "+4588913544"
     end
 
     test "create_franchise/1 with invalid data returns error changeset" do
@@ -64,7 +64,7 @@ defmodule Haberdash.BusinessTest do
       assert {:ok, %Franchise{} = franchise} = Business.update_franchise(franchise, @update_attrs)
       assert franchise.description == "some updated description"
       assert franchise.name == "some updated name"
-      assert franchise.phone_number == "some updated phone_number"
+      assert franchise.phone_number == "+4588914934"
     end
 
     test "update_franchise/2 with invalid data returns error changeset" do
