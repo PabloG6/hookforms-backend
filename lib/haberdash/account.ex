@@ -36,6 +36,7 @@ defmodule Haberdash.Account do
 
   """
   def get_developer!(id), do: Repo.get!(Developer, id)
+  def get_developer_by(opts), do: Repo.get_developer_by(opts)
 
   @doc """
   Creates a developers.
@@ -223,11 +224,11 @@ defmodule Haberdash.Account do
     Owner.changeset(owner, attrs)
   end
 
-  defp match_update_owner({:ok, owner} = value) do
+  defp match_update_owner({:ok, owner}) do
     {true, owner}
   end
 
-  defp match_update_owner({:error, %Ecto.Changeset{}} = error) do
+  defp match_update_owner({:error, %Ecto.Changeset{}}) do
     false
   end
 
