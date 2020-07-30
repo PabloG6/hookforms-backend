@@ -9,20 +9,20 @@ defmodule Haberdash.BusinessTest do
     @valid_attrs %{
       description: "some description",
       name: "some name",
-      phone_number: "some phone_number"
+      phone_number: "+4588913544"
     }
 
     @owner_attrs %{
       email: "random@email.com",
       name: "some name",
-      phone_number: "+4588913567",
+      phone_number: "+458891458",
       password: "password"
     }
 
     @update_attrs %{
       description: "some updated description",
       name: "some updated name",
-      phone_number: "some updated phone_number"
+      phone_number: "+4588914934"
     }
     @invalid_attrs %{description: nil, name: nil, phone_number: nil}
 

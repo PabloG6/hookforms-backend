@@ -88,13 +88,13 @@ defmodule Haberdash.AccountTest do
       api_key: "some api_key",
       email: "some@email.com",
       name: "some name",
-      password_hash: "some password_hash"
+      password: "some password_hash"
     }
     @update_attrs %{
       api_key: "some updated api_key",
       email: "someupdated@email.com",
       name: "some updated name",
-      password_hash: "some updated password_hash"
+      password: "some updated password_hash"
     }
     @invalid_attrs %{api_key: nil, email: nil, name: nil, password_hash: nil}
 
