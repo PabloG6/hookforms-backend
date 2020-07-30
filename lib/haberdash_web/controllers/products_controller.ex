@@ -31,11 +31,13 @@ defmodule HaberdashWeb.ProductsController do
   end
 
   def update(conn, %{"id" => id, "products" => products_params}) do
+    %Business.Franchise{id: franchise_id} = conn.private[:franchise]
     products = Inventory.get_products!(id)
-    if products.franchise_id != conn.private[:franchise].id do
+    if products.franchise_id != franchise_id do
       conn
-      |> resp(:unauthorized, Poison.encode!(%{code: :unauthorized, message: "You are currently unauthorized to modify this product. This means you might "}))
-      |> send_resp()
+      |> put_status(:unauthorized)
+      |> put_view(HaberdashWeb.ErrorView)
+      |> render(:unauthorized, message: "You're unauthorized to update this collection")
     end
     with {:ok, %Products{} = products} <- Inventory.update_products(products, products_params) do
       render(conn, "show.json", products: products)

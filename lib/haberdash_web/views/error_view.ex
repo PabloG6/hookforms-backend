@@ -13,4 +13,8 @@ defmodule HaberdashWeb.ErrorView do
   def template_not_found(template, _assigns) do
     %{errors: %{detail: Phoenix.Controller.status_message_from_template(template)}}
   end
+
+  def render("unauthorized.json", %{message: message}) do
+    %{errors: %{code: :unauthorized, message: message}}
+  end
 end

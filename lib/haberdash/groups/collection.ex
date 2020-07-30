@@ -15,7 +15,7 @@ defmodule Haberdash.Groups.Collection do
   @doc false
   def changeset(collection, attrs) do
     collection
-    |> cast(attrs, [:name, :description])
-    |> validate_required([:name, :description])
+    |> cast(attrs, [:name, :description, :franchise_id])
+    |> validate_required([:name, :description, :franchise_id])
   end
 end
