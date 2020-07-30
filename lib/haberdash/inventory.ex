@@ -5,20 +5,20 @@ defmodule Haberdash.Inventory do
 
   import Ecto.Query, warn: false
   alias Haberdash.Repo
-
+  use Nebulex.Caching
   alias Haberdash.Inventory.Products
 
   @doc """
-  Returns the list of product.
+  Returns the list of product when given the franchise id.
 
   ## Examples
 
-      iex> list_product()
+      iex> list_product(id)
       [%Products{}, ...]
 
   """
-  def list_product do
-    Repo.all(Products)
+  def list_product(id) do
+    Repo.all(from p in Products, where: p.franchise_id == ^id)
   end
 
   @doc """
