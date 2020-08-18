@@ -35,6 +35,7 @@ defmodule HaberdashWeb.Router do
     pipe_through [:api, :auth, :franchise]
     resources "/product", ProductsController, except: [:new, :edit]
     resources "/collection", CollectionController, except: [:new, :edit]
+    resources "/accessories", AccessoriesController, except: [:new, :edit]
 
 
   end
@@ -48,6 +49,8 @@ defmodule HaberdashWeb.Router do
     get "/product/:id", ProductGroupsController, :show
     delete "/product/:id", ProductGroupsController, :delete
   end
+
+
 
 
   # scope "/api/groups", HaberdashWeb do

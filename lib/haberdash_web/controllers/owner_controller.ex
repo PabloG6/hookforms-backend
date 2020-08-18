@@ -24,9 +24,9 @@ defmodule HaberdashWeb.OwnerController do
     with {:ok, %Owner{} = owner} <- Account.authenticate(email, password) do
       login_reply(conn, owner)
     else
-      error ->
+      _ ->
            conn
-           |> resp(:not_found, Poison.encode!(%{code: :invalid, message: "Invalid email or password."}))
+           |> resp(:unauthorized, Poison.encode!(%{code: :unauthorized, message: "Invalid email or password."}))
            |> send_resp()
     end
   end

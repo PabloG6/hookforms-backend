@@ -225,6 +225,7 @@ defmodule Haberdash.Account do
   end
 
   defp match_update_owner({:ok, owner}) do
+    IO.inspect "update called"
     {true, owner}
   end
 
@@ -237,11 +238,12 @@ defmodule Haberdash.Account do
   end
 
   defp match_delete_owner({:ok, owner}) do
+    IO.puts "delete called"
     {true, owner}
   end
 
 
-  defp match_delete_owner(_) do
+  defp match_delete_owner({:error, _}) do
     false
   end
 

@@ -43,7 +43,6 @@ defmodule HaberdashWeb.CollectionController do
   end
 
   def delete(conn, %{"id" => id}) do
-    collection = Groups.get_collection!(id)
     %Business.Franchise{id: franchise_id} = conn.private[:franchise]
 
     collection = Groups.get_collection!(id)

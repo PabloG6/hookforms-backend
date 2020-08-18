@@ -122,7 +122,7 @@ defmodule Haberdash.Business do
 
   defp match_update_franchise({:error, _}), do: false
 
-  defp match_delete_franchise({:ok, %Franchise{} = franchise}) do
+  defp match_delete_franchise({:ok, franchise}) do
     {true, franchise}
   end
 

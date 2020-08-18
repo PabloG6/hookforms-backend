@@ -1,7 +1,6 @@
 defmodule HaberdashWeb.DeveloperController do
   use HaberdashWeb, :controller
 
-  alias Haberdash.{Account, Auth}
   alias Haberdash.Account.Developer
 
   action_fallback HaberdashWeb.FallbackController

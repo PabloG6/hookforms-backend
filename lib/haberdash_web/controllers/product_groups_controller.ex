@@ -33,16 +33,8 @@ defmodule HaberdashWeb.ProductGroupsController do
     product_groups = Assoc.get_product_groups!(id)
     IO.inspect product_groups
     with {:ok, %ProductGroups{}} <- Assoc.delete_product_groups(product_groups) do
-      IO.puts "successfully deleted"
       send_resp(conn, :no_content, "")
-    else
-      {:error, changeset} ->
-        IO.puts "failed changeset"
-        IO.inspect changeset
 
-      error ->
-          IO.inspect error
-          error
     end
   rescue
     Ecto.NoResultsError
