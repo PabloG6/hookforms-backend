@@ -14,6 +14,8 @@ defmodule HaberdashWeb.ProductGroupsControllerTest do
     password: "some password"
   }
 
+  @invalid_attrs %{product_id: nil, collection_id: nil}
+
   @franchise_attrs %{
     description: "some description",
     name: "some name",

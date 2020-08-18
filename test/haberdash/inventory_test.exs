@@ -102,4 +102,67 @@ defmodule Haberdash.InventoryTest do
       %{franchise: franchise}
     end
   end
+
+  describe "accessories" do
+    alias Haberdash.Inventory.Accessories
+
+    @valid_attrs %{franchise: "7488a646-e31f-11e4-aace-600308960662", price: 42, title: "some title"}
+    @update_attrs %{franchise: "7488a646-e31f-11e4-aace-600308960668", price: 43, title: "some updated title"}
+    @invalid_attrs %{franchise: nil, price: nil, title: nil}
+
+    def accessories_fixture(attrs \\ %{}) do
+      {:ok, accessories} =
+        attrs
+        |> Enum.into(@valid_attrs)
+        |> Inventory.create_accessories()
+
+      accessories
+    end
+
+    test "list_accessories/0 returns all accessories" do
+      accessories = accessories_fixture()
+      assert Inventory.list_accessories() == [accessories]
+    end
+
+    test "get_accessories!/1 returns the accessories with given id" do
+      accessories = accessories_fixture()
+      assert Inventory.get_accessories!(accessories.id) == accessories
+    end
+
+    test "create_accessories/1 with valid data creates a accessories" do
+      assert {:ok, %Accessories{} = accessories} = Inventory.create_accessories(@valid_attrs)
+      assert accessories.franchise == "7488a646-e31f-11e4-aace-600308960662"
+      assert accessories.price == 42
+      assert accessories.title == "some title"
+    end
+
+    test "create_accessories/1 with invalid data returns error changeset" do
+      assert {:error, %Ecto.Changeset{}} = Inventory.create_accessories(@invalid_attrs)
+    end
+
+    test "update_accessories/2 with valid data updates the accessories" do
+      accessories = accessories_fixture()
+      assert {:ok, %Accessories{} = accessories} = Inventory.update_accessories(accessories, @update_attrs)
+      assert accessories.franchise == "7488a646-e31f-11e4-aace-600308960668"
+      assert accessories.price == 43
+      assert accessories.title == "some updated title"
+    end
+
+    test "update_accessories/2 with invalid data returns error changeset" do
+      accessories = accessories_fixture()
+      assert {:error, %Ecto.Changeset{}} = Inventory.update_accessories(accessories, @invalid_attrs)
+      assert accessories == Inventory.get_accessories!(accessories.id)
+    end
+
+    test "delete_accessories/1 deletes the accessories" do
+      accessories = accessories_fixture()
+      assert {:ok, %Accessories{}} = Inventory.delete_accessories(accessories)
+      assert_raise Ecto.NoResultsError, fn -> Inventory.get_accessories!(accessories.id) end
+    end
+
+    test "change_accessories/1 returns a accessories changeset" do
+      accessories = accessories_fixture()
+      assert %Ecto.Changeset{} = Inventory.change_accessories(accessories)
+    end
+  end
 end
