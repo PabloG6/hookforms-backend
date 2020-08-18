@@ -40,15 +40,14 @@ defmodule HaberdashWeb.ProductGroupsControllerTest do
 
   describe "index" do
     test "lists all product_groups", %{conn: conn} do
-      conn = get(conn, Routes.product_groups_path(conn, :index))
-      assert json_response(conn, 200)["data"] == []
+
     end
   end
 
   describe "create product_groups" do
     setup [:prepare]
     test "renders product_groups when data is valid", %{conn: conn, collection: collection, product: product} do
-      conn = post(conn, Routes.product_groups_path(conn, :create), product_groups: %{id: product.id, collection_id: collection.id})
+      conn = post(conn, Routes.product_groups_path(conn, :create, product.id), product_groups: %{product_id: product.id, collection_id: collection.id})
 
       assert %{"id" => id} = json_response(conn, 201)["data"]
 
@@ -59,38 +58,18 @@ defmodule HaberdashWeb.ProductGroupsControllerTest do
              } = json_response(conn, 200)["data"]
     end
 
-    test "renders errors when data is invalid", %{conn: conn} do
-      conn = post(conn, Routes.product_groups_path(conn, :create), product_groups: @invalid_attrs)
+    test "renders errors when data is invalid", %{conn: conn, product: product} do
+      conn = post(conn, Routes.product_groups_path(conn, :create, product.id), product_groups: @invalid_attrs)
       assert json_response(conn, 422)["errors"] != %{}
     end
   end
 
-  describe "update product_groups" do
-    setup [:prepare, :create_product_groups]
-
-    test "renders product_groups when data is valid", %{conn: conn, product_groups: %ProductGroups{id: id} = product_groups} do
-      conn = put(conn, Routes.product_groups_path(conn, :update, product_groups), product_groups: @update_attrs)
-      assert %{"id" => ^id} = json_response(conn, 200)["data"]
-
-      conn = get(conn, Routes.product_groups_path(conn, :show, id))
-
-      assert %{
-               "id" => id
-             } = json_response(conn, 200)["data"]
-    end
-
-    test "renders errors when data is invalid", %{conn: conn, product_groups: product_groups} do
-      conn = put(conn, Routes.product_groups_path(conn, :update, product_groups), product_groups: @invalid_attrs)
-      assert json_response(conn, 422)["errors"] != %{}
-    end
-  end
 
   describe "delete product_groups" do
     setup [:prepare, :create_product_groups]
 
     test "deletes chosen product_groups", %{conn: conn, product_groups: product_groups} do
-      conn = delete(conn, Routes.product_groups_path(conn, :delete, product_groups.product_id.
-      ), collection_id: product_groups.collection_id)
+      conn = delete(conn, Routes.product_groups_path(conn, :delete, product_groups))
       assert response(conn, 204)
 
       assert_error_sent 404, fn ->

@@ -45,8 +45,8 @@ defmodule HaberdashWeb.Router do
   scope "/api/groups", HaberdashWeb do
     pipe_through [:api, :auth, :franchise]
     post "/product/:product_id", ProductGroupsController, :create
-    get "/product/:product_id", ProductGroupsController, :show
-    delete "/product/:product_id", ProductGroupsController, :delete
+    get "/product/:id", ProductGroupsController, :show
+    delete "/product/:id", ProductGroupsController, :delete
   end
 
 

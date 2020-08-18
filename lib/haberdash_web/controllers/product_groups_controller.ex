@@ -11,7 +11,7 @@ defmodule HaberdashWeb.ProductGroupsController do
     render(conn, "index.json", product_groups: product_groups)
   end
 
-  def create(conn, %{"product_id" => _id, "collection_id" => _collection_id} = params) do
+  def create(conn, %{"product_groups" => params}) do
     with {:ok, %ProductGroups{} = product_groups} <- Assoc.create_product_groups(params) do
       conn
       |> put_status(:created)
@@ -20,21 +20,33 @@ defmodule HaberdashWeb.ProductGroupsController do
     end
   end
 
-  def show(conn, %{"product_id" => product_id}) do
-    product_groups = Assoc.list_product_group_info(product_id)
-    
+  def show(conn, %{"id" => id}) do
+    product_groups = Assoc.get_product_groups!(id)
+
     render(conn, "show.json", product_groups: product_groups)
   end
 
 
 
-  def delete(conn, %{"product_id" => product_id, "collection_id" => collection_id}) do
-    IO.puts("collection_id #{collection_id}")
-    IO.puts "product_id #{product_id}"
-   {:ok, product_groups} = Assoc.get_product_groups_by([product_id: product_id, collection_id: collection_id])
+  def delete(conn, %{"id" => id}) do
 
+    product_groups = Assoc.get_product_groups!(id)
+    IO.inspect product_groups
     with {:ok, %ProductGroups{}} <- Assoc.delete_product_groups(product_groups) do
+      IO.puts "successfully deleted"
       send_resp(conn, :no_content, "")
+    else
+      {:error, changeset} ->
+        IO.puts "failed changeset"
+        IO.inspect changeset
+
+      error ->
+          IO.inspect error
+          error
     end
+  rescue
+    Ecto.NoResultsError
+      -> conn
+         |> send_resp(:not_found, Poison.encode!(%{code: :not_found, message: "No association found with this id. "}))
   end
 end
