@@ -1,7 +1,7 @@
 defmodule Haberdash.Inventory.Products do
   use Ecto.Schema
   import Ecto.Changeset
-  alias Haberdash.{Business.Franchise}
+  alias Haberdash.{Business, Assoc}
   @primary_key {:id, :binary_id, autogenerate: true}
   schema "product" do
     field :description, :string
@@ -9,6 +9,7 @@ defmodule Haberdash.Inventory.Products do
     field :price, :decimal
     field :price_id, :string
     belongs_to :franchise, Business.Franchise, type: :binary_id
+    has_many :collection, Assoc.ProductGroups
     timestamps()
   end
 

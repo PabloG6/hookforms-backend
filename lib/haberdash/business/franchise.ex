@@ -1,7 +1,7 @@
 defmodule Haberdash.Business.Franchise do
   use Ecto.Schema
   import Ecto.Changeset
-  alias Haberdash.{Account, Inventory}
+  alias Haberdash.{Account, Inventory, Groups}
   @primary_key {:id, :binary_id, autogenerate: true}
 
   schema "franchise" do
@@ -10,6 +10,7 @@ defmodule Haberdash.Business.Franchise do
     field :phone_number, :string
     belongs_to :owner, Account.Owner, type: :binary_id
     has_many :inventory, Inventory.Products
+    has_many :collection, Groups.Collection
     timestamps()
   end
 
