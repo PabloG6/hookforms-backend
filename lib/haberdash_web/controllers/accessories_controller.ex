@@ -12,7 +12,13 @@ defmodule HaberdashWeb.AccessoriesController do
   end
 
   def create(conn, %{"accessories" => accessories_params}) do
-    with {:ok, %Accessories{} = accessories} <- Inventory.create_accessories(accessories_params) do
+    franchise = conn.private[:franchise]
+
+    with {:ok, %Accessories{} = accessories} <-
+           Inventory.create_accessories(
+             accessories_params
+             |> Enum.into(%{"franchise_id" => franchise.id})
+           ) do
       conn
       |> put_status(:created)
       |> put_resp_header("location", Routes.accessories_path(conn, :show, accessories))
@@ -28,7 +34,8 @@ defmodule HaberdashWeb.AccessoriesController do
   def update(conn, %{"id" => id, "accessories" => accessories_params}) do
     accessories = Inventory.get_accessories!(id)
 
-    with {:ok, %Accessories{} = accessories} <- Inventory.update_accessories(accessories, accessories_params) do
+    with {:ok, %Accessories{} = accessories} <-
+           Inventory.update_accessories(accessories, accessories_params) do
       render(conn, "show.json", accessories: accessories)
     end
   end

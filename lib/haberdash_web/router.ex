@@ -36,6 +36,7 @@ defmodule HaberdashWeb.Router do
     resources "/product", ProductsController, except: [:new, :edit]
     resources "/collection", CollectionController, except: [:new, :edit]
     resources "/accessories", AccessoriesController, except: [:new, :edit]
+    resources "/product_accessories", ProductAccessoriesController, except: [:new, :edit]
 
 
   end

@@ -95,4 +95,65 @@ defmodule Haberdash.AssocTest do
   end
 
 
+
+  describe "product_accessories" do
+    alias Haberdash.Assoc.ProductAccessories
+
+    @valid_attrs %{accessories_id: "7488a646-e31f-11e4-aace-600308960662", product_id: "7488a646-e31f-11e4-aace-600308960662"}
+    @update_attrs %{accessories_id: "7488a646-e31f-11e4-aace-600308960668", product_id: "7488a646-e31f-11e4-aace-600308960668"}
+    @invalid_attrs %{accessories_id: nil, product_id: nil}
+
+    def product_accessories_fixture(attrs \\ %{}) do
+      {:ok, product_accessories} =
+        attrs
+        |> Enum.into(@valid_attrs)
+        |> Assoc.create_product_accessories()
+
+      product_accessories
+    end
+
+    test "list_product_accessories/0 returns all product_accessories" do
+      product_accessories = product_accessories_fixture()
+      assert Assoc.list_product_accessories() == [product_accessories]
+    end
+
+    test "get_product_accessories!/1 returns the product_accessories with given id" do
+      product_accessories = product_accessories_fixture()
+      assert Assoc.get_product_accessories!(product_accessories.id) == product_accessories
+    end
+
+    test "create_product_accessories/1 with valid data creates a product_accessories" do
+      assert {:ok, %ProductAccessories{} = product_accessories} = Assoc.create_product_accessories(@valid_attrs)
+      assert product_accessories.accessories_id == "7488a646-e31f-11e4-aace-600308960662"
+      assert product_accessories.product_id == "7488a646-e31f-11e4-aace-600308960662"
+    end
+
+    test "create_product_accessories/1 with invalid data returns error changeset" do
+      assert {:error, %Ecto.Changeset{}} = Assoc.create_product_accessories(@invalid_attrs)
+    end
+
+    test "update_product_accessories/2 with valid data updates the product_accessories" do
+      product_accessories = product_accessories_fixture()
+      assert {:ok, %ProductAccessories{} = product_accessories} = Assoc.update_product_accessories(product_accessories, @update_attrs)
+      assert product_accessories.accessories_id == "7488a646-e31f-11e4-aace-600308960668"
+      assert product_accessories.product_id == "7488a646-e31f-11e4-aace-600308960668"
+    end
+
+    test "update_product_accessories/2 with invalid data returns error changeset" do
+      product_accessories = product_accessories_fixture()
+      assert {:error, %Ecto.Changeset{}} = Assoc.update_product_accessories(product_accessories, @invalid_attrs)
+      assert product_accessories == Assoc.get_product_accessories!(product_accessories.id)
+    end
+
+    test "delete_product_accessories/1 deletes the product_accessories" do
+      product_accessories = product_accessories_fixture()
+      assert {:ok, %ProductAccessories{}} = Assoc.delete_product_accessories(product_accessories)
+      assert_raise Ecto.NoResultsError, fn -> Assoc.get_product_accessories!(product_accessories.id) end
+    end
+
+    test "change_product_accessories/1 returns a product_accessories changeset" do
+      product_accessories = product_accessories_fixture()
+      assert %Ecto.Changeset{} = Assoc.change_product_accessories(product_accessories)
+    end
+  end
 end

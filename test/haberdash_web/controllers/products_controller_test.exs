@@ -7,14 +7,12 @@ defmodule HaberdashWeb.ProductsControllerTest do
   @create_attrs %{
     description: "some description",
     name: "some name",
-    price: "120.5",
-    price_id: "some price_id"
-  }
+    price: "120.5"
+    }
   @update_attrs %{
     description: "some updated description",
     name: "some updated name",
-    price: "456.7",
-    price_id: "some updated price_id"
+    price: "456.7"
   }
 
   @owner_attrs %{
@@ -72,8 +70,7 @@ defmodule HaberdashWeb.ProductsControllerTest do
                "id" => id,
                "description" => "some description",
                "name" => "some name",
-               "price" => "120.5",
-               "price_id" => "some price_id"
+               "price" => "120.5"
              } = json_response(conn, 200)["data"]
     end
 
@@ -100,7 +97,6 @@ defmodule HaberdashWeb.ProductsControllerTest do
                "description" => "some updated description",
                "name" => "some updated name",
                "price" => "456.7",
-               "price_id" => "some updated price_id"
              } = json_response(conn, 200)["data"]
     end
 

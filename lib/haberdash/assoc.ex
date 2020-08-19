@@ -145,4 +145,100 @@ defmodule Haberdash.Assoc do
   def change_product_groups(%ProductGroups{} = product_groups, attrs \\ %{}) do
     ProductGroups.changeset(product_groups, attrs)
   end
+
+  alias Haberdash.Assoc.ProductAccessories
+
+  @doc """
+  Returns the list of product_accessories.
+
+  ## Examples
+
+      iex> list_product_accessories()
+      [%ProductAccessories{}, ...]
+
+  """
+  def list_product_accessories do
+    Repo.all(ProductAccessories)
+  end
+
+  @doc """
+  Gets a single product_accessories.
+
+  Raises `Ecto.NoResultsError` if the Product accessories does not exist.
+
+  ## Examples
+
+      iex> get_product_accessories!(123)
+      %ProductAccessories{}
+
+      iex> get_product_accessories!(456)
+      ** (Ecto.NoResultsError)
+
+  """
+  def get_product_accessories!(id), do: Repo.get!(ProductAccessories, id)
+
+  @doc """
+  Creates a product_accessories.
+
+  ## Examples
+
+      iex> create_product_accessories(%{field: value})
+      {:ok, %ProductAccessories{}}
+
+      iex> create_product_accessories(%{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def create_product_accessories(attrs \\ %{}) do
+    %ProductAccessories{}
+    |> ProductAccessories.changeset(attrs)
+    |> Repo.insert()
+  end
+
+  @doc """
+  Updates a product_accessories.
+
+  ## Examples
+
+      iex> update_product_accessories(product_accessories, %{field: new_value})
+      {:ok, %ProductAccessories{}}
+
+      iex> update_product_accessories(product_accessories, %{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def update_product_accessories(%ProductAccessories{} = product_accessories, attrs) do
+    product_accessories
+    |> ProductAccessories.changeset(attrs)
+    |> Repo.update()
+  end
+
+  @doc """
+  Deletes a product_accessories.
+
+  ## Examples
+
+      iex> delete_product_accessories(product_accessories)
+      {:ok, %ProductAccessories{}}
+
+      iex> delete_product_accessories(product_accessories)
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def delete_product_accessories(%ProductAccessories{} = product_accessories) do
+    Repo.delete(product_accessories)
+  end
+
+  @doc """
+  Returns an `%Ecto.Changeset{}` for tracking product_accessories changes.
+
+  ## Examples
+
+      iex> change_product_accessories(product_accessories)
+      %Ecto.Changeset{data: %ProductAccessories{}}
+
+  """
+  def change_product_accessories(%ProductAccessories{} = product_accessories, attrs \\ %{}) do
+    ProductAccessories.changeset(product_accessories, attrs)
+  end
 end
