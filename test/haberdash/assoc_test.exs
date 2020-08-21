@@ -97,63 +97,80 @@ defmodule Haberdash.AssocTest do
 
 
   describe "product_accessories" do
+    setup [:init]
     alias Haberdash.Assoc.ProductAccessories
 
-    @valid_attrs %{accessories_id: "7488a646-e31f-11e4-aace-600308960662", product_id: "7488a646-e31f-11e4-aace-600308960662"}
-    @update_attrs %{accessories_id: "7488a646-e31f-11e4-aace-600308960668", product_id: "7488a646-e31f-11e4-aace-600308960668"}
-    @invalid_attrs %{accessories_id: nil, product_id: nil}
+    @owner_attrs %{
+      email: "some@email.com",
+      name: "some name",
+      phone_number: "+4915843854",
+      password: "some password"
+    }
 
+    @franchise_attrs %{
+      description: "some description",
+      name: "some name",
+      phone_number: "+4588913544"
+    }
+
+
+    @product_attrs %{
+      description: "some description",
+      name: "some name",
+      price: 120.5,
+      price_id: "some price_id"
+    }
+    @accessory_attrs %{name: "Large Fries", description: "A large fries", price: 999, }
     def product_accessories_fixture(attrs \\ %{}) do
       {:ok, product_accessories} =
         attrs
-        |> Enum.into(@valid_attrs)
         |> Assoc.create_product_accessories()
 
       product_accessories
     end
 
-    test "list_product_accessories/0 returns all product_accessories" do
-      product_accessories = product_accessories_fixture()
+    test "list_product_accessories/0 returns all product_accessories", %{product: product, accessories: accessories} do
+      product_accessories = product_accessories_fixture(%{product_id: product.id, accessories_id: accessories.id})
       assert Assoc.list_product_accessories() == [product_accessories]
     end
 
-    test "get_product_accessories!/1 returns the product_accessories with given id" do
-      product_accessories = product_accessories_fixture()
+    test "get_product_accessories!/1 returns the product_accessories with given id", %{product: product, accessories: accessories} do
+      product_accessories = product_accessories_fixture(%{product_id: product.id, accessories_id: accessories.id})
       assert Assoc.get_product_accessories!(product_accessories.id) == product_accessories
     end
 
-    test "create_product_accessories/1 with valid data creates a product_accessories" do
-      assert {:ok, %ProductAccessories{} = product_accessories} = Assoc.create_product_accessories(@valid_attrs)
-      assert product_accessories.accessories_id == "7488a646-e31f-11e4-aace-600308960662"
-      assert product_accessories.product_id == "7488a646-e31f-11e4-aace-600308960662"
+    test "create_product_accessories/1 with valid data creates a product_accessories", %{product: product, accessories: accessories} do
+      assert {:ok, %ProductAccessories{} = product_accessories} = Assoc.create_product_accessories(%{product_id: product.id, accessories_id: accessories.id})
+      assert product_accessories.accessories_id == accessories.id
+      assert product_accessories.product_id == product.id
     end
 
     test "create_product_accessories/1 with invalid data returns error changeset" do
       assert {:error, %Ecto.Changeset{}} = Assoc.create_product_accessories(@invalid_attrs)
     end
 
-    test "update_product_accessories/2 with valid data updates the product_accessories" do
-      product_accessories = product_accessories_fixture()
-      assert {:ok, %ProductAccessories{} = product_accessories} = Assoc.update_product_accessories(product_accessories, @update_attrs)
-      assert product_accessories.accessories_id == "7488a646-e31f-11e4-aace-600308960668"
-      assert product_accessories.product_id == "7488a646-e31f-11e4-aace-600308960668"
-    end
 
-    test "update_product_accessories/2 with invalid data returns error changeset" do
-      product_accessories = product_accessories_fixture()
-      assert {:error, %Ecto.Changeset{}} = Assoc.update_product_accessories(product_accessories, @invalid_attrs)
-      assert product_accessories == Assoc.get_product_accessories!(product_accessories.id)
-    end
 
-    test "delete_product_accessories/1 deletes the product_accessories" do
-      product_accessories = product_accessories_fixture()
+
+    test "delete_product_accessories/1 deletes the product_accessories", %{product: product, accessories: accessories} do
+      product_accessories = product_accessories_fixture(%{product_id: product.id, accessories_id: accessories.id})
       assert {:ok, %ProductAccessories{}} = Assoc.delete_product_accessories(product_accessories)
       assert_raise Ecto.NoResultsError, fn -> Assoc.get_product_accessories!(product_accessories.id) end
     end
 
-    test "change_product_accessories/1 returns a product_accessories changeset" do
-      product_accessories = product_accessories_fixture()
+    test "change_product_accessories/1 returns a product_accessories changeset", %{product: product, accessories: accessories} do
+      product_accessories = product_accessories_fixture(%{product_id: product.id, accessories_id: accessories.id})
       assert %Ecto.Changeset{} = Assoc.change_product_accessories(product_accessories)
+    end
+
+    defp init(_) do
+      {:ok, owner} = Account.create_owner(@owner_attrs)
+      {:ok, franchise} = Business.create_franchise(@franchise_attrs |> Enum.into(%{owner_id: owner.id}))
+
+      {:ok, product} = Inventory.create_products(@product_attrs |> Enum.into(%{franchise_id: franchise.id}))
+
+      {:ok, accessories} = Inventory.create_accessories(@accessory_attrs |> Enum.into(%{franchise_id: franchise.id}))
+      {:ok, accessories: accessories, product: product, franchise: franchise}
     end
   end
 end

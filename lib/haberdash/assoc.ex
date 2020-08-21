@@ -20,6 +20,7 @@ defmodule Haberdash.Assoc do
     Repo.all(ProductGroups)
   end
 
+
   @doc """
   Gets a single product_groups.
 
@@ -194,6 +195,16 @@ defmodule Haberdash.Assoc do
     |> ProductAccessories.changeset(attrs)
     |> Repo.insert()
   end
+
+  def get_product_accessories_by(opts) do
+    case Repo.get_by(ProductAccessories, opts) do
+      nil ->
+        {:error, :not_found}
+      product_accessories ->
+        {:ok, product_accessories}
+    end
+  end
+
 
   @doc """
   Updates a product_accessories.

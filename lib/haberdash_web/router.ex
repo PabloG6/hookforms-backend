@@ -36,19 +36,24 @@ defmodule HaberdashWeb.Router do
     resources "/product", ProductsController, except: [:new, :edit]
     resources "/collection", CollectionController, except: [:new, :edit]
     resources "/accessories", AccessoriesController, except: [:new, :edit]
-    resources "/product_accessories", ProductAccessoriesController, except: [:new, :edit]
 
 
   end
 
-  @doc """
-  modify which groups products belong to.
-  """
-  scope "/api/groups", HaberdashWeb do
+  scope "/api/group", HaberdashWeb do
     pipe_through [:api, :auth, :franchise]
-    post "/product/:product_id", ProductGroupsController, :create
+    post "/product/", ProductGroupsController, :create
     get "/product/:id", ProductGroupsController, :show
     delete "/product/:id", ProductGroupsController, :delete
+
+  end
+
+  scope "/api/assoc", HaberdashWeb do
+    pipe_through [:api, :auth, :franchise]
+    post "/product/:product_id/:accessories_id", ProductAccessoriesController, :create
+    get "/product/:product_id/:accessories_id", ProductAccessoriesController, :show
+    delete "/product/:product_id", ProductAccessoriesController, :delete
+
   end
 
 
