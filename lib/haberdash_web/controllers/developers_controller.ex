@@ -2,7 +2,7 @@ defmodule HaberdashWeb.DeveloperController do
   use HaberdashWeb, :controller
 
   alias Haberdash.Account.Developer
-
+  alias Haberdash.Account
   action_fallback HaberdashWeb.FallbackController
 
   def index(conn, _params) do

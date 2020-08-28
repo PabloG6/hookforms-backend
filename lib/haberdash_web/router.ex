@@ -56,6 +56,11 @@ defmodule HaberdashWeb.Router do
 
   end
 
+  scope "/api", HaberdashWeb do
+    pipe_through [:api]
+    resources "/customer", CustomerController, except: [:new, :edit]
+  end
+
 
 
 

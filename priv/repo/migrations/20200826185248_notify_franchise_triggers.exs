@@ -8,8 +8,11 @@ defmodule Haberdash.Repo.Migrations.NotifyFranchiseTriggers do
               current_row RECORD;
 
             BEGIN
-              IF(TG_OP = 'INSERT' or TG_OP='DELETE') THEN
+              IF(TG_OP = 'INSERT' or TG_OP='UPDATE') THEN
                 current_row := NEW;
+              ELSIF (TG_OP = 'DELETE') THEN
+                current_row := OLD;
+
               ELSE
                 current_row := OLD;
               END IF;

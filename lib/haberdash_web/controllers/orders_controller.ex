@@ -1,6 +1,6 @@
 defmodule HaberdashWeb.OrdersController do
   use HaberdashWeb, :controller
-
+  alias Haberdash.OrderServer
   alias Haberdash.Transactions
   alias Haberdash.Transactions.Orders
 
@@ -12,12 +12,10 @@ defmodule HaberdashWeb.OrdersController do
   end
 
   def create(conn, %{"orders" => orders_params}) do
-    with {:ok, %Orders{} = orders} <- Transactions.create_orders(orders_params) do
-      conn
-      |> put_status(:created)
-      |> put_resp_header("location", Routes.orders_path(conn, :show, orders))
-      |> render("show.json", orders: orders)
-    end
+  end
+
+  def create(conn, %{"id" => id, "orders" => orders_params}) do
+
   end
 
   def show(conn, %{"id" => id}) do
