@@ -45,8 +45,10 @@ defmodule Haberdash.MixProject do
       {:poison, "~> 4.0.1"},
       {:nebulex, "~> 2.0.0-rc"},
       {:decorator, "~> 1.3"},
-
+      {:ecto_enum, "~> 1.4.0"},
+      {:google_maps, "~> 0.11"},
       {:bcrypt_elixir, "~> 2.2.0"},
+      {:gproc, "~> 0.8.0"},
       {:guardian, "~> 2.0"},
       {:plug_cowboy, "~> 2.0"}
     ]
