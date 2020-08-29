@@ -1,8 +1,10 @@
-defmodule Haberdash.Workers.Orders do
+defmodule Haberdash.Transactions.OrdersWorker do
+  use GenServer
+
   alias Haberdash.Transactions.Orders
   alias Haberdash.Transactions
+
   require Logger
-  use GenServer
   @doc """
   Stores all incomplete orders in a map with randomly generated ids.
   """
@@ -22,24 +24,40 @@ defmodule Haberdash.Workers.Orders do
     {:via, :gproc, {:n, :l, id}}
   end
 
+
+  @spec create_order(pid::pid(), order::map()) :: {:ok, Ecto.UUID.t()}
+  def create_order(pid, order) do
+
+    GenServer.call(pid, {:create_order, order})
+  end
+
+  @spec update_order(pid:: pid(), id::Ecto.UUID.t(), order:: map()) :: any
+  def update_order(pid, id, order) do
+    GenServer.call(pid, {:update_order, id, order})
+  end
+
+  def delete_order(pid, id) do
+    GenServer.cast(pid, {:delete_order, id})
+  end
+  # SERVER STUFF
   @impl true
   def handle_call({:create_order, order}, _from, state) do
-    temp_id = Ecto.UUID.generate()
-    order = %{order | id: temp_id}
-    state = Map.put(state, temp_id, order)
-    {:reply, {:ok, temp_id}, state}
+    id = Ecto.UUID.generate()
+    order = %{order | id: id}
+    state = Map.put(state, id, Kernel.struct(Orders, order))
+    {:reply, {:ok, id}, state}
   end
 
   @impl true
-  def handle_call({:update_order, temp_id,order}, _from, state) do
-    state = Map.put(state, temp_id, order)
+  def handle_call({:update_order, id, order}, _from, state) do
+    state = Map.put(state, id, Kernel.struct(Orders, order))
     {:reply, :ok, state}
   end
 
 
   @impl true
-  def handle_cast({:delete_order, temp_id}, state) do
-    state = Map.delete(state, temp_id)
+  def handle_cast({:delete_order, id}, state) do
+    state = Map.delete(state, id)
     {:noreply, state}
   end
 

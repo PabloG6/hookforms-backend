@@ -1,4 +1,4 @@
-defmodule Haberdash.Registry.Orders do
+defmodule Haberdash.Transactions.OrderRegistry do
   use GenServer
   require Logger
   @doc """
@@ -39,9 +39,9 @@ defmodule Haberdash.Registry.Orders do
 
   def send(franchise_id, message) do
     case whereis_name(franchise_id) do
-      :undefined ->
+      {:error, :undefined} ->
         {:badarg, {franchise_id, message}}
-      pid ->
+      {:ok, pid} ->
         Kernel.send(pid, message)
         pid
 

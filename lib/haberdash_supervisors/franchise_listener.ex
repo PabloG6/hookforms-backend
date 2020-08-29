@@ -1,7 +1,7 @@
 defmodule Haberdash.Listener.Franchise do
   use GenServer
   alias Haberdash.Business
-  alias Haberdash.Supervisor
+  alias Haberdash.Transactions
   import Poison
   require Logger
   @channel "franchise_created"
@@ -12,7 +12,7 @@ defmodule Haberdash.Listener.Franchise do
 
     {:ok, ref} = Postgrex.Notifications.listen(pid, @channel)
     franchise_list = Business.list_franchises
-    for franchise <- franchise_list, do: Supervisor.Orders.start_child(franchise.id)
+    for franchise <- franchise_list, do: Transactions.OrderSupervisor.start_child(franchise.id)
     {:ok, {ref, pid, @channel, franchise_list}}
 
   end
@@ -38,11 +38,11 @@ defmodule Haberdash.Listener.Franchise do
   end
 
   def handle_payload(%{"type" => "INSERT", "id" => id}) do
-    Haberdash.Supervisor.Orders.start_child(id)
+    Haberdash.Transactions.OrderSupervisor.start_child(id)
   end
 
   def handle_payload(%{"type" => "DELETE", "id" => id}) do
-    Haberdash.Supervisor.Orders.terminate_child(id)
+    Haberdash.Transactions.OrderSupervisor.terminate_child(id)
   end
 
 
