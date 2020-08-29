@@ -49,11 +49,15 @@ defmodule Haberdash.Transactions do
       {:error, %Ecto.Changeset{}}
 
   """
-  def create_orders(attrs \\ %{}) do
-    %Orders{}
+  def create_orders(order, attrs \\ %{}) do
+
+    order
     |> Orders.changeset(attrs)
     |> Repo.insert()
   end
+
+
+
 
   @doc """
   Updates a orders.
@@ -101,4 +105,6 @@ defmodule Haberdash.Transactions do
   def change_orders(%Orders{} = orders, attrs \\ %{}) do
     Orders.changeset(orders, attrs)
   end
+
+
 end
