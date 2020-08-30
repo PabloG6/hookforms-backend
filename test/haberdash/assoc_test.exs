@@ -27,8 +27,7 @@ defmodule Haberdash.AssocTest do
     @product_attrs %{
       description: "some description",
       name: "some name",
-      price: "120.5",
-      price_id: "some price_id"
+      price: 9999,
     }
     @group_attrs %{description: "some description", name: "some name"}
     @invalid_attrs %{collection_id: nil, product_id: nil}
@@ -117,7 +116,7 @@ defmodule Haberdash.AssocTest do
     @product_attrs %{
       description: "some description",
       name: "some name",
-      price: 120.5,
+      price: 9999,
       price_id: "some price_id"
     }
     @accessory_attrs %{name: "Large Fries", description: "A large fries", price: 999, }

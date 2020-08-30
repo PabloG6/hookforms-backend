@@ -164,4 +164,79 @@ defmodule Haberdash.AccountTest do
       assert %Ecto.Changeset{} = Account.change_developer(developers)
     end
   end
+
+  describe "customer" do
+    alias Haberdash.Account.Customer
+
+    @valid_attrs %{address: "some address", coordinates: [], email_address: "some email_address", is_activated: true, is_email_confirmed: true, is_phone_number_confirmed: true, name: "some name", password: "some password", password_hash: "some password_hash"}
+    @update_attrs %{address: "some updated address", coordinates: [], email_address: "some updated email_address", is_activated: false, is_email_confirmed: false, is_phone_number_confirmed: false, name: "some updated name", password: "some updated password", password_hash: "some updated password_hash"}
+    @invalid_attrs %{address: nil, coordinates: nil, email_address: nil, is_activated: nil, is_email_confirmed: nil, is_phone_number_confirmed: nil, name: nil, password: nil, password_hash: nil}
+
+    def customer_fixture(attrs \\ %{}) do
+      {:ok, customer} =
+        attrs
+        |> Enum.into(@valid_attrs)
+        |> Account.create_customer()
+
+      customer
+    end
+
+    test "list_customer/0 returns all customer" do
+      customer = customer_fixture()
+      assert Account.list_customer() == [customer]
+    end
+
+    test "get_customer!/1 returns the customer with given id" do
+      customer = customer_fixture()
+      assert Account.get_customer!(customer.id) == customer
+    end
+
+    test "create_customer/1 with valid data creates a customer" do
+      assert {:ok, %Customer{} = customer} = Account.create_customer(@valid_attrs)
+      assert customer.address == "some address"
+      assert customer.coordinates == []
+      assert customer.email_address == "some email_address"
+      assert customer.is_activated == true
+      assert customer.is_email_confirmed == true
+      assert customer.is_phone_number_confirmed == true
+      assert customer.name == "some name"
+      assert customer.password == "some password"
+      assert customer.password_hash == "some password_hash"
+    end
+
+    test "create_customer/1 with invalid data returns error changeset" do
+      assert {:error, %Ecto.Changeset{}} = Account.create_customer(@invalid_attrs)
+    end
+
+    test "update_customer/2 with valid data updates the customer" do
+      customer = customer_fixture()
+      assert {:ok, %Customer{} = customer} = Account.update_customer(customer, @update_attrs)
+      assert customer.address == "some updated address"
+      assert customer.coordinates == []
+      assert customer.email_address == "some updated email_address"
+      assert customer.is_activated == false
+      assert customer.is_email_confirmed == false
+      assert customer.is_phone_number_confirmed == false
+      assert customer.name == "some updated name"
+      assert customer.password == "some updated password"
+      assert customer.password_hash == "some updated password_hash"
+    end
+
+    test "update_customer/2 with invalid data returns error changeset" do
+      customer = customer_fixture()
+      assert {:error, %Ecto.Changeset{}} = Account.update_customer(customer, @invalid_attrs)
+      assert customer == Account.get_customer!(customer.id)
+    end
+
+    test "delete_customer/1 deletes the customer" do
+      customer = customer_fixture()
+      assert {:ok, %Customer{}} = Account.delete_customer(customer)
+      assert_raise Ecto.NoResultsError, fn -> Account.get_customer!(customer.id) end
+    end
+
+    test "change_customer/1 returns a customer changeset" do
+      customer = customer_fixture()
+      assert %Ecto.Changeset{} = Account.change_customer(customer)
+    end
+  end
 end
