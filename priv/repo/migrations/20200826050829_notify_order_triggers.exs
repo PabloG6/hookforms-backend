@@ -1,7 +1,7 @@
 defmodule Haberdash.Repo.Migrations.NotifyOrderTriggers do
   use Ecto.Migration
 
-  def change do
+  def up do
     execute("CREATE or REPLACE FUNCTION notify_order_changes()
               RETURNS trigger AS $trigger$
               DECLARE
@@ -29,5 +29,10 @@ defmodule Haberdash.Repo.Migrations.NotifyOrderTriggers do
           AFTER INSERT OR UPDATE OR DELETE ON orders FOR EACH ROW
           EXECUTE PROCEDURE notify_order_changes()")
 
+  end
+
+  def down do
+    execute "DROP TRIGGER IF EXISTS order_changes_trg on orders;"
+    execute "DROP FUNCTION IF EXISTS notify_order_changes;"
   end
 end
