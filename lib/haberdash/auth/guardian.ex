@@ -3,7 +3,7 @@ defmodule Haberdash.Auth.Guardian do
   require Logger
   alias Haberdash.{Account}
 
-  def subject_for_token(%Account.Owner{id: id} = owner, _claims) do
+  def subject_for_token(%Account.Owner{id: id}, _claims) do
     Logger.info("creating subject for token with owner id: #{id}")
     {:ok, "Owner:#{id}"}
   end

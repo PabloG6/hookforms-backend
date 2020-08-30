@@ -5,7 +5,7 @@ defmodule Haberdash.Auth.ErrorHandler do
 
   @impl Guardian.Plug.ErrorHandler
 
-  def auth_error(conn, {type, reason}, _opts) do
+  def auth_error(conn, {type, _reason}, _opts) do
     Logger.info("An authentication error has occured type: #{to_string(type)}")
 
     conn
