@@ -22,12 +22,12 @@ defmodule Haberdash.Plug.Franchise do
   end
 
   defp resource(%Account.Owner{id: id}) do
+    Logger.info("Owner found with owner id: #{id}")
     Business.get_franchise_by(owner_id: id)
   end
 
-  defp resource(%Account.Developer{owner_id: id} = developer) do
+  defp resource(%Account.Developer{owner_id: id}) do
     Logger.info("Developer found with owner id: #{id}")
-    Kernel.inspect(developer)
     Business.get_franchise_by(owner_id: id)
 
   end

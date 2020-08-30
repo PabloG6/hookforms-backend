@@ -36,7 +36,9 @@ defmodule Haberdash.Plug.ApiKey do
 
   defp get_resource(%Plug.Conn{} = conn) do
     [id | _] = get_req_header(conn, @auth_header)
+    #Use get_developer
     developer = Account.get_developer!(id)
+    :ok = Auth.Cache.put(id, developer)
     {:ok, developer}
   rescue
     Ecto.NoResultsError ->
