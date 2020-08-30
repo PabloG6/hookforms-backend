@@ -1,9 +1,8 @@
 defmodule Haberdash.Plug.ApiKey do
   import Plug.Conn
-  @auth_header "HaberDash-Api-Key"
-  @auth_table_name :haberdash_api_key
-  alias Haberdash.{Account, Business}
-  alias Haberdash.Repo
+  @auth_header "Haberdash-Api-Key"
+  alias Haberdash.{Account, Auth}
+  use Haberdash.Messages
   def init(options), do: options
 
   def call(conn, _opts) do
@@ -12,31 +11,36 @@ defmodule Haberdash.Plug.ApiKey do
   end
 
   defp authenticate_header(%Plug.Conn{} = conn) do
-    [head | _tail] = get_req_header(conn, @auth_header)
-    # check if header is present in the database.
-    with [{_key, {_developer, _owner, _franchise}} | _] <- :ets.lookup(@auth_table_name, head) do
-      conn
-    else
-      _ ->
-        # check if api key exists in the database
-        with {:ok, developer} <- Account.get_developer_by(api_key: head) do
-          # retrieve the owner as well.
-          %Account.Owner{} = owner = Repo.preload(developer, :owner)
-          %Business.Franchise{} = franchise = Repo.preload(owner, :franchise)
-          :ets.insert(@auth_table_name, {head, {developer, owner, franchise}})
-        else
-          {:error, :developer_not_found} ->
+    with [key | _] <- get_req_header(conn, @auth_header),
+          {:ok, _} <- get_resource(key) do
             conn
-            |> resp(
-              :not_found,
-              Poison.encode!(%{
-                code: :key_not_found,
-                message:
-                  "Api Key is not found, please register a developer account to generate a new api key."
-              })
-            )
-            |> send_resp()
-        end
+          else
+            {:error, :not_found} ->
+              get_resource(conn)
+            _ ->
+              conn
+
+
+
     end
+  end
+
+  defp get_resource(id) when is_binary(id) do
+    case Auth.Cache.get(id) do
+      nil ->
+        {:error, :not_found}
+      %Auth.ApiKey{} = api_key ->
+        {:ok, api_key }
+    end
+  end
+
+  defp get_resource(%Plug.Conn{} = conn) do
+    [id | _] = get_req_header(conn, @auth_header)
+    developer = Account.get_developer!(id)
+    {:ok, developer}
+  rescue
+    Ecto.NoResultsError ->
+      conn
+      |> send_resp(:unauthorized, Poison.encode!(%{code: :unauthorized, message: @unauthorized_key}))
   end
 end
