@@ -37,6 +37,7 @@ defmodule Haberdash.Auth do
   """
   def get_api_key!(id), do: Repo.get!(ApiKey, id)
 
+  def get_api_key_by!(key), do: Repo.get_by!(ApiKey, [api_key: key])
   @doc """
   Creates a api_key.
 
