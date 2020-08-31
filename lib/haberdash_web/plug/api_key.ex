@@ -3,6 +3,7 @@ defmodule Haberdash.Plug.ApiKey do
   @auth_header "Haberdash-Api-Key"
   alias Haberdash.{Account, Auth}
   use Haberdash.Messages
+  import Nebulex.Time
   def init(options), do: options
 
   def call(conn, _opts) do
@@ -38,7 +39,7 @@ defmodule Haberdash.Plug.ApiKey do
     [id | _] = get_req_header(conn, @auth_header)
     #Use get_developer
     developer = Account.get_developer!(id)
-    :ok = Auth.Cache.put(id, developer)
+    :ok = Auth.Cache.put(id, developer, ttl: expiry_time(24, :hours))
     {:ok, developer}
   rescue
     Ecto.NoResultsError ->
