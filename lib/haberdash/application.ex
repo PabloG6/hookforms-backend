@@ -6,6 +6,7 @@ defmodule Haberdash.Application do
   use Application
 
   def start(_type, _args) do
+    :ets.new(:haberdash_api_key, [:set, :protected, :named_table])
     children = [
       # Start the Ecto repository
       Haberdash.Repo,
@@ -15,7 +16,9 @@ defmodule Haberdash.Application do
       {Phoenix.PubSub, name: Haberdash.PubSub},
       # Start the Endpoint (http/https)
       HaberdashWeb.Endpoint,
-
+      {Haberdash.Transactions.OrderSupervisor, name: Haberdash.Transactions.OrderSupervisor, strategy: :one_for_one},
+      {Haberdash.Listener.Franchise, name: Haberdash.Listener.Franchise, },
+      Haberdash.Account.Cache,
       Haberdash.Auth.Cache
       # Start a worker by calling: Haberdash.Worker.start_link(arg)
       # {Haberdash.Worker, arg}
