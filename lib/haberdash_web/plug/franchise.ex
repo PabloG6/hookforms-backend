@@ -6,8 +6,6 @@ defmodule Haberdash.Plug.Franchise do
 
   def call(conn, _opts) do
 
-
-
     with owner when not is_nil(owner) <- Auth.Guardian.Plug.current_resource(conn),
         {:ok, franchise} <- resource(owner) do
         put_private(conn, :franchise, franchise)
