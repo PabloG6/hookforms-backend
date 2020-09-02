@@ -62,7 +62,8 @@ defmodule Haberdash.Transactions.Orders do
   defp convert_item(%{item_id: item_id, item_type: :products} = item) do
     try do
       product = Inventory.get_products!(item_id)
-      map = for {k, v} <- Map.from_struct(product), into: %{}, do: {Atom.to_string(k), v}
+      map = (for {k, v} <- Map.from_struct(product), into: %{}, do: {Atom.to_string(k), v}) |> Map.drop(["accessories"])
+      Logger.info("map when converted to string map #{inspect(map)}")
       Maptu.struct!(Haberdash.Transactions.OrderItems, map)
     rescue
       Ecto.NoResultsError ->
