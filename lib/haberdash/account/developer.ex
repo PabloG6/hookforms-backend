@@ -4,7 +4,7 @@ defmodule Haberdash.Account.Developer do
   alias Haberdash.{Account}
   @primary_key {:id, :binary_id, autogenerate: true}
   schema "developer" do
-    field :api_key, :string
+    has_many :api_key, Haberdash.Auth.ApiKey
     field :email, :string
     field :name, :string
     field :password_hash, :string
@@ -17,8 +17,8 @@ defmodule Haberdash.Account.Developer do
   @doc false
   def changeset(developers, attrs) do
     developers
-    |> cast(attrs, [:name, :email, :password, :api_key, :owner_id])
-    |> validate_required([:name, :email, :password, :api_key, :owner_id])
+    |> cast(attrs, [:name, :email, :password, :owner_id])
+    |> validate_required([:name, :email, :password, :owner_id])
     |> put_password_hash
   end
 

@@ -9,13 +9,21 @@ defmodule Haberdash.Auth.Guardian do
   end
 
   def subject_for_token(%Account.Developer{id: id}, _claims) do
-    Logger.info("subject_for_token being called for developer")
+    Logger.info("creating subject_for_token being called for token with developer id: #{id}")
     {:ok, "Developer:#{id}"}
   end
 
   def resource_from_claims(%{"sub" => "Owner:" <> id}) do
     owner = Account.get_owner!(id)
     {:ok, owner}
+  rescue
+    Ecto.NoResultsError -> {:error, :resource_not_found}
+  end
+
+  def resource_from_claims(%{"sub" => "Developer:" <> id}) do
+    Logger.info("resource_from_claims retrieving developer: #{id}")
+    developer = Account.get_developer!(id)
+    {:ok, developer}
   rescue
     Ecto.NoResultsError -> {:error, :resource_not_found}
   end

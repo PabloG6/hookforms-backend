@@ -44,6 +44,13 @@ defmodule HaberdashWeb.OwnerController do
     render(conn, "show.json", owner: owner)
   end
 
+  @doc """
+  send an invite code to a developer's email.
+  """
+  def invite(_, _) do
+
+  end
+
   def update(conn, %{"id" => id, "owner" => owner_params}) do
     owner = Account.get_owner!(id)
     with {:ok, %Owner{} = owner} <- Account.update_owner(owner, owner_params) do

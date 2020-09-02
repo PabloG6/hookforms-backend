@@ -3,7 +3,7 @@ defmodule Haberdash.Business.Franchise do
   import Ecto.Changeset
   alias Haberdash.{Account, Inventory, Groups}
   @primary_key {:id, :binary_id, autogenerate: true}
-
+  @derive {Poison.Encoder, except: [:__meta__, :__struct__]}
   schema "franchise" do
     field :description, :string
     field :name, :string

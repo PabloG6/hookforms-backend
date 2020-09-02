@@ -28,10 +28,10 @@ defmodule Haberdash.Inventory do
 
   ## Examples
 
-      iex> get_products!(123)
+      iex> get_products!("a4f21755-235a-4330-b8af-933c362ea294")
       %Products{}
 
-      iex> get_products!(456)
+      iex> get_products!("070e8696-fad5-4698-8808-c9ce8b47197d")
       ** (Ecto.NoResultsError)
 
   """

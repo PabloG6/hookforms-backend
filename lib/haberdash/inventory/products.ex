@@ -4,6 +4,8 @@ defmodule Haberdash.Inventory.Products do
   alias Haberdash.{Business, Assoc, Groups, Inventory}
   @primary_key {:id, :binary_id, autogenerate: true}
   @foreign_key_type :binary_id
+  @derive {Poison.Encoder, except: [:__struct__, :__meta__,]}
+
   schema "product" do
     field :description, :string
     field :name, :string

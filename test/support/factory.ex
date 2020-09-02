@@ -1,5 +1,5 @@
-defmodule Haberdash.DbFactory do
-  alias Haberdash.{Account, Business, Inventory}
+defmodule Haberdash.Factory do
+  alias Haberdash.{Account, Business, Inventory, Auth}
   use ExMachina.Ecto, repo: Haberdash.Repo
   def owner_factory do
     %Account.Owner{
@@ -7,20 +7,30 @@ defmodule Haberdash.DbFactory do
       email: Faker.Internet.email(),
       password: Ecto.UUID.generate(),
       phone_number: "+#{Faker.Phone.EnUs.phone()}",
-
-
     }
   end
 
-  def franchise_factory do
+  def developer_factory do
     owner = insert(:owner)
-    %Business.Franchise{
+    %Account.Developer{
+      name: Faker.Person.name(),
+      email: Faker.Internet.email(),
+      password: Ecto.UUID.generate(),
+      owner_id: owner.id
+    }
+  end
+
+  def franchise_factory(attrs \\ %{}) do
+    owner = insert(:owner)
+    franchise = %Business.Franchise{
       name: Faker.Company.name(),
       description: Faker.Company.catch_phrase(),
       phone_number: "+#{Faker.Phone.EnUs.phone()}",
-      owner: owner.id
+      owner_id: owner.id
 
     }
+
+    merge_attributes(franchise, attrs)
   end
 
   def product_factory do
@@ -44,5 +54,15 @@ defmodule Haberdash.DbFactory do
 
   end
 
+
+  def apikey_factory(attrs \\ %{}) do
+    developer = insert(:developer)
+    api_key = %Auth.ApiKey{
+      developer_id: developer.id,
+      api_key: UUID.uuid4(:hex)
+    }
+
+    merge_attributes(api_key, attrs)
+  end
 
 end

@@ -3,7 +3,7 @@ defmodule Haberdash.Account.Owner do
   import Ecto.Changeset
   alias Haberdash.{Business}
   @primary_key {:id, :binary_id, autogenerate: true}
-
+  @derive {Poison.Encoder, except: [:__struct__, :__meta__]}
   schema "owner" do
     field :email, :string
     field :name, :string

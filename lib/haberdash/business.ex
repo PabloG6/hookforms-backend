@@ -5,7 +5,7 @@ defmodule Haberdash.Business do
 
   import Ecto.Query, warn: false
   alias Haberdash.Repo
-  alias Haberdash.Auth.Cache
+  alias Haberdash.Account.Cache
   use Nebulex.Caching
 
 

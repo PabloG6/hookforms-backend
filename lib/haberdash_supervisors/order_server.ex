@@ -25,7 +25,7 @@ defmodule Haberdash.Transactions.OrdersWorker do
   end
 
 
-  @spec create_order(pid::pid(), order::map()) :: {:ok, Ecto.UUID.t()}
+  @spec create_order(pid::pid(), order::map()) :: {:ok, Ecto.UUID.t(), map()}
   def create_order(pid, order) do
 
     GenServer.call(pid, {:create_order, order})
@@ -41,11 +41,21 @@ defmodule Haberdash.Transactions.OrdersWorker do
   end
   # SERVER STUFF
   @impl true
-  def handle_call({:create_order, order}, _from, state) do
+  def handle_call({:create_order, params}, _from, state) do
+
     id = Ecto.UUID.generate()
-    order = %{order | id: id}
-    state = Map.put(state, id, Kernel.struct(Orders, order))
-    {:reply, {:ok, id}, state}
+    Logger.info("handle_call, params: #{inspect(params)}")
+    # order = Kernel.struct(Orders, params)
+    # items = Map.get(params, "items") || Map.get(params, :items)
+    # item_list = Orders.create_order_list(items)
+    # Logger.info("handle_call order_list: #{inspect(item_list)}")
+    # order = %{order | id: id, items: item_list}
+    # state = Map.put(state, id, order)
+    # Logger.info("current state #{inspect(state)}")
+
+    order = Maptu.struct!(Orders, params)
+    order = Orders.create_order_list(order)
+    {:reply, {:ok, order}, state}
   end
 
   @impl true

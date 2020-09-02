@@ -63,7 +63,6 @@ defmodule HaberdashWeb.ProductAccessoriesControllerTest do
     test "renders errors when data is invalid", %{conn: conn, product: product, accessories: accessories} do
       assert_error_sent 404, fn ->
         post(conn, Routes.product_accessories_path(conn, :create, "25c0b427-84cf-43fa-905b-d1bcf4c577d9", "8c550503-c008-4794-b6b0-30e98de86c09"))
-
       end
     end
   end

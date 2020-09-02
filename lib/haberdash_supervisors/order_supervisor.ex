@@ -24,7 +24,7 @@ defmodule Haberdash.Transactions.OrderSupervisor do
 
   @spec terminate_child(binary) :: :ok | {:error, :not_found}
   def terminate_child(id) do
-    case Haberdash.Registry.Orders.whereis_name(id) do
+    case Haberdash.Transactions.OrderRegistry.whereis_name(id) do
       {:ok, pid} ->
         DynamicSupervisor.terminate_child(__MODULE__, pid)
       error  -> error

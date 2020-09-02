@@ -45,28 +45,12 @@ defmodule Haberdash.TransactionsTest do
 
 
 
-    test "list_orders/0 returns all orders" do
-      orders = orders_fixture()
-      assert Transactions.list_orders() == [orders]
-    end
 
-    test "get_orders!/1 returns the orders with given id" do
-      orders = orders_fixture()
-      assert Transactions.get_orders!(orders.id) == orders
-    end
-
-    test "create_orders/1 with valid data creates a orders" do
-      assert {:ok, orders} = Transactions.create_orders(@valid_attrs)
-    end
-
-    test "create_orders/1 with invalid data returns error changeset" do
-      assert {:error, %Ecto.Changeset{}} = Transactions.create_orders(@invalid_attrs)
-    end
 
     test "create_changeset/1 and update_changeset/1 with valid order changeset", %{product: product, franchise: franchise, accessories: accessories} do
       accessories_item = %{name: accessories.name, description: accessories.description, price: accessories.price, accessories_id: accessories.id}
       items = [%{product_id: product.id, name: product.name, description: product.description, price: product.price, accessories: [accessories_item]}]
-      assert  %Ecto.Changeset{valid?: true, changes: _inital_changes} = changeset =
+      assert  %Ecto.Changeset{valid?: true, changes: _} = changeset =
               Transactions.Orders.create_changeset(%Transactions.Orders{}, %{franchise_id: franchise.id, items: items})
 
       {:ok, product_2} = Inventory.create_products(%{name: "Cookie Special", description: "An assortment of 24 cookies", price: 1999, franchise_id: franchise.id})
@@ -79,31 +63,15 @@ defmodule Haberdash.TransactionsTest do
 
 
 
-    test "update_orders/2 with valid data updates the orders" do
-      orders = orders_fixture()
-      assert {:ok, %Orders{} = orders} = Transactions.update_orders(orders, @update_attrs)
-      assert orders.customer_id == "some updated customer_id"
-      assert orders.drop_off_address == "some updated drop_off_address"
-      assert orders.drop_off_location == []
-      assert orders.franchise_id == "some updated franchise_id"
-      assert orders.items == []
+
+    test "submit_orders/1 with valid data", %{} do
+
     end
 
-    test "update_orders/2 with invalid data returns error changeset" do
-      orders = orders_fixture()
-      assert {:error, %Ecto.Changeset{}} = Transactions.update_orders(orders, @invalid_attrs)
-      assert orders == Transactions.get_orders!(orders.id)
-    end
 
-    test "delete_orders/1 deletes the orders" do
-      orders = orders_fixture()
-      assert {:ok, %Orders{}} = Transactions.delete_orders(orders)
-      assert_raise Ecto.NoResultsError, fn -> Transactions.get_orders!(orders.id) end
-    end
 
-    test "change_orders/1 returns a orders changeset" do
-      orders = orders_fixture()
-      assert %Ecto.Changeset{} = Transactions.change_orders(orders)
-    end
+
+
+
   end
 end

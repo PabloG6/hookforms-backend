@@ -7,7 +7,7 @@ defmodule Haberdash.Account do
   alias Haberdash.Repo
   use Nebulex.Caching
   alias Haberdash.Account.Developer
-  alias Haberdash.Auth.Cache
+  alias Haberdash.{Account}
   @doc """
   Returns the list of developer.
 
@@ -165,7 +165,7 @@ defmodule Haberdash.Account do
       {:error, %Ecto.Changeset{}}
 
   """
-  @decorate cache_put(cache: Cache, key: {Owner, owner.id}, match: &match_update_owner/1)
+  @decorate cache_put(cache: Account.Cache, key: {Owner, owner.id}, match: &match_update_owner/1)
   def update_owner(%Owner{} = owner, attrs) do
      owner
     |> Owner.changeset(attrs)
@@ -188,7 +188,7 @@ defmodule Haberdash.Account do
       {:error, %Ecto.Changeset{}}
 
   """
-  @decorate cache_evict(cache: Cache, key: {Owner, owner.id}, match: &match_delete_owner/1)
+  @decorate cache_evict(cache: Account.Cache, key: {Owner, owner.id}, match: &match_delete_owner/1)
   def delete_owner(%Owner{} = owner) do
     Repo.delete(owner)
   end

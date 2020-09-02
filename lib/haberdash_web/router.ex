@@ -9,17 +9,23 @@ defmodule HaberdashWeb.Router do
     plug Haberdash.Auth.Pipeline
   end
 
+  pipeline :api_key do
+    plug Haberdash.Plug.ApiKey
+  end
+
   pipeline :franchise do
     plug Haberdash.Auth.Pipeline
     plug Haberdash.Plug.Franchise
+  end
+
+  pipeline :api_key_franchise do
+    plug Haberdash.Plug.ApiKeyFranchise
   end
 
   scope "/api", HaberdashWeb do
     pipe_through :api
     post "/owner", OwnerController, :create
     post "/login", OwnerController, :login
-
-
   end
 
   scope "/api", HaberdashWeb do
@@ -33,11 +39,15 @@ defmodule HaberdashWeb.Router do
 
   scope "/api", HaberdashWeb do
     pipe_through [:api, :auth, :franchise]
+    resources "/keys", ApiKeyController, except: [:new, :edit, :index, :update]
+    get "/keys/developer/:id", ApiKeyController, :index
+  end
+
+  scope "/api", HaberdashWeb do
+    pipe_through [:api, :auth, :franchise]
     resources "/product", ProductsController, except: [:new, :edit]
     resources "/collection", CollectionController, except: [:new, :edit]
     resources "/accessories", AccessoriesController, except: [:new, :edit]
-
-
   end
 
   scope "/api/group", HaberdashWeb do
@@ -61,6 +71,10 @@ defmodule HaberdashWeb.Router do
     resources "/customer", CustomerController, except: [:new, :edit]
   end
 
+  scope "/api", HaberdashWeb do
+    pipe_through [:api, :api_key, :api_key_franchise]
+    resources "/orders", OrdersController,  except: [:new, :edit]
+  end
 
 
 

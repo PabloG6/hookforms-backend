@@ -26,6 +26,8 @@ defmodule Haberdash.MixProject do
 
   # Specifies which paths to compile per environment.
   defp elixirc_paths(:test), do: ["lib", "test/support"]
+  defp elixirc_paths(:dev), do: ["lib", "test/support"]
+
   defp elixirc_paths(_), do: ["lib"]
 
   # Specifies your project dependencies.
@@ -50,7 +52,12 @@ defmodule Haberdash.MixProject do
       {:bcrypt_elixir, "~> 2.2.0"},
       {:gproc, "~> 0.8.0"},
       {:guardian, "~> 2.0"},
-      {:plug_cowboy, "~> 2.0"}
+      {:plug_cowboy, "~> 2.0"},
+      {:ex_machina, "~> 2.4"},
+      {:faker, "~> 0.14.0"},
+      {:uuid, "~> 1.1.8"},
+      {:exconstructor, "~> 1.1.0"},
+      {:maptu, "~> 1.0"}
     ]
   end
 
