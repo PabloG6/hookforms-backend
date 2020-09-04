@@ -1,5 +1,5 @@
 defmodule Haberdash.Factory do
-  alias Haberdash.{Account, Business, Inventory, Auth}
+  alias Haberdash.{Account, Business, Inventory, Auth, Assoc}
   use ExMachina.Ecto, repo: Haberdash.Repo
   def owner_factory do
     %Account.Owner{
@@ -63,6 +63,17 @@ defmodule Haberdash.Factory do
     }
 
     merge_attributes(api_key, attrs)
+  end
+
+  def product_accessories_factory(attrs \\ %{}) do
+    product = insert(:product)
+    accessories = insert(:accessories)
+    product_accessories = %Assoc.ProductAccessories{
+      product_id: product.id,
+      accessories_id: accessories.id
+    }
+
+    merge_attributes(product_accessories, attrs)
   end
 
 end
