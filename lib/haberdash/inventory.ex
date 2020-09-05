@@ -21,6 +21,8 @@ defmodule Haberdash.Inventory do
     Repo.all(from p in Products, where: p.franchise_id == ^id)
   end
 
+  def list_product(), do: Repo.all(Products)
+
   @doc """
   Gets a single products.
 
