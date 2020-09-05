@@ -3,7 +3,7 @@ defmodule Haberdash.Repo.Migrations.CreateProductGroups do
   @primary_key {:id, :binary_id, autogenerate: true}
   def change do
     create table(:product_groups, primary_key: false) do
-      add :product_id, references(:product, type: :binary_id)
+      add :product_id, references(:product, type: :string)
       add :collection_id, references(:collection, type: :binary_id)
       add :id, :binary_id, primary_key: true
       timestamps()
