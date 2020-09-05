@@ -1,6 +1,6 @@
 defmodule Haberdash.Transactions.OrdersWorker do
   use GenServer
-
+  use Haberdash.MapHelpers
   alias Haberdash.Transactions.Orders
   alias Haberdash.Transactions
 
@@ -39,24 +39,25 @@ defmodule Haberdash.Transactions.OrdersWorker do
   def delete_order(pid, id) do
     GenServer.cast(pid, {:delete_order, id})
   end
+
+  def cast_map(map), do: stringify_map(map)
+  def is_naive_date_time?(%NaiveDateTime{} = date), do: date
+
   # SERVER STUFF
   @impl true
   def handle_call({:create_order, params}, _from, state) do
 
-    id = Ecto.UUID.generate()
-    Logger.info("handle_call, params: #{inspect(params)}")
-    # order = Kernel.struct(Orders, params)
-    # items = Map.get(params, "items") || Map.get(params, :items)
-    # item_list = Orders.create_order_list(items)
-    # Logger.info("handle_call order_list: #{inspect(item_list)}")
-    # order = %{order | id: id, items: item_list}
-    # state = Map.put(state, id, order)
-    # Logger.info("current state #{inspect(state)}")
-
-    order = Maptu.struct!(Orders, params)
+    id = Ecto.UUID.generate
+    order = stringify_map(params, 0)
     order = Orders.create_order_list(order)
+
+    state = Map.put(state, id, Map.put(order, "id" , id))
+
     {:reply, {:ok, order}, state}
   end
+
+
+
 
   @impl true
   def handle_call({:update_order, id, order}, _from, state) do
