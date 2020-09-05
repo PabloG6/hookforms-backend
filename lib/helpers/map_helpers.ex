@@ -2,21 +2,15 @@ defmodule Haberdash.MapHelpers do
   defmacro __using__(_opts) do
     quote do
       # helper functions
+      require Logger
+
       def stringify_map(map) when is_map(map), do: stringify_map(map, 0)
 
-      defp stringify_map(map, 0 = depth) when is_map(map) do
-        for {k, v} <- map, into: %{} do
-          {safe_atom_to_string(k), stringify_map(v, depth + 1)}
-        end
+      defp stringify_map(%NaiveDateTime{} = map, _) do
+        map
       end
-
-      defp stringify_map(map, 1 = depth) when is_map(map) do
-        for {k, v} <- map, into: %{} do
-          {safe_atom_to_string(k), stringify_map(v, depth + 1)}
-        end
-      end
-
-      defp stringify_map(map, 2 = depth) when is_map(map) do
+      defp stringify_map(map, depth) when is_map(map) and depth < 2 do
+        Logger.info("map: #{inspect(map)} depth: #{depth}")
         for {k, v} <- map, into: %{} do
           {safe_atom_to_string(k), stringify_map(v, depth + 1)}
         end
