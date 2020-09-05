@@ -205,6 +205,9 @@ defmodule Haberdash.Assoc do
     end
   end
 
+  def get_product_accessories_by!(opts), do: Repo.get_by!(ProductAccessories, opts)
+
+
 
   @doc """
   Updates a product_accessories.
