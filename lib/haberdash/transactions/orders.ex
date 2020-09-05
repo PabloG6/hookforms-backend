@@ -1,9 +1,11 @@
 
 defmodule Haberdash.Transactions.Orders do
   use Ecto.Schema
+  use Haberdash.MapHelpers
   import Ecto.Changeset
   require Logger
-  alias Haberdash.{Business, Inventory, Navigation, Transactions}
+  alias Haberdash.{Business, Inventory, Navigation, Transactions, Assoc}
+  alias Haberdash.Repo
   @primary_key {:id, :binary_id, autogenerate: true}
   @derive {Poison.Encoder, except: [:__struct__, :__meta__, :franchise]}
   @foreign_key_type :binary_id
@@ -45,53 +47,57 @@ defmodule Haberdash.Transactions.Orders do
   creates a human readable list of items from inventory based on information in the database.
   """
 
-  def create_order_list(%{items: items} = orders) when is_map(orders) do
-    Logger.info("create order list items: #{inspect(items)}")
-    %{orders | items: Enum.map(items, &find_item/1)}
 
+  def create_order_list(%{"items" => items} = orders) when is_map(orders) do
+    %{orders | "items" => Enum.map(items, &create_order/1) }
 
 
   end
 
-  defp find_item(item) do
-    Logger.info "find item item #{inspect(item)}"
-    struct = Maptu.struct!(Transactions.OrderItems, item)
-    Logger.info "find_item struct #{inspect(struct)}"
-    convert_item(struct)
-  end
-  defp convert_item(%{item_id: item_id, item_type: :products} = item) do
-    try do
-      product = Inventory.get_products!(item_id)
-      map = (for {k, v} <- Map.from_struct(product), into: %{}, do: {Atom.to_string(k), v}) |> Map.drop(["accessories"])
-      Logger.info("map when converted to string map #{inspect(map)}")
-      Maptu.struct!(Haberdash.Transactions.OrderItems, map)
-    rescue
-      Ecto.NoResultsError ->
-        %{item | message: "No accessory or product found that matches this item_id: #{item_id}"}
-    end
+  defp create_order(%{"id" => "prod_" <> id, "accessories" => [_ | _] = accessories} = map) when is_map(map) do
+    product = Inventory.get_products!(id)
+    stringify_map(product) |> Map.put("accessories", Enum.map(accessories, fn accessories -> create_order(id, accessories) end))
+  rescue Ecto.NoResultsError ->
+    %{"message" => "this id doesn't match any product or accessory in inventory"}
   end
 
-  defp convert_item(%{item_type: :accessories, item_id: item_id} = item) do
-    try do
-      product = Inventory.get_accessories!(item_id)
-      map = Map.from_struct(product) |> Map.put(:item_id, item_id)
-      Transactions.OrderItems |> Kernel.struct(map)
-    rescue
-      Ecto.NoResultsError ->
-        %{item | message: "No accessory or product found that matches this item_id: #{item_id}"}
-    end
+  defp create_order(%{"id" => "prod_" <> id} = map) when is_map(map) do
+    Inventory.get_products!(id) |> stringify_map
+
+  rescue Ecto.NoResultsError ->
+    %{"message" => "this id doesn't match any product or accessory in inventory"}
   end
 
-  # defp convert_item(%{item_type: item_type} = item) do
-  #   %{item | message: "item_type doesn't match specified item type options #{Atom.to_string(item_type)}"}
-  # end
+
+  defp create_order(%{"id" => "acc_" <> id} = map) when is_map(map) do
+    Inventory.get_accessories!(id) |> stringify_map
+
+  rescue Ecto.NoResultsError ->
+    %{"message" => "this id doesn't match any product or accessory in your inventory"}
+  end
+
+
+  defp create_order(_), do: %{"message" => "incorrect format for id"}
+
+  defp create_order(prod_id, %{"id" => "acc_" <> id}) do
+    %{accessories: accessories} = Assoc.get_product_accessories_by!([product_id: prod_id, accessories_id: id]) |> Repo.preload([:accessories])
+     stringify_map(accessories)
+  rescue
+    Ecto.NoResultsError ->
+      %{"message" => "this accessory id isn't registered with the parent product"}
+  end
+
+
+
+
+
 
 end
 
 
 
 
-defmodule Haberdash.Transactions.Accessories do
+defmodule Haberdash.Transactions.AccessoriesItem do
   use Ecto.Schema
   import Ecto.Changeset
   alias Haberdash.{Inventory}
@@ -101,6 +107,7 @@ defmodule Haberdash.Transactions.Accessories do
     field :name, :string
     field :item_id, :binary_id
     field :description, :string
+    field :message, :string, virtual: true
     field :price, :integer
   end
 
