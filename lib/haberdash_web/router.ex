@@ -2,6 +2,7 @@ defmodule HaberdashWeb.Router do
   use HaberdashWeb, :router
   use Plug.ErrorHandler
   alias Haberdash.Exception
+  require Logger
   import Poison
   pipeline :api do
     plug :accepts, ["json"]
@@ -76,6 +77,8 @@ defmodule HaberdashWeb.Router do
   scope "/api", HaberdashWeb do
     pipe_through [:api, :api_key, :api_key_franchise]
     resources "/orders", OrdersController,  except: [:new, :edit]
+    post "/orders/:id", OrdersController, :create
+
   end
 
 
@@ -109,8 +112,20 @@ defmodule HaberdashWeb.Router do
     end
   end
 
-  def handle_errors(%Plug.Conn{} = conn, %{reason: _, stack: %Exception.InventoryNotFound{message: message}}) do
-    send_resp(conn, conn.status, encode!(%{message: message, code: :inventory_not_found}))
+  #handle_errors when inventory_not_found is done within a genserver a tuple is sent
+  def handle_errors(%Plug.Conn{} = conn, %{kind: :exit, reason: {{%Exception.InventoryNotFound{message: message}, _}, _}, stack: _}) do
+    Logger.info("exiting from genserver")
+
+    send_resp(conn, 404, encode!(%{message: message, code: :inventory_not_found}))
   end
+
+  def handle_errors(%Plug.Conn{} = conn, %{kind: _, reason: %Exception.InventoryNotFound{message: message}, stack: _}) do
+    send_resp(conn, 404, encode!(%{message: message, code: :inventory_not_found}))
+  end
+  def handle_errors(%Plug.Conn{} = conn, errors) do
+    IO.inspect errors
+    send_resp(conn, conn.status, encode!(%{message: "Something went wrong", code: :inventory_not_found}))
+  end
+
 
 end

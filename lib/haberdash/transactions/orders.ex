@@ -4,6 +4,7 @@ defmodule Haberdash.Transactions.Orders do
   use Haberdash.MapHelpers
   import Ecto.Changeset
   require Logger
+  alias Haberdash.Exception
   alias Haberdash.{Business, Inventory, Navigation, Transactions, Assoc}
   alias Haberdash.Repo
   @primary_key {:id, :binary_id, autogenerate: true}
@@ -56,35 +57,48 @@ defmodule Haberdash.Transactions.Orders do
 
   defp create_order(%{"id" => "prod_" <> id, "accessories" => [_ | _] = accessories} = map) when is_map(map) do
     product = Inventory.get_products!(id)
-    stringify_map(product) |> Map.put("accessories", Enum.map(accessories, fn accessories -> create_order(id, accessories) end))
+    stringify_map(product) |> Map.put("accessories", Enum.map(accessories, fn acc -> create_order(id, acc) end))
   rescue Ecto.NoResultsError ->
-    %{"message" => "this id doesn't match any product or accessory in inventory"}
+    raise Exception.InventoryNotFound, id
   end
 
   defp create_order(%{"id" => "prod_" <> id} = map) when is_map(map) do
-    Inventory.get_products!(id) |> stringify_map
+    Inventory.get_products!(id) |> stringify_map |> Map.merge( %{"id" => Ecto.UUID.generate, "inventory_id" => id})
 
   rescue Ecto.NoResultsError ->
-    %{"message" => "this id doesn't match any product or accessory in inventory"}
+    raise Exception.InventoryNotFound, id
+
+  end
+
+  @doc """
+  adds new order to an existing order.
+  """
+
+  def create_order_list(%{"items" => items} = orders, %{"items" => updated_items}) do
+    %{orders | "items" => items ++ Enum.map(updated_items, &create_order/1)}
+  end
+
+  def validate_accessories_length() do
+
   end
 
 
   defp create_order(%{"id" => "acc_" <> id} = map) when is_map(map) do
-    Inventory.get_accessories!(id) |> stringify_map
+    Inventory.get_accessories!(id) |> stringify_map |> Map.merge( %{"id" => Ecto.UUID.generate, "inventory_id" => id})
 
   rescue Ecto.NoResultsError ->
-    %{"message" => "this id doesn't match any product or accessory in your inventory"}
+    raise Exception.InventoryNotFound, id
   end
 
 
-  defp create_order(_), do: %{"message" => "incorrect format for id"}
+  defp create_order(id), do: raise Exception.InventoryNotFound, message: "Malformed id: no prefix found for #{id}"
 
   defp create_order(prod_id, %{"id" => "acc_" <> id}) do
     %{accessories: accessories} = Assoc.get_product_accessories_by!([product_id: prod_id, accessories_id: id]) |> Repo.preload([:accessories])
      stringify_map(accessories)
   rescue
     Ecto.NoResultsError ->
-      %{"message" => "this accessory id isn't registered with the parent product"}
+      raise Exception.InventoryNotFound, message: "no accessory with #{id} associated with this product"
   end
 
 
