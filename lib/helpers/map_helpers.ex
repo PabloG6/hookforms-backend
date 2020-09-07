@@ -7,7 +7,6 @@ defmodule Haberdash.MapHelpers do
       def stringify_map(map) when is_map(map), do: stringify_map(map, 0)
 
       defp stringify_map(%{__meta__: _} = map, depth) do
-        # Logger.info("is meta hanging up everything map: #{inspect(map)}")
         Map.drop(map, map.__struct__.__schema__(:associations) ++ [:__meta__]) |> Map.from_struct|> stringify_map(depth)
       end
       defp stringify_map(%NaiveDateTime{} = map, _) do
@@ -15,11 +14,10 @@ defmodule Haberdash.MapHelpers do
       end
 
       defp stringify_map(%{__struct__: _} = map, depth) do
-        Logger.info("map is strucct")
+
         Map.from_struct(map) |> stringify_map(depth)
       end
       defp stringify_map(map, depth) when is_map(map) and depth < 2 do
-        Logger.info("map: #{inspect(map)} depth: #{depth}")
         for {k, v} <- map, into: %{} do
           {safe_atom_to_string(k), stringify_map(v, depth + 1)}
         end
