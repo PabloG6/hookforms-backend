@@ -6,13 +6,7 @@ defmodule HaberdashWeb.OrdersControllerTest do
 
   alias Haberdash.Transactions.Orders
   @auth_header "haberdash-api-key"
-  @create_attrs %{
-    customer_id: "some customer_id",
-    drop_off_address: "some drop_off_address",
-    drop_off_location: [],
-    franchise_id: "some franchise_id",
-    items: []
-  }
+
   @update_attrs %{
     customer_id: "some updated customer_id",
     drop_off_address: "some updated drop_off_address",
@@ -22,10 +16,7 @@ defmodule HaberdashWeb.OrdersControllerTest do
   }
   @invalid_attrs %{customer_id: nil, drop_off_address: nil, drop_off_location: nil, franchise_id: nil, items: nil}
 
-  def fixture(:orders) do
-    {:ok, orders} = Transactions.create_orders(@create_attrs)
-    orders
-  end
+
 
 
 
@@ -57,19 +48,39 @@ defmodule HaberdashWeb.OrdersControllerTest do
   describe "create orders" do
     setup [:init]
     test "renders orders when data is valid", %{conn: conn, product: product, accessories: accessories} do
-      items = %{items: [%{item_id: product.id, item_type: :products}, %{item_id: accessories.id, item_type: :accessories}]}
+      items = %{items: [%{id: product.id}, %{id: accessories.id}]}
       conn = post(conn, Routes.orders_path(conn, :create), orders: items)
       IO.inspect json_response(conn, 201)["data"]
       assert %{"id" => id} = json_response(conn, 201)["data"]
     end
 
-    test "renders orders with multiple accessories", %{conn: conn, product: product, accessories: accessories} do
+    test "renders orders with multiple accessories", %{conn: conn, product: product, accessories: accessories, franchise: franchise} do
       product_accessories = insert(:product_accessories, %{product_id: product.id, accessories_id: accessories.id})
       items = %{items: [%{id: "prod_" <> product.id, accessories: [%{id:  "acc_" <> product_accessories.accessories_id}]}, %{id: "acc_" <> accessories.id}]}
-      conn = post(conn, Routes.orders_path(conn, :create), orders: items)
-      IO.inspect json_response(conn, 201)["data"]
 
+      conn = post(conn, Routes.orders_path(conn, :create), orders: items)
+      %{id: franchise_id} = franchise
+      IO.inspect json_response(conn, 201)["data"]
+      assert %{"id" => id, "franchise_id" => franchise_id, "items" => items} = json_response(conn, 201)["data"]
+      %{name: product_name, description: product_description, } = product
+      assert %{"accessories" => acc_list, "name" => product_name, "description" => product_description, "franchise_id" => franchise_id, } = Enum.at(items, 0)
     end
+
+    test "renders 404 error when an incorrect id is sent", %{conn: conn} do
+      items = %{items: [%{id: "prod_" <> Ecto.UUID.generate}]}
+      assert_error_sent 404, fn ->
+        post(conn, Routes.orders_path(conn, :create), orders: items)
+      end
+    end
+
+    test "renders 401 error when no authentication id is sent", %{product: product} do
+      items = %{items: [%{id: "prod_" <> product.id}]}
+      conn = build_conn()
+      assert_error_sent 401, fn ->
+        post(conn, Routes.orders_path(conn, :create), orders: items)
+      end
+    end
+
 
     test "renders errors when data is invalid", %{conn: conn} do
       conn = post(conn, Routes.orders_path(conn, :create), orders: @invalid_attrs)
@@ -78,22 +89,17 @@ defmodule HaberdashWeb.OrdersControllerTest do
   end
 
   describe "update orders" do
-    setup [:create_orders]
+    setup [:init]
 
-    test "renders orders when data is valid", %{conn: conn, orders: %Orders{id: id} = orders} do
-      conn = put(conn, Routes.orders_path(conn, :update, orders), orders: @update_attrs)
-      assert %{"id" => ^id} = json_response(conn, 200)["data"]
+    test "renders orders when data is valid", %{conn: conn, product: product} do
+      items = %{items: [%{id: "prod_" <> product.id}]}
+      conn = post(conn, Routes.orders_path(conn, :create), orders: items)
+      assert %{"id" => id} = json_response(conn, 201)["data"]
+      product = insert(:product, %{franchise_id: product.franchise_id})
+      conn = post(conn, Routes.orders_path(conn, :create, id), orders: %{items: [%{id: "prod_" <> product.id}]})
+      assert %{"id" => ^id, "items" => items} = json_response(conn, 200)["data"]
+      assert length(items) == 2
 
-      conn = get(conn, Routes.orders_path(conn, :show, id))
-
-      assert %{
-               "id" => id,
-               "customer_id" => "some updated customer_id",
-               "drop_off_address" => "some updated drop_off_address",
-               "drop_off_location" => [],
-               "franchise_id" => "some updated franchise_id",
-               "items" => []
-             } = json_response(conn, 200)["data"]
     end
 
     test "renders errors when data is invalid", %{conn: conn, orders: orders} do
@@ -103,7 +109,7 @@ defmodule HaberdashWeb.OrdersControllerTest do
   end
 
   describe "delete orders" do
-    setup [:create_orders]
+
 
     test "deletes chosen orders", %{conn: conn, orders: orders} do
       conn = delete(conn, Routes.orders_path(conn, :delete, orders))
@@ -115,8 +121,5 @@ defmodule HaberdashWeb.OrdersControllerTest do
     end
   end
 
-  defp create_orders(_) do
-    orders = fixture(:orders)
-    %{orders: orders}
-  end
+
 end
