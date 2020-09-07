@@ -1,6 +1,8 @@
 defmodule HaberdashWeb.Router do
   use HaberdashWeb, :router
-
+  use Plug.ErrorHandler
+  alias Haberdash.Exception
+  import Poison
   pipeline :api do
     plug :accepts, ["json"]
   end
@@ -106,4 +108,9 @@ defmodule HaberdashWeb.Router do
       live_dashboard "/dashboard", metrics: HaberdashWeb.Telemetry
     end
   end
+
+  def handle_errors(%Plug.Conn{} = conn, %{reason: _, stack: %Exception.InventoryNotFound{message: message}}) do
+    send_resp(conn, conn.status, encode!(%{message: message, code: :inventory_not_found}))
+  end
+
 end

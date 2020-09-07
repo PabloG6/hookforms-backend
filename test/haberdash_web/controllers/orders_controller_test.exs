@@ -63,6 +63,14 @@ defmodule HaberdashWeb.OrdersControllerTest do
       assert %{"id" => id} = json_response(conn, 201)["data"]
     end
 
+    test "renders orders with multiple accessories", %{conn: conn, product: product, accessories: accessories} do
+      product_accessories = insert(:product_accessories, %{product_id: product.id, accessories_id: accessories.id})
+      items = %{items: [%{id: "prod_" <> product.id, accessories: [%{id:  "acc_" <> product_accessories.accessories_id}]}, %{id: "acc_" <> accessories.id}]}
+      conn = post(conn, Routes.orders_path(conn, :create), orders: items)
+      IO.inspect json_response(conn, 201)["data"]
+
+    end
+
     test "renders errors when data is invalid", %{conn: conn} do
       conn = post(conn, Routes.orders_path(conn, :create), orders: @invalid_attrs)
       assert json_response(conn, 422)["errors"] != %{}
