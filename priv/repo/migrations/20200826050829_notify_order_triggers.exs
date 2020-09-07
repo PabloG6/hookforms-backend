@@ -25,10 +25,9 @@ defmodule Haberdash.Repo.Migrations.NotifyOrderTriggers do
               $trigger$ LANGUAGE plpgsql;
               ")
 
-  execute("CREATE TRIGGER order_changes_trg
+    execute("CREATE TRIGGER order_changes_trg
           AFTER INSERT OR UPDATE OR DELETE ON orders FOR EACH ROW
           EXECUTE PROCEDURE notify_order_changes()")
-
   end
 
   def down do

@@ -11,8 +11,6 @@ defmodule HaberdashWeb.CollectionView do
   end
 
   def render("collection.json", %{collection: collection}) do
-    %{id: collection.id,
-      name: collection.name,
-      description: collection.description}
+    %{id: collection.id, name: collection.name, description: collection.description}
   end
 end

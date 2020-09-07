@@ -28,6 +28,7 @@ defmodule Haberdash.BusinessTest do
 
     def franchise_fixture(attrs \\ %{}) do
       {:ok, owner} = Account.create_owner(@owner_attrs)
+
       {:ok, franchise} =
         attrs
         |> Enum.into(@valid_attrs)
@@ -49,7 +50,10 @@ defmodule Haberdash.BusinessTest do
 
     test "create_franchise/1 with valid data creates a franchise" do
       assert {:ok, %Account.Owner{} = owner} = Account.create_owner(@owner_attrs)
-      assert {:ok, %Franchise{} = franchise} = Business.create_franchise(@valid_attrs |> Enum.into(%{owner_id: owner.id}))
+
+      assert {:ok, %Franchise{} = franchise} =
+               Business.create_franchise(@valid_attrs |> Enum.into(%{owner_id: owner.id}))
+
       assert franchise.description == "some description"
       assert franchise.name == "some name"
       assert franchise.phone_number == "+4588913544"

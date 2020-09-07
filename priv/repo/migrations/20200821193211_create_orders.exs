@@ -3,6 +3,7 @@ defmodule Haberdash.Repo.Migrations.CreateOrders do
 
   def up do
     Haberdash.Transactions.DeliveryType.create_type()
+
     create table(:orders, primary_key: false) do
       add :id, :binary_id, primary_key: true
       add :drop_off_address, :map
@@ -12,7 +13,6 @@ defmodule Haberdash.Repo.Migrations.CreateOrders do
 
       timestamps()
     end
-
   end
 
   def down do

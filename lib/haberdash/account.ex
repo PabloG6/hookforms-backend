@@ -8,6 +8,7 @@ defmodule Haberdash.Account do
   use Nebulex.Caching
   alias Haberdash.Account.Developer
   alias Haberdash.{Account}
+
   @doc """
   Returns the list of developer.
 
@@ -167,14 +168,10 @@ defmodule Haberdash.Account do
   """
   @decorate cache_put(cache: Account.Cache, key: {Owner, owner.id}, match: &match_update_owner/1)
   def update_owner(%Owner{} = owner, attrs) do
-     owner
+    owner
     |> Owner.changeset(attrs)
     |> Repo.update()
-
   end
-
-
-
 
   @doc """
   Deletes a owner.
@@ -188,26 +185,25 @@ defmodule Haberdash.Account do
       {:error, %Ecto.Changeset{}}
 
   """
-  @decorate cache_evict(cache: Account.Cache, key: {Owner, owner.id}, match: &match_delete_owner/1)
+  @decorate cache_evict(
+              cache: Account.Cache,
+              key: {Owner, owner.id},
+              match: &match_delete_owner/1
+            )
   def delete_owner(%Owner{} = owner) do
     Repo.delete(owner)
   end
 
   def authenticate(email, password) do
     with %Owner{} = owner <- Repo.get_by(Owner, email: email),
-        {:ok, %Owner{}} = pass <- Bcrypt.check_pass(owner, password) do
-        pass
+         {:ok, %Owner{}} = pass <- Bcrypt.check_pass(owner, password) do
+      pass
     else
-
       nil ->
         {:error, :not_found}
 
-       error
-        -> error
-
-
-
-
+      error ->
+        error
     end
   end
 
@@ -225,7 +221,7 @@ defmodule Haberdash.Account do
   end
 
   defp match_update_owner({:ok, owner}) do
-    IO.inspect "update called"
+    IO.inspect("update called")
     {true, owner}
   end
 
@@ -238,15 +234,13 @@ defmodule Haberdash.Account do
   end
 
   defp match_delete_owner({:ok, owner}) do
-    IO.puts "delete called"
+    IO.puts("delete called")
     {true, owner}
   end
-
 
   defp match_delete_owner({:error, _}) do
     false
   end
-
 
   alias Haberdash.Account.Customer
 

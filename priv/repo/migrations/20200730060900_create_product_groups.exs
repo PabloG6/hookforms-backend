@@ -9,7 +9,6 @@ defmodule Haberdash.Repo.Migrations.CreateProductGroups do
       timestamps()
     end
 
-
     create unique_index(:product_groups, [:product_id, :collection_id], name: :product_group_index)
   end
 end

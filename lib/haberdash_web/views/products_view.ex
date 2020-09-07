@@ -15,7 +15,7 @@ defmodule HaberdashWeb.ProductsView do
       id: products.id,
       name: products.name,
       price: products.price,
-      description: products.description,
+      description: products.description
     }
   end
 end

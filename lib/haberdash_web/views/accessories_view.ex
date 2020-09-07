@@ -11,8 +11,6 @@ defmodule HaberdashWeb.AccessoriesView do
   end
 
   def render("accessories.json", %{accessories: accessories}) do
-    %{id: accessories.id,
-      name: accessories.name,
-      price: accessories.price}
+    %{id: accessories.id, name: accessories.name, price: accessories.price}
   end
 end

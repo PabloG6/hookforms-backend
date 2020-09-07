@@ -5,8 +5,6 @@ defmodule HaberdashWeb.ProductGroupsControllerTest do
   alias Haberdash.Assoc.ProductGroups
   alias Haberdash.{Assoc, Account, Business, Inventory, Groups, Auth}
 
-
-
   @owner_attrs %{
     email: "some@email.com",
     name: "some name",
@@ -21,7 +19,6 @@ defmodule HaberdashWeb.ProductGroupsControllerTest do
     name: "some name",
     phone_number: "+4588913544"
   }
-
 
   @product_attrs %{
     description: "some description",
@@ -42,14 +39,21 @@ defmodule HaberdashWeb.ProductGroupsControllerTest do
 
   describe "index" do
     test "lists all product_groups", %{conn: conn} do
-
     end
   end
 
   describe "create product_groups" do
     setup [:prepare]
-    test "renders product_groups when data is valid", %{conn: conn, collection: collection, product: product} do
-      conn = post(conn, Routes.product_groups_path(conn, :create, product.id), product_groups: %{product_id: product.id, collection_id: collection.id})
+
+    test "renders product_groups when data is valid", %{
+      conn: conn,
+      collection: collection,
+      product: product
+    } do
+      conn =
+        post(conn, Routes.product_groups_path(conn, :create, product.id),
+          product_groups: %{product_id: product.id, collection_id: collection.id}
+        )
 
       assert %{"id" => id} = json_response(conn, 201)["data"]
 
@@ -61,11 +65,14 @@ defmodule HaberdashWeb.ProductGroupsControllerTest do
     end
 
     test "renders errors when data is invalid", %{conn: conn, product: product} do
-      conn = post(conn, Routes.product_groups_path(conn, :create, product.id), product_groups: @invalid_attrs)
+      conn =
+        post(conn, Routes.product_groups_path(conn, :create, product.id),
+          product_groups: @invalid_attrs
+        )
+
       assert json_response(conn, 422)["errors"] != %{}
     end
   end
-
 
   describe "delete product_groups" do
     setup [:prepare, :create_product_groups]
@@ -87,15 +94,23 @@ defmodule HaberdashWeb.ProductGroupsControllerTest do
 
   defp prepare(%{conn: conn}) do
     {:ok, owner} = Account.create_owner(@owner_attrs)
-    {:ok, franchise} = Business.create_franchise(@franchise_attrs |> Enum.into(%{owner_id: owner.id}))
-    {:ok, product} = Inventory.create_products(@product_attrs |> Enum.into(%{franchise_id: franchise.id}))
-    {:ok, collection} = Groups.create_collection(@group_attrs |> Enum.into(%{franchise_id: franchise.id}))
+
+    {:ok, franchise} =
+      Business.create_franchise(@franchise_attrs |> Enum.into(%{owner_id: owner.id}))
+
+    {:ok, product} =
+      Inventory.create_products(@product_attrs |> Enum.into(%{franchise_id: franchise.id}))
+
+    {:ok, collection} =
+      Groups.create_collection(@group_attrs |> Enum.into(%{franchise_id: franchise.id}))
+
     {:ok, token, _claims} = Auth.Guardian.encode_and_sign(owner)
 
     conn =
       conn
       |> put_req_header("authorization", "Bearer " <> token)
       |> put_req_header("accept", "application/json")
+
     {:ok, product: product, collection: collection, conn: conn}
   end
 end

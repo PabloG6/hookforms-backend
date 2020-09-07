@@ -16,6 +16,5 @@ defmodule Haberdash.Repo.Migrations.CreateCustomer do
 
       timestamps()
     end
-
   end
 end

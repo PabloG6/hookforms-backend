@@ -22,8 +22,26 @@ defmodule Haberdash.Account.Customer do
   @doc false
   def changeset(customer, attrs) do
     customer
-    |> cast(attrs, [:name, :address, :coordinates, :email_address, :password, :is_activated, :phone_number, :password_hash, :is_email_confirmed, :is_phone_number_confirmed])
-    |> validate_required([:name, :coordinates, :email_address, :phone_number, :is_activated, :is_email_confirmed, :is_phone_number_confirmed])
+    |> cast(attrs, [
+      :name,
+      :address,
+      :coordinates,
+      :email_address,
+      :password,
+      :is_activated,
+      :phone_number,
+      :password_hash,
+      :is_email_confirmed,
+      :is_phone_number_confirmed
+    ])
+    |> validate_required([
+      :name,
+      :coordinates,
+      :email_address,
+      :phone_number,
+      :is_activated,
+      :is_email_confirmed,
+      :is_phone_number_confirmed
+    ])
   end
-
 end

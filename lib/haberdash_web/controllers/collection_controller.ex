@@ -14,7 +14,9 @@ defmodule HaberdashWeb.CollectionController do
 
   def create(conn, %{"collection" => collection_params}) do
     %Business.Franchise{id: id} = conn.private[:franchise]
-    with {:ok, %Collection{} = collection} <- Groups.create_collection(collection_params |> Enum.into(%{"franchise_id" => id})) do
+
+    with {:ok, %Collection{} = collection} <-
+           Groups.create_collection(collection_params |> Enum.into(%{"franchise_id" => id})) do
       conn
       |> put_status(:created)
       |> put_resp_header("location", Routes.collection_path(conn, :show, collection))
@@ -31,13 +33,16 @@ defmodule HaberdashWeb.CollectionController do
     %Business.Franchise{id: franchise_id} = conn.private[:franchise]
 
     collection = Groups.get_collection!(id)
+
     if franchise_id != collection.franchise_id do
       conn
       |> put_status(:unauthorized)
       |> put_view(HaberdashWeb.ErrorView)
       |> render(:unauthorized, message: "You're unauthorized to update this collection")
     end
-    with {:ok, %Collection{} = collection} <- Groups.update_collection(collection, collection_params) do
+
+    with {:ok, %Collection{} = collection} <-
+           Groups.update_collection(collection, collection_params) do
       render(conn, "show.json", collection: collection)
     end
   end
@@ -46,12 +51,14 @@ defmodule HaberdashWeb.CollectionController do
     %Business.Franchise{id: franchise_id} = conn.private[:franchise]
 
     collection = Groups.get_collection!(id)
+
     if franchise_id != collection.franchise_id do
       conn
       |> put_status(:unauthorized)
       |> put_view(HaberdashWeb.ErrorView)
       |> render(:unauthorized, message: "You're unauthorized to update this collection.")
     end
+
     with {:ok, %Collection{}} <- Groups.delete_collection(collection) do
       send_resp(conn, :no_content, "")
     end

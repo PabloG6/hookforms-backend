@@ -26,19 +26,19 @@ defmodule HaberdashWeb.ProductGroupsController do
     render(conn, "show.json", product_groups: product_groups)
   end
 
-
-
   def delete(conn, %{"id" => id}) do
-
     product_groups = Assoc.get_product_groups!(id)
-    IO.inspect product_groups
+    IO.inspect(product_groups)
+
     with {:ok, %ProductGroups{}} <- Assoc.delete_product_groups(product_groups) do
       send_resp(conn, :no_content, "")
-
     end
   rescue
-    Ecto.NoResultsError
-      -> conn
-         |> send_resp(:not_found, Poison.encode!(%{code: :not_found, message: "No association found with this id. "}))
+    Ecto.NoResultsError ->
+      conn
+      |> send_resp(
+        :not_found,
+        Poison.encode!(%{code: :not_found, message: "No association found with this id. "})
+      )
   end
 end

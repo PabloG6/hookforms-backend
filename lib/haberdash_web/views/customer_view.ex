@@ -11,7 +11,8 @@ defmodule HaberdashWeb.CustomerView do
   end
 
   def render("customer.json", %{customer: customer}) do
-    %{id: customer.id,
+    %{
+      id: customer.id,
       name: customer.name,
       address: customer.address,
       coordinates: customer.coordinates,
@@ -20,6 +21,7 @@ defmodule HaberdashWeb.CustomerView do
       is_activated: customer.is_activated,
       password_hash: customer.password_hash,
       is_email_confirmed: customer.is_email_confirmed,
-      is_phone_number_confirmed: customer.is_phone_number_confirmed}
+      is_phone_number_confirmed: customer.is_phone_number_confirmed
+    }
   end
 end

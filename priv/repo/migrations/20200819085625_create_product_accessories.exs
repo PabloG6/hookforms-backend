@@ -9,6 +9,5 @@ defmodule Haberdash.Repo.Migrations.CreateProductAccessories do
 
       timestamps()
     end
-
   end
 end

@@ -25,8 +25,9 @@ defmodule HaberdashWeb.AccessoriesControllerTest do
 
   @product_attrs %{
     name: "Big Deal",
-    description: "Three pieces of fried chicken, with a side of fries and medium soda of your choice",
-    price: 120.5,
+    description:
+      "Three pieces of fried chicken, with a side of fries and medium soda of your choice",
+    price: 120.5
   }
 
   @collection_attrs %{
@@ -51,6 +52,7 @@ defmodule HaberdashWeb.AccessoriesControllerTest do
 
   describe "index" do
     setup [:init]
+
     test "lists all accessories", %{conn: conn} do
       conn = get(conn, Routes.accessories_path(conn, :index))
       assert json_response(conn, 200)["data"] == []
@@ -59,6 +61,7 @@ defmodule HaberdashWeb.AccessoriesControllerTest do
 
   describe "create accessories" do
     setup [:init]
+
     test "renders accessories when data is valid", %{conn: conn} do
       conn = post(conn, Routes.accessories_path(conn, :create), accessories: @create_attrs)
       assert %{"id" => id} = json_response(conn, 201)["data"]
@@ -81,8 +84,13 @@ defmodule HaberdashWeb.AccessoriesControllerTest do
   describe "update accessories" do
     setup [:init, :create_accessories]
 
-    test "renders accessories when data is valid", %{conn: conn, accessories: %Accessories{id: id} = accessories} do
-      conn = put(conn, Routes.accessories_path(conn, :update, accessories), accessories: @update_attrs)
+    test "renders accessories when data is valid", %{
+      conn: conn,
+      accessories: %Accessories{id: id} = accessories
+    } do
+      conn =
+        put(conn, Routes.accessories_path(conn, :update, accessories), accessories: @update_attrs)
+
       assert %{"id" => ^id} = json_response(conn, 200)["data"]
 
       conn = get(conn, Routes.accessories_path(conn, :show, id))
@@ -95,7 +103,9 @@ defmodule HaberdashWeb.AccessoriesControllerTest do
     end
 
     test "renders errors when data is invalid", %{conn: conn, accessories: accessories} do
-      conn = put(conn, Routes.accessories_path(conn, :update, accessories), accessories: @invalid_attrs)
+      conn =
+        put(conn, Routes.accessories_path(conn, :update, accessories), accessories: @invalid_attrs)
+
       assert json_response(conn, 422)["errors"] != %{}
     end
   end
@@ -115,16 +125,26 @@ defmodule HaberdashWeb.AccessoriesControllerTest do
 
   defp init(%{conn: conn}) do
     {:ok, owner} = Account.create_owner(@owner_attrs)
-    {:ok, franchise} = Business.create_franchise(@franchise_attrs |> Enum.into(%{owner_id: owner.id}))
-    {:ok, product} = Inventory.create_products(@product_attrs |> Enum.into(%{franchise_id: franchise.id}))
-    {:ok, collection} = Groups.create_collection(@collection_attrs |> Enum.into(%{franchise_id: franchise.id}))
+
+    {:ok, franchise} =
+      Business.create_franchise(@franchise_attrs |> Enum.into(%{owner_id: owner.id}))
+
+    {:ok, product} =
+      Inventory.create_products(@product_attrs |> Enum.into(%{franchise_id: franchise.id}))
+
+    {:ok, collection} =
+      Groups.create_collection(@collection_attrs |> Enum.into(%{franchise_id: franchise.id}))
+
     {:ok, token, _claims} = Auth.Guardian.encode_and_sign(owner)
+
     conn =
       conn
       |> put_req_header("authorization", "Bearer " <> token)
       |> put_req_header("accept", "application/json")
+
     {:ok, conn: conn, owner: owner, product: product, franchise: franchise}
   end
+
   defp create_accessories(%{product: product, franchise: franchise}) do
     accessories = fixture(%{franchise_id: franchise.id})
     %{accessories: accessories}

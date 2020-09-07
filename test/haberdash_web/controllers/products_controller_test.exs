@@ -8,7 +8,7 @@ defmodule HaberdashWeb.ProductsControllerTest do
     description: "some description",
     name: "some name",
     price: "120.5"
-    }
+  }
   @update_attrs %{
     description: "some updated description",
     name: "some updated name",
@@ -31,7 +31,7 @@ defmodule HaberdashWeb.ProductsControllerTest do
   @invalid_attrs %{description: nil, name: nil, price: nil, price_id: nil}
 
   def fixture(attrs \\ %{}) do
-    {:ok, products} =  attrs |> Enum.into(@create_attrs) |> Inventory.create_products()
+    {:ok, products} = attrs |> Enum.into(@create_attrs) |> Inventory.create_products()
     products
   end
 
@@ -47,9 +47,7 @@ defmodule HaberdashWeb.ProductsControllerTest do
      conn:
        put_req_header(conn, "accept", "application/json")
        |> put_req_header("authorization", "Bearer " <> token),
-      franchise: franchise
-      }
-
+     franchise: franchise}
   end
 
   describe "index" do
@@ -96,7 +94,7 @@ defmodule HaberdashWeb.ProductsControllerTest do
                "id" => id,
                "description" => "some updated description",
                "name" => "some updated name",
-               "price" => "456.7",
+               "price" => "456.7"
              } = json_response(conn, 200)["data"]
     end
 

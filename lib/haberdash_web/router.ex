@@ -4,6 +4,7 @@ defmodule HaberdashWeb.Router do
   alias Haberdash.Exception
   require Logger
   import Poison
+
   pipeline :api do
     plug :accepts, ["json"]
   end
@@ -58,7 +59,6 @@ defmodule HaberdashWeb.Router do
     post "/product/", ProductGroupsController, :create
     get "/product/:id", ProductGroupsController, :show
     delete "/product/:id", ProductGroupsController, :delete
-
   end
 
   scope "/api/assoc", HaberdashWeb do
@@ -66,7 +66,6 @@ defmodule HaberdashWeb.Router do
     post "/product/:product_id/:accessories_id", ProductAccessoriesController, :create
     get "/product/:product_id/:accessories_id", ProductAccessoriesController, :show
     delete "/product/:product_id", ProductAccessoriesController, :delete
-
   end
 
   scope "/api", HaberdashWeb do
@@ -76,12 +75,9 @@ defmodule HaberdashWeb.Router do
 
   scope "/api", HaberdashWeb do
     pipe_through [:api, :api_key, :api_key_franchise]
-    resources "/orders", OrdersController,  except: [:new, :edit]
+    resources "/orders", OrdersController, except: [:new, :edit]
     post "/orders/:id", OrdersController, :create
-
   end
-
-
 
   # scope "/api/groups", HaberdashWeb do
   #   pipe_through [:api, :auth, :franchise]
@@ -112,20 +108,32 @@ defmodule HaberdashWeb.Router do
     end
   end
 
-  #handle_errors when inventory_not_found is done within a genserver a tuple is sent
-  def handle_errors(%Plug.Conn{} = conn, %{kind: :exit, reason: {{%Exception.InventoryNotFound{message: message}, _}, _}, stack: _}) do
+  # handle_errors when inventory_not_found is done within a genserver a tuple is sent
+  def handle_errors(%Plug.Conn{} = conn, %{
+        kind: :exit,
+        reason: {{%Exception.InventoryNotFound{message: message}, _}, _},
+        stack: _
+      }) do
     Logger.info("exiting from genserver")
 
     send_resp(conn, 404, encode!(%{message: message, code: :inventory_not_found}))
   end
 
-  def handle_errors(%Plug.Conn{} = conn, %{kind: _, reason: %Exception.InventoryNotFound{message: message}, stack: _}) do
+  def handle_errors(%Plug.Conn{} = conn, %{
+        kind: _,
+        reason: %Exception.InventoryNotFound{message: message},
+        stack: _
+      }) do
     send_resp(conn, 404, encode!(%{message: message, code: :inventory_not_found}))
   end
+
   def handle_errors(%Plug.Conn{} = conn, errors) do
-    IO.inspect errors
-    send_resp(conn, conn.status, encode!(%{message: "Something went wrong", code: :inventory_not_found}))
+    IO.inspect(errors)
+
+    send_resp(
+      conn,
+      conn.status,
+      encode!(%{message: "Something went wrong", code: :inventory_not_found})
+    )
   end
-
-
 end

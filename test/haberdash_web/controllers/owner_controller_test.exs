@@ -48,8 +48,13 @@ defmodule HaberdashWeb.OwnerControllerTest do
 
   describe "login user" do
     setup [:create_owner]
+
     test "test user login with valid credentials", %{conn: conn, owner: owner} do
-      conn = post(conn, Routes.owner_path(conn, :login), owner: %{email: owner.email, password: "password"})
+      conn =
+        post(conn, Routes.owner_path(conn, :login),
+          owner: %{email: owner.email, password: "password"}
+        )
+
       assert %{"id" => id} = json_response(conn, 200)["data"]
     end
   end
@@ -61,7 +66,7 @@ defmodule HaberdashWeb.OwnerControllerTest do
       owner = Account.get_owner!(id)
       {:ok, token, _claims} = Haberdash.Auth.Guardian.encode_and_sign(owner)
       conn = put_req_header(recycle(conn), "authorization", "Bearer " <> token)
-      conn = get(conn, Routes.owner_path(conn , :show, id))
+      conn = get(conn, Routes.owner_path(conn, :show, id))
 
       assert %{
                "id" => id,
@@ -112,7 +117,6 @@ defmodule HaberdashWeb.OwnerControllerTest do
       end
     end
   end
-
 
   defp create_owner(_) do
     owner = fixture(:owner)

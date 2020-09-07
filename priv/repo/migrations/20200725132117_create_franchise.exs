@@ -10,7 +10,7 @@ defmodule Haberdash.Repo.Migrations.CreateFranchise do
       add :id, :binary_id, primary_key: true
       timestamps()
     end
+
     create unique_index(:franchise, [:phone_number])
   end
-
 end

@@ -2,6 +2,7 @@ defmodule HaberdashWeb.DeveloperView do
   use HaberdashWeb, :view
   alias HaberdashWeb.DeveloperView
   require Logger
+
   def render("index.json", %{developer: developer}) do
     %{data: render_many(developer, DeveloperView, "developers.json")}
   end

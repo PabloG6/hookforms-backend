@@ -11,6 +11,5 @@ defmodule Haberdash.Repo.Migrations.CreateAccessories do
       add :description, :string
       timestamps()
     end
-
   end
 end

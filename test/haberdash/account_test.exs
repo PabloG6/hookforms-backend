@@ -45,7 +45,6 @@ defmodule Haberdash.AccountTest do
       assert owner.name == "some name"
       assert owner.phone_number == "+4915843854"
       assert Bcrypt.verify_pass("some password", owner.password_hash)
-
     end
 
     test "create_owner/1 with invalid data returns error changeset" do
@@ -80,6 +79,7 @@ defmodule Haberdash.AccountTest do
 
   describe "developer" do
     alias Haberdash.Account.Developer
+
     @owner_attrs %{
       email: "some@email.com",
       name: "some name",
@@ -119,12 +119,15 @@ defmodule Haberdash.AccountTest do
 
     test "get_developers!/1 returns the developers with given id" do
       developers = developers_fixture()
-      assert Account.get_developer!(developers.id) == %{ developers | password: nil}
+      assert Account.get_developer!(developers.id) == %{developers | password: nil}
     end
 
     test "create_developers/1 with valid data creates a developers" do
       assert {:ok, %Account.Owner{id: id}} = Account.create_owner(@owner_attrs)
-      assert {:ok, %Developer{} = developers} = Account.create_developer(@valid_attrs |> Enum.into(%{owner_id: id}))
+
+      assert {:ok, %Developer{} = developers} =
+               Account.create_developer(@valid_attrs |> Enum.into(%{owner_id: id}))
+
       assert developers.api_key == "some api_key"
       assert developers.email == "some@email.com"
       assert developers.name == "some name"
@@ -168,9 +171,39 @@ defmodule Haberdash.AccountTest do
   describe "customer" do
     alias Haberdash.Account.Customer
 
-    @valid_attrs %{address: "some address", coordinates: [], email_address: "some email_address", is_activated: true, is_email_confirmed: true, is_phone_number_confirmed: true, name: "some name", password: "some password", password_hash: "some password_hash"}
-    @update_attrs %{address: "some updated address", coordinates: [], email_address: "some updated email_address", is_activated: false, is_email_confirmed: false, is_phone_number_confirmed: false, name: "some updated name", password: "some updated password", password_hash: "some updated password_hash"}
-    @invalid_attrs %{address: nil, coordinates: nil, email_address: nil, is_activated: nil, is_email_confirmed: nil, is_phone_number_confirmed: nil, name: nil, password: nil, password_hash: nil}
+    @valid_attrs %{
+      address: "some address",
+      coordinates: [],
+      email_address: "some email_address",
+      is_activated: true,
+      is_email_confirmed: true,
+      is_phone_number_confirmed: true,
+      name: "some name",
+      password: "some password",
+      password_hash: "some password_hash"
+    }
+    @update_attrs %{
+      address: "some updated address",
+      coordinates: [],
+      email_address: "some updated email_address",
+      is_activated: false,
+      is_email_confirmed: false,
+      is_phone_number_confirmed: false,
+      name: "some updated name",
+      password: "some updated password",
+      password_hash: "some updated password_hash"
+    }
+    @invalid_attrs %{
+      address: nil,
+      coordinates: nil,
+      email_address: nil,
+      is_activated: nil,
+      is_email_confirmed: nil,
+      is_phone_number_confirmed: nil,
+      name: nil,
+      password: nil,
+      password_hash: nil
+    }
 
     def customer_fixture(attrs \\ %{}) do
       {:ok, customer} =

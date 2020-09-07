@@ -5,18 +5,16 @@ defmodule Haberdash.Plug.Franchise do
   def init(opts), do: opts
 
   def call(conn, _opts) do
-
     with owner when not is_nil(owner) <- Auth.Guardian.Plug.current_resource(conn),
-        {:ok, franchise} <- resource(owner) do
-        put_private(conn, :franchise, franchise)
+         {:ok, franchise} <- resource(owner) do
+      put_private(conn, :franchise, franchise)
     else
-        {:error, :not_found} ->
-          Logger.info("No developer found")
-          conn
-          |>send_resp(:unauthorized, Poison.encode!(%{code: :unauthorized}))
+      {:error, :not_found} ->
+        Logger.info("No developer found")
 
-     end
-
+        conn
+        |> send_resp(:unauthorized, Poison.encode!(%{code: :unauthorized}))
+    end
   end
 
   defp resource(%Account.Owner{id: id}) do
@@ -27,10 +25,5 @@ defmodule Haberdash.Plug.Franchise do
   defp resource(%Account.Developer{owner_id: id}) do
     Logger.info("Developer found with owner id: #{id}")
     Business.get_franchise_by(owner_id: id)
-
   end
-
-
-
-
 end

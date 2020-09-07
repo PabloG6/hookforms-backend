@@ -11,7 +11,6 @@ defmodule Haberdash.Assoc.ProductGroups do
 
   @doc false
   def changeset(product_groups, attrs) do
-
     product_groups
     |> cast(attrs, [:product_id, :collection_id])
     |> validate_required([:product_id, :collection_id])

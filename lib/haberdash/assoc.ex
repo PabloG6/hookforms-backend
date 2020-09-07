@@ -20,7 +20,6 @@ defmodule Haberdash.Assoc do
     Repo.all(ProductGroups)
   end
 
-
   @doc """
   Gets a single product_groups.
 
@@ -69,7 +68,8 @@ defmodule Haberdash.Assoc do
       idk what error comes here lol
   """
   def list_product_group_info(product_id) do
-    Repo.all(from pg in ProductGroups, where: pg.product_id == ^product_id) |> Repo.preload([:collection, :product])
+    Repo.all(from pg in ProductGroups, where: pg.product_id == ^product_id)
+    |> Repo.preload([:collection, :product])
   end
 
   @doc """
@@ -80,8 +80,10 @@ defmodule Haberdash.Assoc do
   """
 
   def list_collection_product_info(collection_id) do
-    Repo.all(from pg in ProductGroups, where: pg.collection_id == ^collection_id) |> Repo.preload([:collection, :product])
+    Repo.all(from pg in ProductGroups, where: pg.collection_id == ^collection_id)
+    |> Repo.preload([:collection, :product])
   end
+
   @doc """
   Creates a product_groups.
 
@@ -200,14 +202,13 @@ defmodule Haberdash.Assoc do
     case Repo.get_by(ProductAccessories, opts) do
       nil ->
         {:error, :not_found}
+
       product_accessories ->
         {:ok, product_accessories}
     end
   end
 
   def get_product_accessories_by!(opts), do: Repo.get_by!(ProductAccessories, opts)
-
-
 
   @doc """
   Updates a product_accessories.

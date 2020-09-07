@@ -10,6 +10,7 @@ defmodule Haberdash.AuthTest do
 
     def api_key_fixture(attrs \\ %{}) do
       developer = insert(:developer)
+
       {:ok, api_key} =
         attrs
         |> Enum.into(%{developer_id: developer.id})
@@ -39,8 +40,6 @@ defmodule Haberdash.AuthTest do
       developer = insert(:developer)
       assert {:error, %Ecto.Changeset{}} = Auth.create_api_key(@invalid_attrs)
     end
-
-
 
     test "delete_api_key/1 deletes the api_key" do
       {_, api_key} = api_key_fixture()

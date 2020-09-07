@@ -2,10 +2,11 @@ defmodule Haberdash.Transactions.OrderSupervisor do
   use DynamicSupervisor
   alias Haberdash.Transactions
   require Logger
+
   def start_link(args) do
     name = Keyword.get(args, :name)
     Logger.info("#{__MODULE__} start_link")
-    Logger.info inspect(args)
+    Logger.info(inspect(args))
     DynamicSupervisor.start_link(__MODULE__, args, name: name)
   end
 
@@ -13,13 +14,17 @@ defmodule Haberdash.Transactions.OrderSupervisor do
   def init(_) do
     Logger.info("initializing  #{__MODULE__}")
     DynamicSupervisor.init(strategy: :one_for_one)
-
   end
 
   def start_child(id) do
     Logger.info("#{__MODULE__} starting child")
-    Logger.info inspect(self())
-    DynamicSupervisor.start_child(__MODULE__, %{id: Transactions.OrdersWorker, start: {Haberdash.Transactions.OrdersWorker, :start_link, [[id: id]]}, restart: :transient})
+    Logger.info(inspect(self()))
+
+    DynamicSupervisor.start_child(__MODULE__, %{
+      id: Transactions.OrdersWorker,
+      start: {Haberdash.Transactions.OrdersWorker, :start_link, [[id: id]]},
+      restart: :transient
+    })
   end
 
   @spec terminate_child(binary) :: :ok | {:error, :not_found}
@@ -27,9 +32,9 @@ defmodule Haberdash.Transactions.OrderSupervisor do
     case Haberdash.Transactions.OrderRegistry.whereis_name(id) do
       {:ok, pid} ->
         DynamicSupervisor.terminate_child(__MODULE__, pid)
-      error  -> error
+
+      error ->
+        error
     end
   end
-
-
 end

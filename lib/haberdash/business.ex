@@ -8,7 +8,6 @@ defmodule Haberdash.Business do
   alias Haberdash.Account.Cache
   use Nebulex.Caching
 
-
   alias Haberdash.Business.Franchise
 
   @doc """
@@ -40,9 +39,9 @@ defmodule Haberdash.Business do
   """
   @decorate cacheable(cache: Cache, key: {Franchise, id})
   def get_franchise!(id), do: Repo.get!(Franchise, id)
-  #TODO fix caching here sometime later.
+  # TODO fix caching here sometime later.
   def get_franchise_by(opts) do
-    with %Franchise{} = franchise <-  Repo.get_by(Franchise, opts) do
+    with %Franchise{} = franchise <- Repo.get_by(Franchise, opts) do
       {:ok, franchise}
     else
       nil -> {:error, :not_found}
@@ -79,7 +78,11 @@ defmodule Haberdash.Business do
       {:error, %Ecto.Changeset{}}
 
   """
-  @decorate cache_put(cache: Cache, key: {Franchise, franchise.id}, match: &match_update_franchise/1)
+  @decorate cache_put(
+              cache: Cache,
+              key: {Franchise, franchise.id},
+              match: &match_update_franchise/1
+            )
   def update_franchise(%Franchise{} = franchise, attrs) do
     franchise
     |> Franchise.changeset(attrs)
@@ -98,7 +101,11 @@ defmodule Haberdash.Business do
       {:error, %Ecto.Changeset{}}
 
   """
-  @decorate cache_evict(cache: Cache, key: {Franchise, franchise.id}, match: &match_delete_franchise/1)
+  @decorate cache_evict(
+              cache: Cache,
+              key: {Franchise, franchise.id},
+              match: &match_delete_franchise/1
+            )
   def delete_franchise(%Franchise{} = franchise) do
     Repo.delete(franchise)
   end
@@ -127,5 +134,4 @@ defmodule Haberdash.Business do
   end
 
   defp match_delete_franchise({:error, _}), do: false
-
 end

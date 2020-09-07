@@ -7,7 +7,6 @@ defmodule Haberdash.Auth.ApiKey do
   @foreign_key_type :binary_id
   @timestamps_opts [type: :utc_datetime_usec]
   schema "api_key" do
-
     field :api_key, :string
     belongs_to :developer, Account.Developer
 

@@ -11,8 +11,6 @@ defmodule HaberdashWeb.ApiKeyView do
   end
 
   def render("api_key.json", %{api_key: api_key}) do
-    %{id: api_key.id,
-      api_key: api_key.api_key,
-      developer_id: api_key.developer_id}
+    %{id: api_key.id, api_key: api_key.api_key, developer_id: api_key.developer_id}
   end
 end

@@ -2,7 +2,7 @@ defmodule Haberdash.Navigation.Location do
   use Ecto.Schema
   import Ecto.Changeset
   @primary_key {:id, :binary_id, autogenerate: true}
-  @derive {Poison.Encoder, except: [:__struct__, :__meta__,]}
+  @derive {Poison.Encoder, except: [:__struct__, :__meta__]}
 
   embedded_schema do
     field :address, :string

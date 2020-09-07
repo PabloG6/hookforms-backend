@@ -6,6 +6,7 @@ defmodule Haberdash.GroupsTest do
   setup do
     :ok
   end
+
   describe "collection" do
     setup [:create_franchise]
     alias Haberdash.Groups.Collection
@@ -47,7 +48,9 @@ defmodule Haberdash.GroupsTest do
     end
 
     test "create_collection/1 with valid data creates a collection", %{franchise: franchise} do
-      assert {:ok, %Collection{} = collection} = Groups.create_collection(@valid_attrs |> Enum.into(%{franchise_id: franchise.id}))
+      assert {:ok, %Collection{} = collection} =
+               Groups.create_collection(@valid_attrs |> Enum.into(%{franchise_id: franchise.id}))
+
       assert collection.description == "some description"
       assert collection.name == "some name"
     end
@@ -58,7 +61,10 @@ defmodule Haberdash.GroupsTest do
 
     test "update_collection/2 with valid data updates the collection", %{franchise: franchise} do
       collection = collection_fixture(%{franchise_id: franchise.id})
-      assert {:ok, %Collection{} = collection} = Groups.update_collection(collection, @update_attrs)
+
+      assert {:ok, %Collection{} = collection} =
+               Groups.update_collection(collection, @update_attrs)
+
       assert collection.description == "some updated description"
       assert collection.name == "some updated name"
     end
@@ -79,12 +85,14 @@ defmodule Haberdash.GroupsTest do
       collection = collection_fixture(%{franchise_id: franchise.id})
       assert %Ecto.Changeset{} = Groups.change_collection(collection)
     end
+
     defp create_franchise(_) do
       {:ok, owner} = Account.create_owner(@owner_attrs)
-      {:ok, franchise} = Business.create_franchise(%{owner_id: owner.id} |> Enum.into(@franchise_attrs))
+
+      {:ok, franchise} =
+        Business.create_franchise(%{owner_id: owner.id} |> Enum.into(@franchise_attrs))
+
       %{franchise: franchise}
     end
   end
-
-
 end

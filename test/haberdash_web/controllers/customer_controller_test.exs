@@ -26,7 +26,17 @@ defmodule HaberdashWeb.CustomerControllerTest do
     password: "some updated password",
     password_hash: "some updated password_hash"
   }
-  @invalid_attrs %{address: nil, coordinates: nil, email_address: nil, is_activated: nil, is_email_confirmed: nil, is_phone_number_confirmed: nil, name: nil, password: nil, password_hash: nil}
+  @invalid_attrs %{
+    address: nil,
+    coordinates: nil,
+    email_address: nil,
+    is_activated: nil,
+    is_email_confirmed: nil,
+    is_phone_number_confirmed: nil,
+    name: nil,
+    password: nil,
+    password_hash: nil
+  }
 
   def fixture(:customer) do
     {:ok, customer} = Account.create_customer(@create_attrs)
@@ -74,7 +84,10 @@ defmodule HaberdashWeb.CustomerControllerTest do
   describe "update customer" do
     setup [:create_customer]
 
-    test "renders customer when data is valid", %{conn: conn, customer: %Customer{id: id} = customer} do
+    test "renders customer when data is valid", %{
+      conn: conn,
+      customer: %Customer{id: id} = customer
+    } do
       conn = put(conn, Routes.customer_path(conn, :update, customer), customer: @update_attrs)
       assert %{"id" => ^id} = json_response(conn, 200)["data"]
 

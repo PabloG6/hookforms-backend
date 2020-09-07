@@ -44,6 +44,7 @@ defmodule HaberdashWeb.DevelopersControllerTest do
 
   describe "create developers" do
     setup [:authenticate_owner]
+
     test "renders developers when data is valid", %{conn: conn, owner: owner} do
       conn = post(conn, Routes.developer_path(conn, :create, owner), developers: @create_attrs)
       assert %{"id" => id} = json_response(conn, 201)["data"]
@@ -54,7 +55,7 @@ defmodule HaberdashWeb.DevelopersControllerTest do
                "id" => id,
                "api_key" => "some api_key",
                "email" => "developer@email.com",
-               "name" => "some name",
+               "name" => "some name"
              } = json_response(conn, 200)["data"]
     end
 
@@ -82,7 +83,7 @@ defmodule HaberdashWeb.DevelopersControllerTest do
                "id" => id,
                "api_key" => "some updated api_key",
                "email" => "someupdatedemail@email.com",
-               "name" => "some updated name",
+               "name" => "some updated name"
              } = json_response(conn, 200)["data"]
     end
 
@@ -110,7 +111,7 @@ defmodule HaberdashWeb.DevelopersControllerTest do
   defp authenticate_owner(%{conn: conn}) do
     {:ok, owner} = Account.create_owner(@owner_attrs)
     {:ok, token, _claims} = Auth.Guardian.encode_and_sign(owner)
-    conn = put_req_header(conn, "authorization", "Bearer "<> token)
+    conn = put_req_header(conn, "authorization", "Bearer " <> token)
     {:ok, conn: conn, owner: owner}
   end
 

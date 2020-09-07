@@ -11,11 +11,13 @@ defmodule HaberdashWeb.OrdersView do
   end
 
   def render("orders.json", %{orders: orders}) do
-    %{id: orders.id,
+    %{
+      id: orders.id,
       customer_id: orders.customer_id,
       drop_off_location: orders.drop_off_location,
       drop_off_address: orders.drop_off_address,
       franchise_id: orders.franchise_id,
-      items: orders.items}
+      items: orders.items
+    }
   end
 end

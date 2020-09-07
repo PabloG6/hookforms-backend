@@ -16,7 +16,6 @@ defmodule HaberdashWeb.CollectionControllerTest do
 
   @franchise_attrs %{
     description: "some description",
-
     name: "some name",
     phone_number: "+4588913544"
   }
@@ -37,13 +36,14 @@ defmodule HaberdashWeb.CollectionControllerTest do
 
     {:ok, franchise} =
       Business.create_franchise(%{owner_id: owner.id} |> Enum.into(@franchise_attrs))
+
     {:ok, token, _} = Haberdash.Auth.Guardian.encode_and_sign(owner)
+
     {:ok,
      conn:
        put_req_header(conn, "accept", "application/json")
        |> put_req_header("authorization", "Bearer " <> token),
-      franchise: franchise
-    }
+     franchise: franchise}
   end
 
   describe "index" do
@@ -104,6 +104,7 @@ defmodule HaberdashWeb.CollectionControllerTest do
 
   describe "delete collection" do
     setup [:create_collection]
+
     test "deletes chosen collection", %{conn: conn, collection: collection} do
       conn = delete(conn, Routes.collection_path(conn, :delete, collection))
       assert response(conn, 204)

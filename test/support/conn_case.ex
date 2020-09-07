@@ -1,5 +1,6 @@
 defmodule HaberdashWeb.ConnCase do
   alias Haberdash.{Account, Inventory, Business}
+
   @moduledoc """
   This module defines the test case to be used by
   tests that require setting up a connection.
@@ -29,7 +30,6 @@ defmodule HaberdashWeb.ConnCase do
 
       # The default endpoint for testing
       @endpoint HaberdashWeb.Endpoint
-
     end
   end
 

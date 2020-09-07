@@ -4,6 +4,7 @@ defmodule HaberdashWeb.FranchiseControllerTest do
   alias Haberdash.Business
   alias Haberdash.Business.Franchise
   alias Haberdash.{Account, Auth}
+
   @create_attrs %{
     description: "some description",
     name: "some name",
@@ -16,7 +17,6 @@ defmodule HaberdashWeb.FranchiseControllerTest do
     phone_number: "+4915843854",
     password: "some password"
   }
-
 
   @update_attrs %{
     description: "some updated description",
@@ -36,6 +36,7 @@ defmodule HaberdashWeb.FranchiseControllerTest do
 
   describe "index" do
     setup [:authenticate_owner]
+
     test "lists all franchise", %{conn: conn} do
       conn = get(conn, Routes.franchise_path(conn, :index))
       assert json_response(conn, 200)["data"] == []
@@ -44,6 +45,7 @@ defmodule HaberdashWeb.FranchiseControllerTest do
 
   describe "create franchise" do
     setup [:authenticate_owner]
+
     test "renders franchise when data is valid", %{conn: conn} do
       conn = post(conn, Routes.franchise_path(conn, :create), franchise: @create_attrs)
       assert %{"id" => id} = json_response(conn, 201)["data"]
@@ -106,8 +108,6 @@ defmodule HaberdashWeb.FranchiseControllerTest do
     franchise = fixture(%{owner_id: owner.id})
     %{franchise: franchise}
   end
-
-
 
   defp authenticate_owner(%{conn: conn}) do
     {:ok, owner} = Account.create_owner(@owner_attrs)

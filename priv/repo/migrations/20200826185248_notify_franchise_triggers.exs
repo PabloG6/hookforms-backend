@@ -1,7 +1,6 @@
 defmodule Haberdash.Repo.Migrations.NotifyFranchiseTriggers do
   use Ecto.Migration
 
-
   def up do
     execute("CREATE OR REPLACE FUNCTION notify_franchise_init_triggers()
               RETURNS TRIGGER as $franchise_trigger$
@@ -32,7 +31,6 @@ defmodule Haberdash.Repo.Migrations.NotifyFranchiseTriggers do
             AFTER INSERT OR UPDATE OR DELETE ON franchise FOR EACH ROW
             EXECUTE PROCEDURE notify_franchise_init_triggers()")
   end
-
 
   def down do
     execute "DROP TRIGGER IF EXISTS franchise_create_trg on franchise"

@@ -18,7 +18,7 @@ defmodule Haberdash.Groups do
 
   """
   def list_collection(id) do
-    Repo.all(from c in Collection,  where: c.franchise_id == ^id)
+    Repo.all(from c in Collection, where: c.franchise_id == ^id)
   end
 
   @doc """

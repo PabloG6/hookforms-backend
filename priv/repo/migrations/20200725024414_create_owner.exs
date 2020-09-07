@@ -14,6 +14,5 @@ defmodule Haberdash.Repo.Migrations.CreateOwner do
 
     create unique_index(:owner, [:email])
     create unique_index(:owner, [:phone_number])
-
   end
 end

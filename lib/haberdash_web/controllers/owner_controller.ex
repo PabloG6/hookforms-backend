@@ -25,9 +25,12 @@ defmodule HaberdashWeb.OwnerController do
       login_reply(conn, owner)
     else
       _ ->
-           conn
-           |> resp(:unauthorized, Poison.encode!(%{code: :unauthorized, message: "Invalid email or password."}))
-           |> send_resp()
+        conn
+        |> resp(
+          :unauthorized,
+          Poison.encode!(%{code: :unauthorized, message: "Invalid email or password."})
+        )
+        |> send_resp()
     end
   end
 
@@ -48,15 +51,14 @@ defmodule HaberdashWeb.OwnerController do
   send an invite code to a developer's email.
   """
   def invite(_, _) do
-
   end
 
   def update(conn, %{"id" => id, "owner" => owner_params}) do
     owner = Account.get_owner!(id)
+
     with {:ok, %Owner{} = owner} <- Account.update_owner(owner, owner_params) do
       render(conn, "show.json", owner: owner)
     end
-
   end
 
   def delete(conn, %{"id" => id}) do

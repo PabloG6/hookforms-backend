@@ -11,8 +11,10 @@ defmodule HaberdashWeb.ProductAccessoriesView do
   end
 
   def render("product_accessories.json", %{product_accessories: product_accessories}) do
-    %{id: product_accessories.id,
+    %{
+      id: product_accessories.id,
       product_id: product_accessories.product_id,
-      accessories_id: product_accessories.accessories_id}
+      accessories_id: product_accessories.accessories_id
+    }
   end
 end

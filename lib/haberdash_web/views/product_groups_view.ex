@@ -11,8 +11,8 @@ defmodule HaberdashWeb.ProductGroupsView do
   end
 
   def render("product_groups.json", %{product_groups: product_groups}) do
-    IO.write "product_groups "
-    IO.inspect product_groups
+    IO.write("product_groups ")
+    IO.inspect(product_groups)
     %{id: product_groups.id}
   end
 
@@ -28,13 +28,11 @@ defmodule HaberdashWeb.ProductGroupsView do
         name: product_group.collection.name,
         description: product_group.collection.description
       },
-
       product: %{
         id: product_group.product.id,
         name: product_group.product.name,
-        description: product_group.product.description,
-
+        description: product_group.product.description
       }
-  }
+    }
   end
 end

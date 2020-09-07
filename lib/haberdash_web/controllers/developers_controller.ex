@@ -11,7 +11,8 @@ defmodule HaberdashWeb.DeveloperController do
   end
 
   def create(conn, %{"id" => id, "developers" => developers_params}) do
-    with {:ok, %Developer{} = developers} <- Account.create_developer(developers_params |> Enum.into(%{"owner_id" => id})) do
+    with {:ok, %Developer{} = developers} <-
+           Account.create_developer(developers_params |> Enum.into(%{"owner_id" => id})) do
       conn
       |> put_status(:created)
       |> put_resp_header("location", Routes.developer_path(conn, :show, developers))

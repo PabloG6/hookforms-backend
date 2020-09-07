@@ -4,7 +4,6 @@ defmodule HaberdashWeb.ApiKeyControllerTest do
   alias Haberdash.{Auth, Account}
   alias Haberdash.Auth.ApiKey
 
-
   @update_attrs %{
     api_key: "some updated api_key",
     developer_id: "7488a646-e31f-11e4-aace-600308960668"
@@ -31,6 +30,7 @@ defmodule HaberdashWeb.ApiKeyControllerTest do
 
   describe "index" do
     setup [:init]
+
     test "lists all api_key", %{conn: conn, developer: developer} do
       conn = get(conn, Routes.api_key_path(conn, :index, developer.id))
       assert json_response(conn, 200)["data"] == []
@@ -39,8 +39,14 @@ defmodule HaberdashWeb.ApiKeyControllerTest do
 
   describe "create api_key" do
     setup [:init]
-    test "renders api_key when data is valid", %{conn: conn, developer: %Account.Developer{id: developer_id}} do
-      conn = post(conn, Routes.api_key_path(conn, :create), api_key: %{developer_id: developer_id})
+
+    test "renders api_key when data is valid", %{
+      conn: conn,
+      developer: %Account.Developer{id: developer_id}
+    } do
+      conn =
+        post(conn, Routes.api_key_path(conn, :create), api_key: %{developer_id: developer_id})
+
       assert %{"id" => id} = json_response(conn, 201)["data"]
 
       conn = get(conn, Routes.api_key_path(conn, :show, id))
@@ -56,8 +62,6 @@ defmodule HaberdashWeb.ApiKeyControllerTest do
       assert json_response(conn, 422)["errors"] != %{}
     end
   end
-
-
 
   describe "delete api_key" do
     setup [:init, :create_api_key]

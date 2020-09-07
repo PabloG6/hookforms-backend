@@ -1,6 +1,7 @@
 defmodule Haberdash.Transactions.OrderRegistry do
   use GenServer
   require Logger
+
   @doc """
   a wrapper for gproc
   """
@@ -10,16 +11,16 @@ defmodule Haberdash.Transactions.OrderRegistry do
     GenServer.start_link(__MODULE__, opts, name: __MODULE__)
   end
 
-  @spec whereis_name(id::binary()) :: {:ok, pid()} | {:error, :undefined}
+  @spec whereis_name(id :: binary()) :: {:ok, pid()} | {:error, :undefined}
   def whereis_name(id) do
     # Logger.info("#{__MODULE__} searching for franchise")
     # GenServer.call(__MODULE__, {:whereis_name, id})
-      with pid when is_pid(pid) <- :gproc.where({:n, :l, id}) do
-        {:ok, pid}
-      else
-        :undefined ->
-          {:error, :undefined}
-      end
+    with pid when is_pid(pid) <- :gproc.where({:n, :l, id}) do
+      {:ok, pid}
+    else
+      :undefined ->
+        {:error, :undefined}
+    end
   end
 
   def via_tuple(id) do
@@ -29,9 +30,7 @@ defmodule Haberdash.Transactions.OrderRegistry do
   def register_name(franchise_id, pid) do
     Logger.info("#{__MODULE__} registering name")
     GenServer.cast(__MODULE__, {:register_name, franchise_id, pid})
-
   end
-
 
   def unregister_name(franchise_id) do
     GenServer.cast(__MODULE__, {:unregister_name, franchise_id})
@@ -41,27 +40,29 @@ defmodule Haberdash.Transactions.OrderRegistry do
     case whereis_name(franchise_id) do
       {:error, :undefined} ->
         {:badarg, {franchise_id, message}}
+
       {:ok, pid} ->
         Kernel.send(pid, message)
         pid
-
     end
   end
 
-  #Server work
+  # Server work
 
   @impl true
   def init(_) do
-    {:ok, Map.new}
+    {:ok, Map.new()}
   end
 
   @impl true
   def handle_call({:whereis_name, franchise_id}, _from, state) do
-    IO.inspect state
-    IO.puts franchise_id
+    IO.inspect(state)
+    IO.puts(franchise_id)
+
     case Map.get(state, franchise_id, nil) do
       nil ->
         {:reply, :undefined, state}
+
       pid ->
         {:reply, pid, state}
     end
@@ -70,9 +71,11 @@ defmodule Haberdash.Transactions.OrderRegistry do
   @impl true
   def handle_call({:register_name, franchise_id, pid}, _from, state) do
     Logger.info("#{__MODULE__} registering franchise: #{franchise_id}")
+
     case Map.get(state, franchise_id) do
       nil ->
         {:reply, :yes, Map.put(state, franchise_id, pid)}
+
       _ ->
         {:reply, :no, state}
     end

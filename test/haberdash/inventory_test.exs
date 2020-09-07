@@ -2,10 +2,10 @@ defmodule Haberdash.InventoryTest do
   use Haberdash.DataCase
 
   alias Haberdash.{Inventory, Account, Business}
+
   setup do
     :ok
   end
-
 
   describe "product" do
     setup [:create_franchise]
@@ -39,7 +39,6 @@ defmodule Haberdash.InventoryTest do
     @invalid_attrs %{description: nil, name: nil, price: nil, price_id: nil}
 
     def products_fixture(attrs \\ %{}) do
-
       {:ok, products} =
         attrs
         |> Enum.into(@valid_attrs)
@@ -59,7 +58,9 @@ defmodule Haberdash.InventoryTest do
     end
 
     test "create_products/1 with valid data creates a products", %{franchise: franchise} do
-      assert {:ok, %Products{} = products} = Inventory.create_products(@valid_attrs |> Enum.into(%{franchise_id: franchise.id}))
+      assert {:ok, %Products{} = products} =
+               Inventory.create_products(@valid_attrs |> Enum.into(%{franchise_id: franchise.id}))
+
       assert products.description == "some description"
       assert products.name == "some name"
       assert products.price == Decimal.new("120.5")
@@ -75,7 +76,6 @@ defmodule Haberdash.InventoryTest do
       assert products.description == "some updated description"
       assert products.name == "some updated name"
       assert products.price == Decimal.new("456.7")
-
     end
 
     test "update_products/2 with invalid data returns error changeset", %{franchise: franchise} do
@@ -97,7 +97,10 @@ defmodule Haberdash.InventoryTest do
 
     defp create_franchise(_) do
       {:ok, owner} = Account.create_owner(@owner_attrs)
-      {:ok, franchise} = Business.create_franchise(%{owner_id: owner.id} |> Enum.into(@franchise_attrs))
+
+      {:ok, franchise} =
+        Business.create_franchise(%{owner_id: owner.id} |> Enum.into(@franchise_attrs))
+
       %{franchise: franchise}
     end
   end
@@ -125,22 +128,43 @@ defmodule Haberdash.InventoryTest do
 
     defp init(_) do
       {:ok, owner} = Account.create_owner(@owner_attrs)
-      {:ok, franchise} = Business.create_franchise(%{owner_id: owner.id} |> Enum.into(@franchise_attrs))
-      {:ok, products} = Inventory.create_products(@product_attrs |> Enum.into(%{franchise_id: franchise.id}))
+
+      {:ok, franchise} =
+        Business.create_franchise(%{owner_id: owner.id} |> Enum.into(@franchise_attrs))
+
+      {:ok, products} =
+        Inventory.create_products(@product_attrs |> Enum.into(%{franchise_id: franchise.id}))
+
       %{franchise: franchise, owner: owner, product: products}
     end
-    test "list_accessories/0 returns all accessories", %{franchise: franchise, owner: owner, product: product} do
+
+    test "list_accessories/0 returns all accessories", %{
+      franchise: franchise,
+      owner: owner,
+      product: product
+    } do
       accessories = accessories_fixture(%{franchise_id: franchise.id, product_id: product.id})
       assert Inventory.list_accessories() == [accessories]
     end
 
-    test "get_accessories!/1 returns the accessories with given id", %{franchise: franchise, product: product} do
+    test "get_accessories!/1 returns the accessories with given id", %{
+      franchise: franchise,
+      product: product
+    } do
       accessories = accessories_fixture(%{franchise_id: franchise.id, product_id: product.id})
       assert Inventory.get_accessories!(accessories.id) == accessories
     end
 
-    test "create_accessories/1 with valid data creates a accessories", %{franchise: franchise, product: product} do
-      assert {:ok, %Accessories{} = accessories} = Inventory.create_accessories(@valid_attrs |> Enum.into(%{franchise_id: franchise.id, product_id: product.id}))
+    test "create_accessories/1 with valid data creates a accessories", %{
+      franchise: franchise,
+      product: product
+    } do
+      assert {:ok, %Accessories{} = accessories} =
+               Inventory.create_accessories(
+                 @valid_attrs
+                 |> Enum.into(%{franchise_id: franchise.id, product_id: product.id})
+               )
+
       assert accessories.franchise_id == franchise.id
       assert accessories.price == Decimal.new(42)
       assert accessories.name == "Extra Large french fries"
@@ -150,17 +174,29 @@ defmodule Haberdash.InventoryTest do
       assert {:error, %Ecto.Changeset{}} = Inventory.create_accessories(@invalid_attrs)
     end
 
-    test "update_accessories/2 with valid data updates the accessories", %{franchise: franchise, product: product} do
+    test "update_accessories/2 with valid data updates the accessories", %{
+      franchise: franchise,
+      product: product
+    } do
       accessories = accessories_fixture(%{franchise_id: franchise.id, product_id: product.id})
-      assert {:ok, %Accessories{} = accessories} = Inventory.update_accessories(accessories, @update_attrs)
+
+      assert {:ok, %Accessories{} = accessories} =
+               Inventory.update_accessories(accessories, @update_attrs)
+
       assert accessories.franchise_id == franchise.id
       assert accessories.price == Decimal.new(43)
       assert accessories.name == "some updated title"
     end
 
-    test "update_accessories/2 with invalid data returns error changeset", %{franchise: franchise, product: product} do
+    test "update_accessories/2 with invalid data returns error changeset", %{
+      franchise: franchise,
+      product: product
+    } do
       accessories = accessories_fixture(%{franchise_id: franchise.id, product_id: product.id})
-      assert {:error, %Ecto.Changeset{}} = Inventory.update_accessories(accessories, @invalid_attrs)
+
+      assert {:error, %Ecto.Changeset{}} =
+               Inventory.update_accessories(accessories, @invalid_attrs)
+
       assert accessories == Inventory.get_accessories!(accessories.id)
     end
 
@@ -170,7 +206,10 @@ defmodule Haberdash.InventoryTest do
       assert_raise Ecto.NoResultsError, fn -> Inventory.get_accessories!(accessories.id) end
     end
 
-    test "change_accessories/1 returns a accessories changeset", %{franchise: franchise, product: product} do
+    test "change_accessories/1 returns a accessories changeset", %{
+      franchise: franchise,
+      product: product
+    } do
       accessories = accessories_fixture(%{franchise_id: franchise.id, product_id: product.id})
       assert %Ecto.Changeset{} = Inventory.change_accessories(accessories)
     end

@@ -12,6 +12,5 @@ defmodule Haberdash.Repo.Migrations.CreateCollection do
     end
 
     create unique_index(:collection, [:name, :franchise_id])
-
   end
 end

@@ -7,7 +7,6 @@ defmodule Haberdash.Repo.Migrations.ApiKey do
       add :api_key, :string, null: false
       add :developer_id, references(:developer, type: :binary_id)
       timestamps(type: :utc_datetime_usec)
-
     end
   end
 end
