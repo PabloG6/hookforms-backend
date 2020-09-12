@@ -7,20 +7,6 @@ defmodule HaberdashWeb.OrdersControllerTest do
   alias Haberdash.Transactions.Orders
   @auth_header "haberdash-api-key"
 
-  @update_attrs %{
-    customer_id: "some updated customer_id",
-    drop_off_address: "some updated drop_off_address",
-    drop_off_location: [],
-    franchise_id: "some updated franchise_id",
-    items: []
-  }
-  @invalid_attrs %{
-    customer_id: nil,
-    drop_off_address: nil,
-    drop_off_location: nil,
-    franchise_id: nil,
-    items: nil
-  }
 
   setup %{conn: conn} do
     developer = insert(:developer)
@@ -62,7 +48,6 @@ defmodule HaberdashWeb.OrdersControllerTest do
     } do
       items = %{items: [%{id: product.id}, %{id: accessories.id}]}
       conn = post(conn, Routes.orders_path(conn, :create), orders: items)
-      IO.inspect(json_response(conn, 201)["data"])
       assert %{"id" => id} = json_response(conn, 201)["data"]
     end
 
@@ -72,7 +57,7 @@ defmodule HaberdashWeb.OrdersControllerTest do
       accessories: accessories,
       franchise: franchise
     } do
-      product_accessories =
+      _ =
         insert(:product_accessories, %{product_id: product.id, accessories_id: accessories.id})
 
       items = %{
@@ -126,13 +111,9 @@ defmodule HaberdashWeb.OrdersControllerTest do
   end
 
   describe "update orders" do
-    setup [:init]
+    setup [:init, :create_order]
 
-    test "renders orders when data is valid", %{conn: conn, product: product} do
-      items = %{items: [%{id: "prod_" <> product.id}]}
-      conn = post(conn, Routes.orders_path(conn, :create), orders: items)
-      assert %{"id" => id} = json_response(conn, 201)["data"]
-      product = insert(:product, %{franchise_id: product.franchise_id})
+    test "appends a new order to an existing order", %{conn: conn, product: product, id: id} do
 
       conn =
         post(conn, Routes.orders_path(conn, :create, id),
@@ -141,6 +122,12 @@ defmodule HaberdashWeb.OrdersControllerTest do
 
       assert %{"id" => ^id, "items" => items} = json_response(conn, 200)["data"]
       assert length(items) == 2
+    end
+
+    test "updates the options of an existing order", %{conn: conn, accessories: accessories, product: product, id: id, orders: orders} do
+        _ =
+        %{"items" => [first_order | _]} = orders
+        conn = post(conn, Routes.orders_path(conn, :update, id), orders: %{id: id, items: %{id: first_order["id"], accessories: [%{id: "acc_"<>accessories.id}]}})
     end
 
     test "renders errors when data is invalid", %{conn: conn, orders: orders} do
@@ -158,5 +145,11 @@ defmodule HaberdashWeb.OrdersControllerTest do
         get(conn, Routes.orders_path(conn, :show, orders))
       end
     end
+  end
+
+  def create_order(%{product: product, franchise: franchise}) do
+    {:ok, pid} = Transactions.OrderRegistry.whereis_name(franchise.id)
+    {:ok, %{"id" => id} = orders} = Transactions.OrdersWorker.create_order(pid, %{items: [%{id: "prod_" <> product.id}], franchise_id: franchise.id})
+    {:ok, id: id, orders: orders}
   end
 end
