@@ -1,5 +1,4 @@
 defmodule HaberdashWeb.ConnCase do
-  alias Haberdash.{Account, Inventory, Business}
 
   @moduledoc """
   This module defines the test case to be used by
