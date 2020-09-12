@@ -30,11 +30,13 @@ defmodule Haberdash.Transactions.OrdersWorker do
     GenServer.call(pid, {:create_order, order})
   end
 
-  @spec update_order(pid :: pid(), id :: Ecto.UUID.t(), order :: map()) :: any
-  def update_order(pid, id, order) do
-    GenServer.call(pid, {:update_order, id, order})
+  @spec append_order(pid :: pid(), id :: Ecto.UUID.t(), order :: map()) :: any
+  def append_order(pid, id, order) do
+    GenServer.call(pid, {:append_order, id, order})
   end
 
+
+  def modify_order(pid, id, order), do: GenServer.call(pid, {:modify_order, id, order})
   def delete_order(pid, id) do
     GenServer.cast(pid, {:delete_order, id})
   end
@@ -45,7 +47,7 @@ defmodule Haberdash.Transactions.OrdersWorker do
   @impl true
   def handle_call({:create_order, params}, _from, state) do
     id = Ecto.UUID.generate()
-    order = stringify_map(params, 0)
+    order = stringify_map(params)
     order = Orders.create_order_list(order) |> Map.put("id", id)
 
     state = Map.put(state, id, Map.put(order, "id", id))
@@ -54,9 +56,16 @@ defmodule Haberdash.Transactions.OrdersWorker do
   end
 
   @impl true
-  def handle_call({:update_order, id, params}, _from, state) do
+  def handle_call({:append_order, id, params}, _from, state) do
     new_orders = stringify_map(params)
-    updated_orders = Orders.create_order_list(state[id], new_orders)
+    Logger.info("id: #{inspect(state["id"])}")
+    updated_orders = Orders.append_order_list(state[id], new_orders)
+    {:reply, {:ok, updated_orders}, state}
+  end
+
+  def handle_call({:modify_order, id, params}, _from, state) do
+    string_params = stringify_map(params)
+    updated_orders = Orders.modify_order_list(state[id], string_params)
     {:reply, {:ok, updated_orders}, state}
   end
 
@@ -79,4 +88,6 @@ defmodule Haberdash.Transactions.OrdersWorker do
         {:reply, {:error, changeset}, state}
     end
   end
+
+
 end
