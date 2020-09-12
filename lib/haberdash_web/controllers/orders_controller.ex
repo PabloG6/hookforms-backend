@@ -3,6 +3,7 @@ defmodule HaberdashWeb.OrdersController do
   alias Haberdash.Transactions
   alias Haberdash.Transactions.Orders
   import Poison
+  require Logger
   action_fallback HaberdashWeb.FallbackController
 
   @process_not_found "The existing process that manages your orders seems to be down. Please give us a few minutes to get it back up again."
@@ -13,6 +14,36 @@ defmodule HaberdashWeb.OrdersController do
     render(conn, "index.json", orders: orders)
   end
 
+  def create(conn, %{"id" => order_id, "orders" => orders_params}) do
+    franchise = conn.private[:franchise]
+    Logger.info("updating created platform")
+    with {:ok, pid} <- Transactions.OrderRegistry.whereis_name(franchise.id),
+         {:ok, order_list} <-
+           Transactions.OrdersWorker.append_order(
+             pid,
+             order_id,
+             orders_params
+           ) do
+      conn
+      |> put_resp_content_type("application/json")
+      |> send_resp(
+        :ok,
+        encode!(%{
+          code: :order_instance_created,
+          message: @order_instance_created,
+          data: order_list
+        })
+      )
+    else
+      {:error, :undefined} ->
+        conn
+        |> put_resp_content_type("application/json")
+        |> send_resp(
+          :not_found,
+          encode!(%{code: :process_not_found, message: @process_not_found})
+        )
+    end
+  end
   def create(conn, %{"orders" => orders_params}) do
     franchise = conn.private[:franchise]
 
@@ -43,36 +74,7 @@ defmodule HaberdashWeb.OrdersController do
     end
   end
 
-  def create(conn, %{"id" => order_id, "orders" => orders_params}) do
-    franchise = conn.private[:franchise]
 
-    with {:ok, pid} <- Transactions.OrderRegistry.whereis_name(franchise.id),
-         {:ok, order_list} <-
-           Transactions.OrdersWorker.update_order(
-             pid,
-             order_id,
-             orders_params
-           ) do
-      conn
-      |> put_resp_content_type("application/json")
-      |> send_resp(
-        :created,
-        encode!(%{
-          code: :order_instance_created,
-          message: @order_instance_created,
-          data: order_list
-        })
-      )
-    else
-      {:error, :undefined} ->
-        conn
-        |> put_resp_content_type("application/json")
-        |> send_resp(
-          :not_found,
-          encode!(%{code: :process_not_found, message: @process_not_found})
-        )
-    end
-  end
 
 
 
@@ -85,7 +87,7 @@ defmodule HaberdashWeb.OrdersController do
     franchise = conn.private[:franchise]
 
     with {:ok, pid} <- Transactions.OrderRegistry.whereis_name(franchise.id),
-         {:ok, _} <- Transactions.OrdersWorker.update_order(pid, id, orders_params) do
+         {:ok, _} <- Transactions.OrdersWorker.modify_order(pid, id, orders_params) do
       conn
       |> put_status(:created)
     end

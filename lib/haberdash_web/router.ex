@@ -127,9 +127,7 @@ defmodule HaberdashWeb.Router do
     send_resp(conn, 404, encode!(%{message: message, code: :inventory_not_found}))
   end
 
-  def handle_errors(%Plug.Conn{} = conn, errors) do
-    IO.inspect(errors)
-
+  def handle_errors(%Plug.Conn{} = conn, _) do
     send_resp(
       conn,
       conn.status,
