@@ -14,7 +14,6 @@ defmodule Haberdash.Transactions.Orders do
     field :delivery_type, Haberdash.Transactions.DeliveryType, default: :pickup
     belongs_to :franchise, Business.Franchise
     embeds_many :items, Transactions.OrderItems
-
     timestamps()
   end
 
@@ -47,15 +46,74 @@ defmodule Haberdash.Transactions.Orders do
   """
 
   def create_order_list(%{"items" => items} = orders) when is_map(orders) do
-    %{orders | "items" => Enum.map(items, &create_order/1)}
+    Logger.info("items #{inspect(items)}")
+    orders = %{orders | "items" => Enum.map(items, &create_order/1)}
+    Map.put(
+      orders,
+      "total",
+      reduce(orders, 0, fn {k, v}, acc ->
+        case {k, v} do
+          {"price", v} -> v + acc
+          _ -> acc
+        end
+      end)
+    )
   end
 
   @doc """
   adds new order(s) to an existing order.
   """
-  def create_order_list(%{"items" => items} = orders, %{"items" => updated_items}) do
-    %{orders | "items" => items ++ Enum.map(updated_items, &create_order/1)}
+  def append_order_list(%{"items" => items} = orders, %{"items" => updated_items}) do
+   orders = %{orders | "items" => items ++ Enum.map(updated_items, &create_order/1)}
+   Map.put(
+      orders,
+      "total",
+      reduce(orders, 0, fn {k, v}, acc ->
+        case {k, v} do
+          {"price", v} -> v + acc
+          _ -> acc
+        end
+      end)
+    )
   end
+
+  def modify_order_list(%{"items" => previous_orders} = orders, %{"items" => updated_orders}) do
+    # iterate over the previous orders, compare them to the new orders and pass them to modify orders function
+    orders = %{
+      orders
+      | "items" =>
+          Enum.map(previous_orders, fn current_order ->
+            modify_order(
+              current_order,
+              Enum.find(updated_orders, &(&1["id"] == current_order["id"]))
+            )
+          end)
+    }
+
+    Map.put(
+      orders,
+      "total",
+      reduce(orders, 0, fn {k, v}, acc ->
+        case {k, v} do
+          {"price", v} -> v + acc
+          _ -> acc
+        end
+      end)
+    )
+  end
+
+  defp modify_order(%{"id" => id}, nil),
+    do:
+      raise(Exception.InventoryNotFound,
+        message: "No order of id: #{id} found in this order instance"
+      )
+
+  defp modify_order(current_order, %{"accessories" => accessories}) do
+    Map.put(current_order, "accessories", Enum.map(accessories, &create_order/1))
+  end
+
+  defp modify_order(_, _),
+    do: raise(Exception.InventoryNotFound, message: "Malformed data sent to endpoint")
 
   def validate_accessories_length() do
   end
@@ -76,7 +134,7 @@ defmodule Haberdash.Transactions.Orders do
   defp create_order(%{"id" => "prod_" <> id} = map) when is_map(map) do
     Inventory.get_products!(id)
     |> stringify_map
-    |> Map.merge(%{"id" => Ecto.UUID.generate(), "inventory_id" => id})
+    |> Map.merge(%{"id" => Ecto.UUID.generate(), "inventory_id" => "prod_" <> id})
   rescue
     Ecto.NoResultsError ->
       raise Exception.InventoryNotFound, id
@@ -85,13 +143,13 @@ defmodule Haberdash.Transactions.Orders do
   defp create_order(%{"id" => "acc_" <> id} = map) when is_map(map) do
     Inventory.get_accessories!(id)
     |> stringify_map
-    |> Map.merge(%{"id" => Ecto.UUID.generate(), "inventory_id" => id})
+    |> Map.merge(%{"id" => Ecto.UUID.generate(), "inventory_id" => "prod_" <> id})
   rescue
     Ecto.NoResultsError ->
       raise Exception.InventoryNotFound, id
   end
 
-  defp create_order(id),
+  defp create_order(%{"id" => id}),
     do: raise(Exception.InventoryNotFound, message: "Malformed id: no prefix found for #{id}")
 
   defp create_order(prod_id, %{"id" => "acc_" <> id}) do
