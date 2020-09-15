@@ -6,11 +6,12 @@ defmodule Haberdash.Repo.Migrations.CreateOrders do
 
     create table(:orders, primary_key: false) do
       add :id, :binary_id, primary_key: true
-      add :drop_off_address, :map
+      add :formatted_address, :string
+      add :customer_id, references(:customer, type: :binary_id)
+      add :coordinates, {:array, :float}
       add :delivery_type, Haberdash.Transactions.DeliveryType.type()
       add :franchise_id, references(:franchise, type: :binary_id)
       add :items, {:array, :map}, null: false
-
       timestamps()
     end
   end

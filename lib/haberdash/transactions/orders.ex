@@ -4,13 +4,15 @@ defmodule Haberdash.Transactions.Orders do
   import Ecto.Changeset
   require Logger
   alias Haberdash.Exception
-  alias Haberdash.{Business, Inventory, Navigation, Transactions, Assoc}
+  alias Haberdash.{Business, Inventory, Navigation, Transactions, Assoc, Account}
   alias Haberdash.Repo
   @primary_key {:id, :binary_id, autogenerate: true}
   @derive {Poison.Encoder, except: [:__struct__, :__meta__, :franchise]}
   @foreign_key_type :binary_id
   schema "orders" do
-    embeds_one :drop_off_address, Navigation.Location
+    belongs_to :customer, Account.Customer
+    field :formated_address, :string
+    embeds_one :coordinates, Navigation.Coordinates
     field :delivery_type, Haberdash.Transactions.DeliveryType, default: :pickup
     belongs_to :franchise, Business.Franchise
     embeds_many :items, Transactions.OrderItems
