@@ -5,8 +5,8 @@ defmodule Haberdash.Repo.Migrations.CreateCustomer do
     create table(:customer, primary_key: false) do
       add :id, :binary_id, primary_key: true
       add :name, :string
-      add :address, :string
-      add :coordinates, {:array, :integer}
+      add :formatted_address, :string
+      add :coordinates, {:array, :float}
       add :email_address, :string
       add :phone_number, :string
       add :is_activated, :boolean, default: false, null: false
