@@ -1,12 +1,12 @@
 defmodule Haberdash.Account.Customer do
   use Ecto.Schema
   import Ecto.Changeset
-
+  alias Haberdash.{Navigation}
   @primary_key {:id, :binary_id, autogenerate: true}
   @foreign_key_type :binary_id
   schema "customer" do
-    field :address, :string
-    field :coordinates, {:array, :integer}
+    embeds_one :coordinates, Navigation.Coordinates
+    field :formatted_address, :string
     field :email_address, :string
     field :phone_number, :string
     field :is_activated, :boolean, default: false
@@ -34,6 +34,7 @@ defmodule Haberdash.Account.Customer do
       :is_email_confirmed,
       :is_phone_number_confirmed
     ])
+    |> put_password_hash()
     |> validate_required([
       :name,
       :coordinates,
@@ -43,5 +44,8 @@ defmodule Haberdash.Account.Customer do
       :is_email_confirmed,
       :is_phone_number_confirmed
     ])
+
   end
+
+  defp put_password_hash(changes), do: changes
 end
