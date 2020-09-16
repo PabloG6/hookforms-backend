@@ -21,8 +21,8 @@ defmodule Haberdash.Transactions.OrderSupervisor do
     Logger.info(inspect(self()))
 
     DynamicSupervisor.start_child(__MODULE__, %{
-      id: Transactions.OrdersWorker,
-      start: {Haberdash.Transactions.OrdersWorker, :start_link, [[id: id]]},
+      id: Transactions.OrderWorker,
+      start: {Haberdash.Transactions.OrderWorker, :start_link, [[id: id]]},
       restart: :transient
     })
   end

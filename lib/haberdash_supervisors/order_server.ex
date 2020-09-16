@@ -1,4 +1,4 @@
-defmodule Haberdash.Transactions.OrdersWorker do
+defmodule Haberdash.Transactions.OrderWorker do
   use GenServer
   use Haberdash.MapHelpers
   alias Haberdash.Transactions.Orders
@@ -35,6 +35,9 @@ defmodule Haberdash.Transactions.OrdersWorker do
     GenServer.call(pid, {:append_order, id, order})
   end
 
+  def show_order(pid, id) do
+    GenServer.call(pid, {:show_order, id})
+  end
 
   def modify_order(pid, id, order), do: GenServer.call(pid, {:modify_order, id, order})
   def delete_order(pid, id) do
@@ -69,6 +72,13 @@ defmodule Haberdash.Transactions.OrdersWorker do
     {:reply, {:ok, updated_orders}, state}
   end
 
+  def handle_call({:show_order, id}, _from, state) do
+    case Map.fetch(state, id) do
+      {:ok, order} -> {:reply, {:ok, order}, state}
+      :error -> {:reply, {:error, :not_found}, state}
+    end
+  end
+
   @impl true
   def handle_cast({:delete_order, id}, state) do
     state = Map.delete(state, id)
@@ -88,6 +98,13 @@ defmodule Haberdash.Transactions.OrdersWorker do
         {:reply, {:error, changeset}, state}
     end
   end
+
+  @impl true
+  def terminate(_reason, _state) do
+
+  end
+
+
 
 
 end

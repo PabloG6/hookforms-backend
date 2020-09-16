@@ -11,7 +11,7 @@ defmodule Haberdash.Transactions.Orders do
   @foreign_key_type :binary_id
   schema "orders" do
     belongs_to :customer, Account.Customer
-    field :formated_address, :string
+    field :formatted_address, :string
     embeds_one :coordinates, Navigation.Coordinates
     field :delivery_type, Haberdash.Transactions.DeliveryType, default: :pickup
     belongs_to :franchise, Business.Franchise
@@ -48,7 +48,6 @@ defmodule Haberdash.Transactions.Orders do
   """
 
   def create_order_list(%{"items" => items} = orders) when is_map(orders) do
-    Logger.info("items #{inspect(items)}")
     orders = %{orders | "items" => Enum.map(items, &create_order/1)}
     Map.put(
       orders,
@@ -61,6 +60,8 @@ defmodule Haberdash.Transactions.Orders do
       end)
     )
   end
+
+  def create_order_list(_), do: raise Exception.IncorrectFormat
 
   @doc """
   adds new order(s) to an existing order.
@@ -78,6 +79,8 @@ defmodule Haberdash.Transactions.Orders do
       end)
     )
   end
+
+  def append_order_list(_, _), do: raise Exception.IncorrectFormat
 
   def modify_order_list(%{"items" => previous_orders} = orders, %{"items" => updated_orders}) do
     # iterate over the previous orders, compare them to the new orders and pass them to modify orders function
@@ -103,6 +106,9 @@ defmodule Haberdash.Transactions.Orders do
       end)
     )
   end
+
+  def modify_order_list(_, _), do: raise Exception.IncorrectFormat
+
 
   defp modify_order(%{"id" => id}, nil),
     do:
