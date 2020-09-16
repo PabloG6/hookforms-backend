@@ -75,7 +75,9 @@ defmodule HaberdashWeb.Router do
 
   scope "/api", HaberdashWeb do
     pipe_through [:api, :api_key, :api_key_franchise]
-    resources "/orders", OrdersController, except: [:new, :edit]
+    resources "/orders", OrdersController, except: [:new, :edit, :update]
+    put "/orders/:id", OrdersController, :update
+    patch "/orders/:id", OrdersController, :patch
     post "/orders/:id", OrdersController, :create
   end
 
@@ -126,6 +128,14 @@ defmodule HaberdashWeb.Router do
       }) do
     send_resp(conn, 404, encode!(%{message: message, code: :inventory_not_found}))
   end
+
+  def handle_errors(%Plug.Conn{} = conn, %{
+    kind: _,
+    reason: %Exception.IncorrectFormat{message: message},
+    stack: _
+  }) do
+send_resp(conn, 500, encode!(%{message: message, code: :inventory_not_found}))
+end
 
   def handle_errors(%Plug.Conn{} = conn, _) do
     send_resp(
