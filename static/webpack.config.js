@@ -1,4 +1,5 @@
-path = require("path")
+const path = require("path")
+const autoprefixer = require("autoprefixer")
 module.exports =
 {
     entry: ["./styles.scss", "./app.ts"],
@@ -26,6 +27,13 @@ module.exports =
 
                     {
                         loader: 'extract-loader'
+                    },
+
+                    {
+                        loader: 'postcss-loader',
+                        options: {
+                            plugins: () => [autoprefixer()]
+                        }
                     },
 
                     { loader: 'css-loader' },
