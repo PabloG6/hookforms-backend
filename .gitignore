@@ -26,3 +26,13 @@ haberdash-*.tar
 # we ignore priv/static. You may want to comment
 # this depending on your deployment strategy.
 /priv/static/
+
+#ignore node_modules
+**/node_modules/**
+
+#ignore package-lock.json
+/static/**/package-lock.json
+package-lock.json
+**/tmp/**
+**/dev_tmp/**
+**/test_tmp/**

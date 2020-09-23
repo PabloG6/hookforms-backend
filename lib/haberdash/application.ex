@@ -21,7 +21,9 @@ defmodule Haberdash.Application do
        name: Haberdash.Transactions.OrderSupervisor, strategy: :one_for_one},
       {Haberdash.Listener.Franchise, name: Haberdash.Listener.Franchise},
       Haberdash.Account.Cache,
-      Haberdash.Auth.Cache
+      Haberdash.Auth.Cache,
+
+      Haberdash.Transactions.PersistOrderState
       # Start a worker by calling: Haberdash.Worker.start_link(arg)
       # {Haberdash.Worker, arg}
     ]

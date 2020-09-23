@@ -33,6 +33,9 @@ config :phoenix, :json_library, Jason
 config :bcrypt_elixir, log_rounds: 4
 config :google_maps, api_key: "AIzaSyC5nmClPzAlixLVy1rEY4PwHsx7ebQzMjw"
 
+
+config :haberdash,
+  folder_name: "tmp"
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.
 import_config "#{Mix.env()}.exs"

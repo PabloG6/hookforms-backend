@@ -22,6 +22,10 @@ config :haberdash, HaberdashWeb.Endpoint,
   check_origin: false,
   watchers: []
 
+config :haberdash,
+  folder_name: "dev_tmp"
+
+
 # ## SSL Support
 #
 # In order to use HTTPS in development, a self-signed

@@ -3,7 +3,7 @@ defmodule Haberdash.Transactions.OrderWorker do
   use Haberdash.MapHelpers
   alias Haberdash.Transactions.Orders
   alias Haberdash.Transactions
-
+  alias Haberdash.Transactions.PersistOrderState
   require Logger
 
   @doc """
@@ -13,12 +13,28 @@ defmodule Haberdash.Transactions.OrderWorker do
   def start_link(args) do
     id = Keyword.fetch!(args, :id)
     Logger.info("Starting order queue #{id} for #{__MODULE__}")
-    GenServer.start_link(__MODULE__, [], name: via_tuple(id))
+    GenServer.start_link(__MODULE__, [id: id], name: via_tuple(id))
   end
 
   @impl true
-  def init(_) do
-    {:ok, Map.new()}
+  def init(args) do
+    id = Keyword.fetch!(args, :id)
+    Process.flag(:trap_exit, true)
+    state =
+      case PersistOrderState.exists?(id) do
+        true ->
+          {:ok, state} = PersistOrderState.load(id)
+          state
+        false ->
+          IO.puts("doesn't exist creating right now")
+          PersistOrderState.create(id, %{"id" => id})
+          %{"id" => id}
+      end
+
+
+      {:ok, state}
+
+
   end
 
   defp via_tuple(id) do
@@ -40,6 +56,7 @@ defmodule Haberdash.Transactions.OrderWorker do
   end
 
   def modify_order(pid, id, order), do: GenServer.call(pid, {:modify_order, id, order})
+
   def delete_order(pid, id) do
     GenServer.cast(pid, {:delete_order, id})
   end
@@ -100,11 +117,14 @@ defmodule Haberdash.Transactions.OrderWorker do
   end
 
   @impl true
-  def terminate(_reason, _state) do
+  def terminate(_reason, state) do
+    Logger.info("terminating order server: #{state["id"]}")
+    IO.inspect state
 
+    PersistOrderState.dump(Map.get(state, "id"), state)
   end
 
-
-
-
+  def handle_info(_, _) do
+    Logger.info("terminating order server: idk why it's not terminating")
+  end
 end
