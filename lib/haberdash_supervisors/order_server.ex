@@ -124,7 +124,5 @@ defmodule Haberdash.Transactions.OrderWorker do
     PersistOrderState.dump(Map.get(state, "id"), state)
   end
 
-  def handle_info(_, _) do
-    Logger.info("terminating order server: idk why it's not terminating")
-  end
+
 end
