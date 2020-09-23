@@ -134,14 +134,7 @@ defmodule HaberdashWeb.Router do
     reason: %Exception.IncorrectFormat{message: message},
     stack: _
   }) do
-send_resp(conn, 500, encode!(%{message: message, code: :inventory_not_found}))
+    send_resp(conn, 404, encode!(%{message: message, code: :inventory_not_found}))
 end
 
-  def handle_errors(%Plug.Conn{} = conn, _) do
-    send_resp(
-      conn,
-      conn.status,
-      encode!(%{message: "Something went wrong", code: :inventory_not_found})
-    )
-  end
 end
