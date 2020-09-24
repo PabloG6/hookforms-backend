@@ -1,4 +1,5 @@
 use Mix.Config
+alias Haberdash.Transactions
 
 # Configure your database
 config :haberdash, Haberdash.Repo,
@@ -23,7 +24,11 @@ config :haberdash, HaberdashWeb.Endpoint,
   watchers: []
 
 config :haberdash,
-  folder_name: "dev_tmp"
+  folder_name: "_dev"
+
+
+
+
 
 
 # ## SSL Support

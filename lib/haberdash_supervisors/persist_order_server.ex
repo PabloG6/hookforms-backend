@@ -2,6 +2,8 @@ defmodule Haberdash.Transactions.PersistOrderState do
   @moduledoc """
   persistent binary marshalling and storage for
   """
+
+
   use GenServer
   require Logger
   def start_link(_) do
@@ -10,10 +12,10 @@ defmodule Haberdash.Transactions.PersistOrderState do
 
   def init(_) do
     folder_name = Application.fetch_env!(:haberdash, :folder_name)
-
-    Logger.info("initializing #{Path.join(__DIR__, folder_name)}")
-    File.mkdir(Path.join([__DIR__, folder_name]))
-    {:ok, Path.join([__DIR__, folder_name])}
+    path = Path.join([File.cwd!, "tmp", "orders", folder_name])
+    Logger.info("initializing #{path}")
+    File.mkdir_p(path)
+    {:ok, path}
   end
 
   @doc """

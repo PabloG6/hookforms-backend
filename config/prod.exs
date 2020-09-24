@@ -16,6 +16,7 @@ config :haberdash, HaberdashWeb.Endpoint,
 # Do not print debug messages in production
 config :logger, level: :info
 config :bcrypt_elixir, log_rounds: 12
+config :haberdash, folder_name: "_prod"
 # ## SSL Support
 #
 # To get SSL working, you will need to add the `https` key

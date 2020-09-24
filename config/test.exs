@@ -21,4 +21,4 @@ config :haberdash, HaberdashWeb.Endpoint,
 # Print only info and wa during test
 config :logger, level: :info
 config :haberdash,
-  folder_name: "test_tmp"
+  folder_name: "_test"
