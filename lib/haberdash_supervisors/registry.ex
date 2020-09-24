@@ -1,7 +1,7 @@
 defmodule Haberdash.Transactions.OrderRegistry do
   use GenServer
   require Logger
-
+  @name :orders
   @doc """
   a wrapper for gproc
   """
@@ -15,7 +15,7 @@ defmodule Haberdash.Transactions.OrderRegistry do
   def whereis_name(id) do
     # Logger.info("#{__MODULE__} searching for franchise")
     # GenServer.call(__MODULE__, {:whereis_name, id})
-    with pid when is_pid(pid) <- :gproc.where({:n, :l, id}) do
+    with pid when is_pid(pid) <- :gproc.where({:n, :l, {@name, id}}) do
       {:ok, pid}
     else
       :undefined ->
@@ -24,7 +24,7 @@ defmodule Haberdash.Transactions.OrderRegistry do
   end
 
   def via_tuple(id) do
-    {:via, :gproc, {:n, :l, id}}
+    {:via, :gproc, {:n, :l, {@name, id}}}
   end
 
   def register_name(franchise_id, pid) do
