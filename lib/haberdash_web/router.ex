@@ -5,6 +5,14 @@ defmodule HaberdashWeb.Router do
   require Logger
   import Poison
 
+  pipeline :browser do
+    plug :accepts, ["html"]
+    plug :fetch_session
+    plug :fetch_live_flash
+    plug :put_root_layout, {HaberdashWeb.LayoutView, :live}
+    plug :protect_from_forgery
+    plug :put_secure_browser_headers
+  end
   pipeline :api do
     plug :accepts, ["json"]
   end
@@ -45,6 +53,14 @@ defmodule HaberdashWeb.Router do
     pipe_through [:api, :auth, :franchise]
     resources "/keys", ApiKeyController, except: [:new, :edit, :index, :update]
     get "/keys/developer/:id", ApiKeyController, :index
+  end
+
+  scope "/", HaberdashWeb do
+    live "/checkout", CheckoutLive.Index, :index
+    live "/checkout/new", CheckoutLive.Index, :new
+    live "/checkout/:id/edit", CheckoutLive.Index, :edit
+    live "/checkout/:id", CheckoutLive.Show, :show
+    live "/checkout/:id/show/edit", CheckoutLive.Show, :edit
   end
 
   scope "/api", HaberdashWeb do
@@ -135,6 +151,9 @@ defmodule HaberdashWeb.Router do
     stack: _
   }) do
     send_resp(conn, 404, encode!(%{message: message, code: :inventory_not_found}))
-end
+  end
+
+  def handle_errors(conn, %{kind: _, reason: _, stack: _}), do: send_resp(conn, conn.status, encode!(%{message: "Something went wrong", code: :server_error}))
+
 
 end
