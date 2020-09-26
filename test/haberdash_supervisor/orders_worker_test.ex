@@ -27,10 +27,10 @@ defmodule Haberdash.OrderWorkerTest do
       price = OrderWorker.reduce(orders, 0,
       fn key_val, acc ->
         case key_val do
-          {"price", v} = tup ->
+          {"price", v} = _tup ->
               v + acc
 
-         tup ->
+         _tup ->
            acc
         end
       end)
@@ -52,6 +52,18 @@ defmodule Haberdash.OrderWorkerTest do
 
       assert new_price == accessories.price + new_product.price + product.price
 
+    end
+  end
+
+
+  describe "dump orders" do
+    test "destroy and restore state of orders in orderserver", %{product: product} do
+      assert {:ok, pid} = OrderSupervisor.start_child(product.franchise_id)
+      assert {:ok, orders} = OrderWorker.create_order(pid, %{items: [%{id: "prod_" <> product.id}]})
+      assert :ok = OrderSupervisor.terminate_child(product.franchise_id)
+      assert {:ok, pid} = OrderSupervisor.start_child(product.franchise_id)
+      assert {:ok, restored_orders} = OrderWorker.show_order(pid, orders["id"])
+      assert restored_orders == orders
     end
   end
 end

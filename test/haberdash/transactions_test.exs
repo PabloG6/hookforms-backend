@@ -155,4 +155,61 @@ defmodule Haberdash.TransactionsTest do
     test "submit_orders/1 with valid data", %{} do
     end
   end
+
+  describe "checkout" do
+    alias Haberdash.Transactions.Checkout
+
+    @valid_attrs %{}
+    @update_attrs %{}
+    @invalid_attrs %{}
+
+    def checkout_fixture(attrs \\ %{}) do
+      {:ok, checkout} =
+        attrs
+        |> Enum.into(@valid_attrs)
+        |> Transactions.create_checkout()
+
+      checkout
+    end
+
+    test "list_checkout/0 returns all checkout" do
+      checkout = checkout_fixture()
+      assert Transactions.list_checkout() == [checkout]
+    end
+
+    test "get_checkout!/1 returns the checkout with given id" do
+      checkout = checkout_fixture()
+      assert Transactions.get_checkout!(checkout.id) == checkout
+    end
+
+    test "create_checkout/1 with valid data creates a checkout" do
+      assert {:ok, %Checkout{} = checkout} = Transactions.create_checkout(@valid_attrs)
+    end
+
+    test "create_checkout/1 with invalid data returns error changeset" do
+      assert {:error, %Ecto.Changeset{}} = Transactions.create_checkout(@invalid_attrs)
+    end
+
+    test "update_checkout/2 with valid data updates the checkout" do
+      checkout = checkout_fixture()
+      assert {:ok, %Checkout{} = checkout} = Transactions.update_checkout(checkout, @update_attrs)
+    end
+
+    test "update_checkout/2 with invalid data returns error changeset" do
+      checkout = checkout_fixture()
+      assert {:error, %Ecto.Changeset{}} = Transactions.update_checkout(checkout, @invalid_attrs)
+      assert checkout == Transactions.get_checkout!(checkout.id)
+    end
+
+    test "delete_checkout/1 deletes the checkout" do
+      checkout = checkout_fixture()
+      assert {:ok, %Checkout{}} = Transactions.delete_checkout(checkout)
+      assert_raise Ecto.NoResultsError, fn -> Transactions.get_checkout!(checkout.id) end
+    end
+
+    test "change_checkout/1 returns a checkout changeset" do
+      checkout = checkout_fixture()
+      assert %Ecto.Changeset{} = Transactions.change_checkout(checkout)
+    end
+  end
 end

@@ -1,0 +1,17 @@
+<h1>Show Checkout</h1>
+
+<%= if @live_action in [:edit] do %>
+  <%= live_modal @socket, HaberdashWeb.CheckoutLive.FormComponent,
+    id: @checkout.id,
+    title: @page_title,
+    action: @live_action,
+    checkout: @checkout,
+    return_to: Routes.checkout_show_path(@socket, :show, @checkout) %>
+<% end %>
+
+<ul>
+
+</ul>
+
+<span><%= live_patch "Edit", to: Routes.checkout_show_path(@socket, :edit, @checkout), class: "button" %></span>
+<span><%= live_redirect "Back", to: Routes.checkout_index_path(@socket, :index) %></span>

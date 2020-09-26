@@ -1,0 +1,33 @@
+<h1>Listing Checkout</h1>
+
+<%= if @live_action in [:new, :edit] do %>
+  <%= live_modal @socket, HaberdashWeb.CheckoutLive.FormComponent,
+    id: @checkout.id || :new,
+    title: @page_title,
+    action: @live_action,
+    checkout: @checkout,
+    return_to: Routes.checkout_index_path(@socket, :index) %>
+<% end %>
+
+<table>
+  <thead>
+    <tr>
+
+      <th></th>
+    </tr>
+  </thead>
+  <tbody id="checkout">
+    <%= for checkout <- @checkout_collection do %>
+      <tr id="checkout-<%= checkout.id %>">
+
+        <td>
+          <span><%= live_redirect "Show", to: Routes.checkout_show_path(@socket, :show, checkout) %></span>
+          <span><%= live_patch "Edit", to: Routes.checkout_index_path(@socket, :edit, checkout) %></span>
+          <span><%= link "Delete", to: "#", phx_click: "delete", phx_value_id: checkout.id, data: [confirm: "Are you sure?"] %></span>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<span><%= live_patch "New Checkout", to: Routes.checkout_index_path(@socket, :new) %></span>
