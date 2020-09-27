@@ -22,8 +22,8 @@ defmodule Haberdash.Application do
       {Haberdash.Listener.Franchise, name: Haberdash.Listener.Franchise},
       Haberdash.Account.Cache,
       Haberdash.Auth.Cache,
-
-      Haberdash.Transactions.PersistOrderState
+      Haberdash.Transactions.PersistOrderState,
+      Haberdash.Transactions.PersistCheckoutState,
       # Start a worker by calling: Haberdash.Worker.start_link(arg)
       # {Haberdash.Worker, arg}
     ]
