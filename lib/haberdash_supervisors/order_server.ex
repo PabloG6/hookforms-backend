@@ -5,10 +5,38 @@ defmodule Haberdash.Transactions.OrderWorker do
   alias Haberdash.Transactions
   alias Haberdash.Transactions.PersistOrderState
   require Logger
+  @name :orders
 
   @doc """
   Stores all incomplete orders in a map with randomly generated ids.
   """
+  defp via_tuple(id) do
+    {:via, :gproc, {:n, :l, {@name, id}}}
+  end
+
+  @spec create_order(pid :: pid(), order :: map()) :: {:ok, Ecto.UUID.t(), map()}
+  def create_order(pid, order) do
+    GenServer.call(pid, {:create_order, order})
+  end
+
+  @spec append_order(pid :: pid(), id :: Ecto.UUID.t(), order :: map()) :: any
+  def append_order(pid, id, order) do
+    GenServer.call(pid, {:append_order, id, order})
+  end
+
+  def show_order(pid, id) do
+    GenServer.call(pid, {:show_order, id})
+  end
+
+  def modify_order(pid, id, order), do: GenServer.call(pid, {:modify_order, id, order})
+
+  def delete_order(pid, id) do
+    GenServer.cast(pid, {:delete_order, id})
+  end
+
+  def cast_map(map), do: stringify_map(map)
+
+  # SERVER STUFF
 
   def start_link(args) do
     id = Keyword.fetch!(args, :id)
@@ -37,39 +65,11 @@ defmodule Haberdash.Transactions.OrderWorker do
 
   end
 
-  defp via_tuple(id) do
-    {:via, :gproc, {:n, :l, id}}
-  end
-
-  @spec create_order(pid :: pid(), order :: map()) :: {:ok, Ecto.UUID.t(), map()}
-  def create_order(pid, order) do
-    GenServer.call(pid, {:create_order, order})
-  end
-
-  @spec append_order(pid :: pid(), id :: Ecto.UUID.t(), order :: map()) :: any
-  def append_order(pid, id, order) do
-    GenServer.call(pid, {:append_order, id, order})
-  end
-
-  def show_order(pid, id) do
-    GenServer.call(pid, {:show_order, id})
-  end
-
-  def modify_order(pid, id, order), do: GenServer.call(pid, {:modify_order, id, order})
-
-  def delete_order(pid, id) do
-    GenServer.cast(pid, {:delete_order, id})
-  end
-
-  def cast_map(map), do: stringify_map(map)
-
-  # SERVER STUFF
   @impl true
   def handle_call({:create_order, params}, _from, state) do
     id = Ecto.UUID.generate()
     order = stringify_map(params)
     order = Orders.create_order_list(order) |> Map.put("id", id)
-
     state = Map.put(state, id, Map.put(order, "id", id))
 
     {:reply, {:ok, order}, state}

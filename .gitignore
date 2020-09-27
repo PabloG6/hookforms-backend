@@ -36,3 +36,5 @@ package-lock.json
 **/tmp/**
 **/dev_tmp/**
 **/test_tmp/**
+
+mix.lock

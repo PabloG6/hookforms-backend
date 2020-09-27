@@ -21,4 +21,11 @@ defmodule HaberdashWeb.FallbackController do
     |> put_view(HaberdashWeb.ErrorView)
     |> render(:"404")
   end
+
+  def call(conn, {:error, :undefined}) do
+    conn
+    |> put_status(:not_found)
+    |> put_view(HaberdashWeb.ErrorView)
+    |> render(:"404")
+  end
 end

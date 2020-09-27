@@ -1,8 +1,8 @@
 defmodule HaberdashWeb.OrdersController do
   use HaberdashWeb, :controller
   alias Haberdash.Transactions
-  alias Haberdash.Transactions.Orders
   import Poison
+  import Phoenix.LiveView.Controller
   require Logger
   action_fallback HaberdashWeb.FallbackController
 
@@ -46,7 +46,21 @@ defmodule HaberdashWeb.OrdersController do
     end
   end
 
+  # creates a checkout instance, not sure where to go to from here.
 
+  def create(conn, %{"id" => id}) do
+    franchise = conn.private[:franchise]
+    Logger.info("creating a checkout instance")
+    with {:ok, pid} <- Transactions.OrderRegistry.whereis_name(franchise.id),
+          {:ok, order} <- Transactions.OrderWorker.show_order(pid, id) do
+
+          live_render(conn, HaberdashWeb.CheckoutLive.Index, session: %{"orders" => order})
+          else
+            err ->
+              Logger.debug("unknown error occured #{inspect(err)}")
+              err
+    end
+  end
 
 
 

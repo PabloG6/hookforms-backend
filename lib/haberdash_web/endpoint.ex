@@ -7,7 +7,7 @@ defmodule HaberdashWeb.Endpoint do
   @session_options [
     store: :cookie,
     key: "_haberdash_key",
-    signing_salt: "OX0H4JqI"
+    signing_salt: "bR28o2vZ87kTOHVLdVjprphopJ2kdSC5KWDaEYJux5i2iQ1s1hbJskoWWtotGjvq"
   ]
 
   socket "/socket", HaberdashWeb.UserSocket,

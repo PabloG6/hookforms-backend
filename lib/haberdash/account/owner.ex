@@ -1,7 +1,7 @@
 defmodule Haberdash.Account.Owner do
   use Ecto.Schema
   import Ecto.Changeset
-  alias Haberdash.{Business}
+  alias Haberdash.{Business, Account}
   @primary_key {:id, :binary_id, autogenerate: true}
   @derive {Poison.Encoder, except: [:__struct__, :__meta__]}
   schema "owner" do
@@ -10,6 +10,7 @@ defmodule Haberdash.Account.Owner do
     field :phone_number, :string
     field :password, :string, virtual: true
     field :password_hash, :string
+    has_many :developer, Account.Developer
     has_one :franchise, Business.Franchise
     timestamps()
   end

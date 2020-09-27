@@ -1,6 +1,7 @@
 defmodule Haberdash.Transactions.OrderItems do
   use Ecto.Schema
   import Ecto.Changeset
+  @derive [Poison.Encoder]
   alias Haberdash.{Transactions}
   @primary_key {:id, :binary_id, autogenerate: true}
   embedded_schema do

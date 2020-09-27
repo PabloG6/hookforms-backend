@@ -6,7 +6,7 @@ defmodule Haberdash.Factory do
     %Account.Owner{
       name: Faker.Person.name(),
       email: Faker.Internet.email(),
-      password: Ecto.UUID.generate(),
+      password_hash: Ecto.UUID.generate() |> Bcrypt.hash_pwd_salt,
       phone_number: "+#{Faker.Phone.EnUs.phone()}"
     }
   end
@@ -17,7 +17,7 @@ defmodule Haberdash.Factory do
     %Account.Developer{
       name: Faker.Person.name(),
       email: Faker.Internet.email(),
-      password: Ecto.UUID.generate(),
+      password_hash: Ecto.UUID.generate() |> Bcrypt.hash_pwd_salt,
       owner_id: owner.id
     }
   end

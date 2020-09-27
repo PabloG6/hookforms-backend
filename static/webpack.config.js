@@ -4,7 +4,6 @@ module.exports =
 {
     entry: ["./styles.scss", "./app.ts"],
     output: {
-        path: path.resolve(__dirname, 'dist'),
         filename: 'bundle.js',
     },
 
@@ -21,7 +20,7 @@ module.exports =
                     {
                         loader: 'file-loader',
                         options: {
-                            name: './styles/bundle.css',
+                            name: 'bundle.css',
                         }
                     },
 
@@ -29,14 +28,24 @@ module.exports =
                         loader: 'extract-loader'
                     },
 
+                
+
+                    { loader: 'css-loader' },
                     {
                         loader: 'postcss-loader',
                         options: {
-                            plugins: () => [autoprefixer()]
+                          postcssOptions: {
+                            //   plugins: [
+                            //       [
+                            //           'autoprefixer',
+                            //           {
+
+                            //           }
+                            //       ]
+                            //   ]
+                          }
                         }
                     },
-
-                    { loader: 'css-loader' },
                     {
                         loader: 'sass-loader',
                         options: {

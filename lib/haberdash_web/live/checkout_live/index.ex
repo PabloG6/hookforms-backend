@@ -1,18 +1,19 @@
 defmodule HaberdashWeb.CheckoutLive.Index do
   use HaberdashWeb, :live_view
-
+  require Logger
   alias Haberdash.Transactions
   alias Haberdash.Transactions.Checkout
 
   @impl true
-  def mount(_params, _session, socket) do
-    {:ok, assign(socket, :checkout_collection, list_checkout())}
+  def mount(_params, session, socket) do
+    Logger.info("inside a mount")
+    Logger.info("current session: #{inspect(session)}")
+    {:ok, assign(socket, :checkout_collection, list_checkout(session["orders"]))}
   end
 
-  @impl true
-  def handle_params(params, _url, socket) do
-    {:noreply, apply_action(socket, socket.assigns.live_action, params)}
-  end
+
+
+
 
   defp apply_action(socket, :edit, %{"id" => id}) do
     socket
@@ -40,7 +41,17 @@ defmodule HaberdashWeb.CheckoutLive.Index do
     {:noreply, assign(socket, :checkout_collection, list_checkout())}
   end
 
-  defp list_checkout do
-    Transactions.list_checkout()
+  defp list_checkout(%{"items" => items}) do
+
+     params =  Enum.map(items, fn opts -> struct(Haberdash.Transactions.OrderItems, Poison.Parser.parse!(Poison.encode!(opts), %{keys: :atoms!})) end)
+    Logger.debug("list_checkout: #{inspect(params)}")
+
+    params
   end
+
+  defp list_checkout do
+    Transactions.list_checkout
+  end
+
+
 end

@@ -10,6 +10,9 @@ use Mix.Config
 config :haberdash,
   ecto_repos: [Haberdash.Repo]
 
+config :phoenix,
+  template_engines: [leex: Phoenix.LiveView.Engine]
+
 # Configures the endpoint
 config :haberdash, HaberdashWeb.Endpoint,
   url: [host: "localhost"],
@@ -32,7 +35,6 @@ config :haberdash, Haberdash.Auth.Guardian,
 config :phoenix, :json_library, Jason
 config :bcrypt_elixir, log_rounds: 4
 config :google_maps, api_key: "AIzaSyC5nmClPzAlixLVy1rEY4PwHsx7ebQzMjw"
-
 
 
 # Import environment specific config. This must remain at the bottom

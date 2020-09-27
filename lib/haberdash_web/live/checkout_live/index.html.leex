@@ -19,7 +19,11 @@
   <tbody id="checkout">
     <%= for checkout <- @checkout_collection do %>
       <tr id="checkout-<%= checkout.id %>">
-
+      <ul>
+        <li>
+          <%=checkout.name%>
+        </li>
+      </ul>
         <td>
           <span><%= live_redirect "Show", to: Routes.checkout_show_path(@socket, :show, checkout) %></span>
           <span><%= live_patch "Edit", to: Routes.checkout_index_path(@socket, :edit, checkout) %></span>

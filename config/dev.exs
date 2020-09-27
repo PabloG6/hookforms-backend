@@ -21,7 +21,12 @@ config :haberdash, HaberdashWeb.Endpoint,
   debug_errors: true,
   code_reloader: true,
   check_origin: false,
-  watchers: []
+  watchers: [
+    npm: [
+      "start",
+      cd: Path.expand("../static", __DIR__)
+    ]
+  ]
 
 config :haberdash,
   folder_name: "_dev"
