@@ -37,7 +37,7 @@ defmodule HaberdashWeb.CheckoutLive.Index do
   def handle_event("delete", %{"id" => id}, socket) do
     checkout = Transactions.get_checkout!(id)
     {:ok, _} = Transactions.delete_checkout(checkout)
-
+    Logger.info("Delete called")
     {:noreply, assign(socket, :checkout_collection, list_checkout())}
   end
 
