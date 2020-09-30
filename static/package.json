@@ -33,9 +33,11 @@
     "webpack-dev-server": "^3.11.0"
   },
   "dependencies": {
+    "@stripe/stripe-js": "^1.9.0",
+    "@types/stripe": "^7.13.24",
     "material-components-web": "^7.0.0",
     "phoenix": "^1.5.5",
     "phoenix_live_view": "^0.14.7",
-    "stripe": "^8.102.0"
+    "stripe": "^8.104.0"
   }
 }
