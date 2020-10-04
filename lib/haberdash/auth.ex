@@ -21,6 +21,9 @@ defmodule Haberdash.Auth do
     Repo.all(from a in ApiKey, where: a.developer_id == ^id)
   end
 
+  def list_api_key(), do: Repo.all(ApiKey)
+
+
   @doc """
   Gets a single api_key.
 

@@ -1,5 +1,6 @@
 @use "@material/button/mdc-button";
 @use "@material/button";
+@use "styles/input";
 .primary-button {
     @include button.container-fill-color(darksalmon);
 }

@@ -1,8 +1,10 @@
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const path = require("path")
 module.exports =
 {
     entry: ["./styles.scss", "./app.ts"],
     output: {
+        path: path.resolve(__dirname, "../priv/static/js"),
         filename: 'bundle.js',
     },
 
@@ -16,30 +18,38 @@ module.exports =
             {
                 test: /\.s[ac]ss$/i,
                 use: [
+
+                    
                     {
                         loader: 'file-loader',
-                        options: {
-                            name: 'bundle.css',
-                        }
+                        
                     },
-
+                    
                     {
                         loader: 'extract-loader'
                     },
 
-                
+                    {
+                        loader: MiniCssExtractPlugin.loader,
+                        options: {
+                            esModule: true
+                        }
+                    },
 
                     { loader: 'css-loader' },
+
                     {
                         loader: 'postcss-loader',
                         options: {
-                          postcssOptions: {
-                              plugins: [
-                                  "autoprefixer"
-                              ]
-                          }
+                            postcssOptions: {
+                                plugins: [
+                                    "autoprefixer"
+                                ]
+                            }
                         }
                     },
+
+                    
                     {
                         loader: 'sass-loader',
                         options: {
@@ -64,6 +74,12 @@ module.exports =
 
         ]
     },
+
+    plugins: [
+        new MiniCssExtractPlugin(
+            { filename: "[name].css", chunkFilename: "[id].css" }
+        )
+    ],
     resolve: {
         extensions: ['.tsx', '.ts', '.js']
     }

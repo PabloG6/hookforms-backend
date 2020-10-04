@@ -6,5 +6,48 @@
   phx_change: "validate",
   phx_submit: "save" %>
 
+  <%= inputs_for f, :customer, fn fp -> %>
+    <label>
+      First Name
+      <%= text_input fp, :first_name, class: "contact-input" %>
+    </label>
+
+    <label>
+      Last Name
+      <%= text_input fp, :last_name, class: "contact-input" %>
+    </label>
+
+    <label>
+      Email Address
+      <%= text_input fp, :email_address, class: "contact-input" %>
+    </label>
+
+    <label>
+      Phone Number
+      <%= text_input fp, :phone_number, class: "contact-input" %>
+    </label>
+
+  <h2> <%= @subtitle %> </h2>
+    <label>
+      Street Address
+      <%= text_input fp, :street_address, class: "contact-input" %>
+    </label>
+
+    <label>
+      Apartment Number
+      <%= text_input fp, :apartment_number, class: "contact-input" %>
+    </label>
+
+    <label>
+      City
+      <%= text_input fp, :city, class: "contact-input"%>
+    </label>
+
+    <label>
+      Country
+      <%= text_input fp, :country, class: "contact-input"%>
+    </label>
+  <% end %>
+
   <%= submit "Save", phx_disable_with: "Saving..." %>
 </form>

@@ -1,4 +1,7 @@
 defmodule Haberdash.Transactions.OrderWorker do
+  @moduledoc """
+  Stores all incomplete orders in a map with randomly generated ids.
+  """
   use GenServer
   use Haberdash.MapHelpers
   alias Haberdash.Transactions.Orders
@@ -7,9 +10,7 @@ defmodule Haberdash.Transactions.OrderWorker do
   require Logger
   @name :orders
 
-  @doc """
-  Stores all incomplete orders in a map with randomly generated ids.
-  """
+
   defp via_tuple(id) do
     {:via, :gproc, {:n, :l, {@name, id}}}
   end
@@ -28,6 +29,10 @@ defmodule Haberdash.Transactions.OrderWorker do
     GenServer.call(pid, {:show_order, id})
   end
 
+
+  def all_orders(pid) do
+    GenServer.call(pid, :index_order)
+  end
   def modify_order(pid, id, order), do: GenServer.call(pid, {:modify_order, id, order})
 
   def delete_order(pid, id) do
@@ -94,6 +99,10 @@ defmodule Haberdash.Transactions.OrderWorker do
       {:ok, order} -> {:reply, {:ok, order}, state}
       :error -> {:reply, {:error, :not_found}, state}
     end
+  end
+
+  def handle_call(:index_order, _from, state) do
+    {:reply, {:ok, state}, state}
   end
 
   @impl true

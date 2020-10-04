@@ -6,13 +6,17 @@ defmodule Haberdash.Account.Customer do
   @foreign_key_type :binary_id
   schema "customer" do
     embeds_one :coordinates, Navigation.Coordinates
-    field :formatted_address, :string
+    field :street_address, :string
+    field :apartment_number, :string
+    field :city, :string
+    field :country, :string
     field :email_address, :string
     field :phone_number, :string
     field :is_activated, :boolean, default: false
     field :is_email_confirmed, :boolean, default: false
     field :is_phone_number_confirmed, :boolean, default: false
-    field :name, :string
+    field :first_name, :string
+    field :last_name, :string
     field :password, :string, virtual: true
     field :password_hash, :string
 
@@ -24,7 +28,9 @@ defmodule Haberdash.Account.Customer do
     customer
     |> cast(attrs, [
       :name,
-      :address,
+      :street_address,
+      :city,
+      :country,
       :coordinates,
       :email_address,
       :password,
@@ -48,4 +54,6 @@ defmodule Haberdash.Account.Customer do
   end
 
   defp put_password_hash(changes), do: changes
+
+
 end

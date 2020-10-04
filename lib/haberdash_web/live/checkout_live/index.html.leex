@@ -9,29 +9,22 @@
     return_to: Routes.checkout_index_path(@socket, :index) %>
 <% end %>
 
-<table>
-  <thead>
-    <tr>
 
-      <th></th>
-    </tr>
-  </thead>
-  <tbody id="checkout">
+
     <%= for checkout <- @checkout_collection do %>
-      <tr id="checkout-<%= checkout.id %>">
-      <ul>
         <li>
-          <%=checkout.name%>
+          <%= checkout.name %>
         </li>
-      </ul>
-        <td>
-          <span><%= live_redirect "Show", to: Routes.checkout_show_path(@socket, :show, checkout) %></span>
-          <span><%= live_patch "Edit", to: Routes.checkout_index_path(@socket, :edit, checkout) %></span>
-          <span><%= link "Delete", to: "#", phx_click: "delete", phx_value_id: checkout.id, data: [confirm: "Are you sure?"] %></span>
-        </td>
-      </tr>
-    <% end %>
-  </tbody>
-</table>
 
-<span><%= live_patch "New Checkout", to: Routes.checkout_index_path(@socket, :new) %></span>
+        <li>
+          <%= checkout.description %>
+        </li>
+        <li>
+          <%= checkout.price %>
+        </li>
+
+    <% end %>
+
+    <%= live_component @socket, FormComponent, id: :checkout_form, checkout: @checkout_collection%>
+
+<div id="card-elements"></div>

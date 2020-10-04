@@ -4,14 +4,18 @@ defmodule HaberdashWeb.CheckoutLive.FormComponent do
   alias Haberdash.Transactions
 
   @impl true
-  def update(%{checkout: checkout} = assigns, socket) do
-    changeset = Transactions.change_checkout(checkout)
-
+  def update(assigns, socket) do
+    changeset = Transactions.change_checkout(%Transactions.Checkout{})
+    IO.inspect changeset
     {:ok,
      socket
      |> assign(assigns)
-     |> assign(:changeset, changeset)}
+     |> assign(:changeset, changeset)
+     |> assign(:title, "Contact Information")
+     |> assign(:subtitle, "Delivery Address")
+    }
   end
+
 
   @impl true
   def handle_event("validate", %{"checkout" => checkout_params}, socket) do

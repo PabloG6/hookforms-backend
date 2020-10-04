@@ -1,6 +1,16 @@
-<main role="main" class="container">
-  <p class="alert alert-info" role="alert"></p>
-  <p class="alert alert-danger" role="alert"></p>
-  <%= @inner_content %>
-</main>
+<html>
+  <head>
+  <link phx-track-static rel="stylesheet" href="<%= Routes.static_path(@conn, "/js/main.css") %>"/>
+    <script defer phx-track-static type="text/javascript" src="<%= Routes.static_path(@conn, "/js/bundle.js") %>" ></script>
+  </head>
+  <body>
 
+      <main role="main" class="container">
+        <p class="alert alert-info" role="alert"></p>
+        <p class="alert alert-danger" role="alert"></p>
+        <%= @inner_content %>
+      </main>
+
+
+  </body>
+</html>
