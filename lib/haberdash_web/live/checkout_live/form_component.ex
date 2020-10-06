@@ -1,6 +1,6 @@
 defmodule HaberdashWeb.CheckoutLive.FormComponent do
   use HaberdashWeb, :live_component
-
+  require Logger
   alias Haberdash.Transactions
 
   @impl true
@@ -28,6 +28,7 @@ defmodule HaberdashWeb.CheckoutLive.FormComponent do
   end
 
   def handle_event("save", %{"checkout" => checkout_params}, socket) do
+    Logger.info("Check this shit out right here")
     save_checkout(socket, socket.assigns.action, checkout_params)
   end
 
