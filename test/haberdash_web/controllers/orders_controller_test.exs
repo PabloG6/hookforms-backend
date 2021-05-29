@@ -4,9 +4,9 @@ defmodule HaberdashWeb.OrdersControllerTest do
   alias Haberdash.Transactions
   alias Haberdash.Inventory
 
-  alias Haberdash.Transactions.Orders
+  alias Haberdash.Transactions.{Orders, OrdersWorker}
   @auth_header "haberdash-api-key"
-
+  @invalid_attrs %{}
 
   setup %{conn: conn} do
     developer = insert(:developer)
@@ -46,7 +46,7 @@ defmodule HaberdashWeb.OrdersControllerTest do
       product: product,
       accessories: accessories
     } do
-      items = %{items: [%{id: product.id}, %{id: accessories.id}]}
+      items = %{items: [%{id: "prod_" <> product.id}, %{id: "acc_" <> accessories.id}]}
       conn = post(conn, Routes.orders_path(conn, :create), orders: items)
       assert %{"id" => id} = json_response(conn, 201)["data"]
     end
@@ -57,7 +57,7 @@ defmodule HaberdashWeb.OrdersControllerTest do
       accessories: accessories,
       franchise: franchise
     } do
-      _ =
+      product_accessories =
         insert(:product_accessories, %{product_id: product.id, accessories_id: accessories.id})
 
       items = %{
@@ -116,7 +116,7 @@ defmodule HaberdashWeb.OrdersControllerTest do
     test "appends a new order to an existing order", %{conn: conn, product: product, id: id} do
 
       conn =
-        post(conn, Routes.orders_path(conn, :create, id),
+        put(conn, Routes.orders_path(conn, :update, id),
           orders: %{items: [%{id: "prod_" <> product.id}]}
         )
 
@@ -137,19 +137,24 @@ defmodule HaberdashWeb.OrdersControllerTest do
   end
 
   describe "delete orders" do
-    test "deletes chosen orders", %{conn: conn, orders: orders} do
-      conn = delete(conn, Routes.orders_path(conn, :delete, orders))
+    setup [:init, :create_order]
+    test "deletes chosen orders", %{conn: conn, orders: orders, api_key: api_key} do
+
+      conn = delete(conn, Routes.orders_path(conn, :delete, orders["id"]))
       assert response(conn, 204)
 
+      conn = build_conn() |> put_req_header(@auth_header, api_key.api_key)
       assert_error_sent 404, fn ->
-        get(conn, Routes.orders_path(conn, :show, orders))
+        get(conn, Routes.orders_path(conn, :show, orders["id"]))
       end
     end
   end
 
   def create_order(%{product: product, franchise: franchise}) do
     {:ok, pid} = Transactions.OrderRegistry.whereis_name(franchise.id)
-    {:ok, %{"id" => id} = orders} = Transactions.OrdersWorker.create_order(pid, %{items: [%{id: "prod_" <> product.id}], franchise_id: franchise.id})
+    {:ok, %{"id" => id} = orders} = Transactions.OrderWorker.create_order(pid, %{items: [%{id: "prod_" <> product.id}], franchise_id: franchise.id})
     {:ok, id: id, orders: orders}
   end
+
+
 end

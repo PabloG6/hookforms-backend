@@ -1,6 +1,6 @@
 defmodule HaberdashWeb.OrdersController do
   use HaberdashWeb, :controller
-  alias Haberdash.Transactions
+  alias Haberdash.{Transactions, Exception}
   import Poison
   import Phoenix.LiveView.Controller
   require Logger
@@ -70,7 +70,13 @@ defmodule HaberdashWeb.OrdersController do
          {:ok, order} <- Transactions.OrderWorker.show_order(pid, id) do
           conn
           |> send_resp(:ok, encode!(%{data: order}))
-         end
+         else
+          {:error, :not_found} ->
+            raise(Exception.InventoryNotFound, id)
+          error -> error
+
+        end
+
   end
 
   def patch(conn, %{"id" => id, "orders" => orders_params}) do

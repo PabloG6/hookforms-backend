@@ -47,7 +47,7 @@ defmodule Haberdash.Transactions.Orders do
   creates a human readable list of items from inventory based on information in the database.
   """
 
-  def create_order_list(%{"items" => items} = orders) when is_map(orders) do
+  def create_order_list(%{"items" => items} = orders) when is_list(items) do
     orders = %{orders | "items" => Enum.map(items, &create_order/1)}
     Map.put(
       orders,
