@@ -145,14 +145,22 @@ defmodule HaberdashWeb.Router do
   end
 
   def handle_errors(%Plug.Conn{} = conn, %{
-    kind: _,
-    reason: %Exception.IncorrectFormat{message: message},
-    stack: _
-  }) do
+        kind: _,
+        reason: %Exception.IncorrectFormat{message: message},
+        stack: _
+      }) do
     send_resp(conn, 404, encode!(%{message: message, code: :inventory_not_found}))
   end
 
-  def handle_errors(conn, %{kind: _, reason: _, stack: _}), do: send_resp(conn, conn.status, encode!(%{message: "Something went wrong", code: :server_error}))
+  def handle_errors(conn, %{kind: _, reason: %Ecto.NoResultsError{}, stack: _}) do
+    send_resp(conn, conn.status, encode!(%{message: "The requested resource does not exist.", code: :not_found}))
+  end
 
-
+  def handle_errors(conn, %{kind: _, reason: _, stack: _}),
+    do:
+      send_resp(
+        conn,
+        conn.status,
+        encode!(%{message: "An unexpected error has occured.", code: :server_error})
+      )
 end
