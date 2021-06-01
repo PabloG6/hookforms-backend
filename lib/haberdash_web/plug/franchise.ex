@@ -16,6 +16,7 @@ defmodule Haberdash.Plug.Franchise do
 
         conn
         |> send_resp(:unauthorized, Poison.encode!(%{code: :unauthorized}))
+
     end
   end
 

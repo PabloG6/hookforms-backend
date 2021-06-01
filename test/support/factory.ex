@@ -50,6 +50,19 @@ defmodule Haberdash.Factory do
     merge_attributes(developer, attrs)
   end
 
+  def developer_factory(attrs) do
+    owner = insert(:owner)
+
+    developer = %Account.Developer{
+      name: Faker.Person.name(),
+      email: Faker.Internet.email(),
+      password_hash: Ecto.UUID.generate |> Bcrypt.hash_pwd_salt(),
+      owner_id: owner.id
+    }
+
+    merge_attributes(developer, attrs)
+  end
+
   def developer_factory do
     owner = insert(:owner)
 

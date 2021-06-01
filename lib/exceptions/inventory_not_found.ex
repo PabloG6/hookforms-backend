@@ -2,8 +2,7 @@ defmodule Haberdash.Exception.InventoryNotFound do
   defexception [:message, plug_status: 404]
 
   @impl true
-  def exception(id) do
-    IO.inspect id
-    %__MODULE__{message: "#{id} not found in inventory.", plug_status: 404}
+  def exception(opts) do
+    %__MODULE__{message: Keyword.get(opts, :message, "The requested resource was not found."), plug_status: 404}
   end
 end
