@@ -8,6 +8,7 @@ defmodule Haberdash.Account do
   use Nebulex.Caching
   alias Haberdash.Account.Developer
   alias Haberdash.{Account}
+  alias Haberdash.Auth.Cache
 
   @doc """
   Returns the list of developer.
