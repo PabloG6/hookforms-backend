@@ -105,5 +105,4 @@ defmodule Haberdash.InventoryTest do
     end
   end
 
-``
 end
