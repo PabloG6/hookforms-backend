@@ -1,6 +1,5 @@
 defmodule Haberdash.Repo.Migrations.CreateProductGroups do
   use Ecto.Migration
-  @primary_key {:id, :binary_id, autogenerate: true}
   def change do
     create table(:product_groups, primary_key: false) do
       add :product_id, references(:product, type: :binary_id)

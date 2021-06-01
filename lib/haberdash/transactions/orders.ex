@@ -148,21 +148,14 @@ defmodule Haberdash.Transactions.Orders do
       raise Exception.InventoryNotFound, id
   end
 
-  defp create_order(%{"id" => "acc_" <> id} = map) when is_map(map) do
-    Inventory.get_accessories!(id)
-    |> stringify_map
-    |> Map.merge(%{"id" => Ecto.UUID.generate(), "inventory_id" => "prod_" <> id})
-  rescue
-    Ecto.NoResultsError ->
-      raise Exception.InventoryNotFound, id
-  end
+
 
   defp create_order(%{"id" => id}),
     do: raise(Exception.InventoryNotFound, message: "Malformed id: no prefix found for #{id}")
 
-  defp create_order(prod_id, %{"id" => "acc_" <> id}) do
+  defp create_order(prod_id, %{"id" => "prod_" <> id}) do
     %{accessories: accessories} =
-      Assoc.get_product_accessories_by!(product_id: prod_id, accessories_id: id)
+      Assoc.get_product_assoc_by!(product_id: prod_id, accessories_id: id)
       |> Repo.preload([:accessories])
 
     stringify_map(accessories)
@@ -170,35 +163,5 @@ defmodule Haberdash.Transactions.Orders do
     Ecto.NoResultsError ->
       raise Exception.InventoryNotFound,
         message: "no accessory with #{id} associated with this product"
-  end
-end
-
-defmodule Haberdash.Transactions.AccessoriesItem do
-  use Ecto.Schema
-  import Ecto.Changeset
-  alias Haberdash.{Inventory}
-  @derive {Poison.Encoder, except: [:__meta__]}
-  @primary_key {:id, :binary_id, autogenerate: true}
-  embedded_schema do
-    field :name, :string
-    field :item_id, :binary_id
-    field :description, :string
-    field :message, :string, virtual: true
-    field :price, :integer
-  end
-
-  def changeset(accessories, attrs) do
-    item_id = Map.get(attrs, "item_id", nil) || Map.get(attrs, :item_id, nil)
-    accessories_entry = Inventory.get_accessories!(item_id)
-
-    accessories_item = %{
-      name: accessories_entry.name,
-      description: accessories_entry.description,
-      price: accessories_entry.price,
-      accessories_id: accessories_entry.id
-    }
-
-    accessories
-    |> cast(accessories_item, [:name, :item_id, :description, :price])
   end
 end

@@ -149,111 +149,111 @@ defmodule Haberdash.Assoc do
     ProductGroups.changeset(product_groups, attrs)
   end
 
-  alias Haberdash.Assoc.ProductAccessories
+  alias Haberdash.Assoc.ProductAssoc
 
   @doc """
-  Returns the list of product_accessories.
+  Returns the list of product_assoc.
 
   ## Examples
 
-      iex> list_product_accessories()
-      [%ProductAccessories{}, ...]
+      iex> list_product_assoc()
+      [%ProductAssoc{}, ...]
 
   """
-  def list_product_accessories do
-    Repo.all(ProductAccessories)
+  def list_product_assoc do
+    Repo.all(ProductAssoc)
   end
 
   @doc """
-  Gets a single product_accessories.
+  Gets a single product_assoc.
 
   Raises `Ecto.NoResultsError` if the Product accessories does not exist.
 
   ## Examples
 
-      iex> get_product_accessories!(123)
-      %ProductAccessories{}
+      iex> get_product_assoc!(123)
+      %ProductAssoc{}
 
-      iex> get_product_accessories!(456)
+      iex> get_product_assoc!(456)
       ** (Ecto.NoResultsError)
 
   """
-  def get_product_accessories!(id), do: Repo.get!(ProductAccessories, id)
+  def get_product_assoc!(id), do: Repo.get!(ProductAssoc, id)
 
   @doc """
-  Creates a product_accessories.
+  Creates a product_assoc.
 
   ## Examples
 
-      iex> create_product_accessories(%{field: value})
-      {:ok, %ProductAccessories{}}
+      iex> create_product_assoc(%{field: value})
+      {:ok, %ProductAssoc{}}
 
-      iex> create_product_accessories(%{field: bad_value})
+      iex> create_product_assoc(%{field: bad_value})
       {:error, %Ecto.Changeset{}}
 
   """
-  def create_product_accessories(attrs \\ %{}) do
-    %ProductAccessories{}
-    |> ProductAccessories.changeset(attrs)
+  def create_product_assoc(attrs \\ %{}) do
+    %ProductAssoc{}
+    |> ProductAssoc.changeset(attrs)
     |> Repo.insert()
   end
 
-  def get_product_accessories_by(opts) do
-    case Repo.get_by(ProductAccessories, opts) do
+  def get_product_assoc_by(opts) do
+    case Repo.get_by(ProductAssoc, opts) do
       nil ->
         {:error, :not_found}
 
-      product_accessories ->
-        {:ok, product_accessories}
+      product_assoc ->
+        {:ok, product_assoc}
     end
   end
 
-  def get_product_accessories_by!(opts), do: Repo.get_by!(ProductAccessories, opts)
+  def get_product_assoc_by!(opts), do: Repo.get_by!(ProductAssoc, opts)
 
   @doc """
-  Updates a product_accessories.
+  Updates a product_assoc.
 
   ## Examples
 
-      iex> update_product_accessories(product_accessories, %{field: new_value})
-      {:ok, %ProductAccessories{}}
+      iex> update_product_assoc(product_assoc, %{field: new_value})
+      {:ok, %ProductAssoc{}}
 
-      iex> update_product_accessories(product_accessories, %{field: bad_value})
+      iex> update_product_assoc(product_assoc, %{field: bad_value})
       {:error, %Ecto.Changeset{}}
 
   """
-  def update_product_accessories(%ProductAccessories{} = product_accessories, attrs) do
-    product_accessories
-    |> ProductAccessories.changeset(attrs)
+  def update_product_assoc(%ProductAssoc{} = product_assoc, attrs) do
+    product_assoc
+    |> ProductAssoc.changeset(attrs)
     |> Repo.update()
   end
 
   @doc """
-  Deletes a product_accessories.
+  Deletes a product_assoc.
 
   ## Examples
 
-      iex> delete_product_accessories(product_accessories)
-      {:ok, %ProductAccessories{}}
+      iex> delete_product_assoc(product_assoc)
+      {:ok, %ProductAssoc{}}
 
-      iex> delete_product_accessories(product_accessories)
+      iex> delete_product_assoc(product_assoc)
       {:error, %Ecto.Changeset{}}
 
   """
-  def delete_product_accessories(%ProductAccessories{} = product_accessories) do
-    Repo.delete(product_accessories)
+  def delete_product_assoc(%ProductAssoc{} = product_assoc) do
+    Repo.delete(product_assoc)
   end
 
   @doc """
-  Returns an `%Ecto.Changeset{}` for tracking product_accessories changes.
+  Returns an `%Ecto.Changeset{}` for tracking product_assoc changes.
 
   ## Examples
 
-      iex> change_product_accessories(product_accessories)
-      %Ecto.Changeset{data: %ProductAccessories{}}
+      iex> change_product_assoc(product_assoc)
+      %Ecto.Changeset{data: %ProductAssoc{}}
 
   """
-  def change_product_accessories(%ProductAccessories{} = product_accessories, attrs \\ %{}) do
-    ProductAccessories.changeset(product_accessories, attrs)
+  def change_product_assoc(%ProductAssoc{} = product_assoc, attrs \\ %{}) do
+    ProductAssoc.changeset(product_assoc, attrs)
   end
 end

@@ -50,16 +50,7 @@ defmodule Haberdash.Factory do
     }
   end
 
-  def accessories_factory do
-    franchise = insert(:franchise)
 
-    %Inventory.Accessories{
-      name: sequence(Faker.Food.dish()),
-      description: Faker.Food.description(),
-      price: :rand.uniform(10000),
-      franchise_id: franchise.id
-    }
-  end
 
   def apikey_factory(attrs \\ %{}) do
     developer = insert(:developer)
@@ -74,9 +65,9 @@ defmodule Haberdash.Factory do
 
   def product_accessories_factory(attrs \\ %{}) do
     product = insert(:product)
-    accessories = insert(:accessories)
+    accessories = insert(:product)
 
-    product_accessories = %Assoc.ProductAccessories{
+    product_accessories = %Assoc.ProductAssoc{
       product_id: product.id,
       accessories_id: accessories.id
     }

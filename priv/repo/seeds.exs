@@ -13,4 +13,3 @@ import Haberdash.Factory
 %Haberdash.Account.Owner{} = owner = insert(:owner, %{name: "Yakihiru Soma", email: "tetsu@email.com", password: "password"})
 %Haberdash.Account.Developer{} = developer = insert(:developer, %{name: "Yukihiro Matsumoto", email: "yukihiromatsumoto@rubydev.com", owner_id: owner.id})
 %Haberdash.Business.Franchise{} = franchise = insert(:franchise, %{name: "Soma Japanese Luxury Cuisine", owner_id: owner.id})
-insert

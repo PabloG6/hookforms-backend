@@ -1,17 +1,17 @@
-defmodule HaberdashWeb.ProductAccessoriesController do
+defmodule HaberdashWeb.ProductAssocController do
   use HaberdashWeb, :controller
 
   alias Haberdash.{Assoc, Inventory}
-  alias Haberdash.Assoc.ProductAccessories
+  alias Haberdash.Assoc.ProductAssoc
 
   action_fallback HaberdashWeb.FallbackController
 
   def create(conn, %{"product_id" => product_id, "accessories_id" => accessories_id}) do
     _product = Inventory.get_products!(product_id)
-    _accessory = Inventory.get_accessories!(accessories_id)
+    _accessory = Inventory.get_products!(accessories_id)
 
-    with {:ok, %ProductAccessories{} = product_accessories} <-
-           Assoc.create_product_accessories(%{
+    with {:ok, %ProductAssoc{} = product_accessories} <-
+           Assoc.create_product_assoc(%{
              product_id: product_id,
              accessories_id: accessories_id
            }) do
@@ -23,7 +23,7 @@ defmodule HaberdashWeb.ProductAccessoriesController do
 
   def show(conn, %{"product_id" => product_id, "accessories_id" => accessories_id}) do
     with {:ok, product_accessories} <-
-           Assoc.get_product_accessories_by(%{
+           Assoc.get_product_assoc_by(%{
              accessories_id: accessories_id,
              product_id: product_id
            }) do
@@ -45,11 +45,11 @@ defmodule HaberdashWeb.ProductAccessoriesController do
 
   def delete(conn, %{"product_id" => product_id, "accessories_id" => accessories_id}) do
     with {:ok, product_accessories} =
-           Assoc.get_product_accessories_by(
+           Assoc.get_product_assoc_by(
              product_id: product_id,
              accessories_id: accessories_id
            ),
-         {:ok, %ProductAccessories{}} <- Assoc.delete_product_accessories(product_accessories) do
+         {:ok, %ProductAssoc{}} <- Assoc.delete_product_assoc(product_accessories) do
       send_resp(conn, :no_content, "")
     else
       {:error, :not_found} ->

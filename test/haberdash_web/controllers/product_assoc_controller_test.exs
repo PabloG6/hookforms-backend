@@ -1,4 +1,4 @@
-defmodule HaberdashWeb.ProductAccessoriesControllerTest do
+defmodule HaberdashWeb.ProductAssocControllerTest do
   use HaberdashWeb.ConnCase
 
   alias Haberdash.{Assoc, Account, Inventory, Business, Auth}
