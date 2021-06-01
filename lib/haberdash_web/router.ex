@@ -65,22 +65,22 @@ defmodule HaberdashWeb.Router do
 
   scope "/api", HaberdashWeb do
     pipe_through [:api, :auth, :franchise]
-    resources "/product", ProductsController, except: [:new, :edit]
+    resources "/products", ProductsController, except: [:new, :edit]
     resources "/collection", CollectionController, except: [:new, :edit]
   end
 
   scope "/api/group", HaberdashWeb do
     pipe_through [:api, :auth, :franchise]
-    post "/product/", ProductGroupsController, :create
-    get "/product/:id", ProductGroupsController, :show
-    delete "/product/:id", ProductGroupsController, :delete
+    post "/products/", ProductGroupsController, :create
+    get "/products/:id", ProductGroupsController, :show
+    delete "/products/:id", ProductGroupsController, :delete
   end
 
   scope "/api/assoc", HaberdashWeb do
     pipe_through [:api, :auth, :franchise]
-    post "/product/:product_id/:accessories_id", ProductAssocController, :create
-    get "/product/:product_id/:accessories_id", ProductAssocController, :show
-    delete "/product/:product_id", ProductAssocController, :delete
+    post "/products/:product_id/:accessories_id", ProductAssocController, :create
+    get "/products/:product_id/:accessories_id", ProductAssocController, :show
+    delete "/products/:product_id", ProductAssocController, :delete
   end
 
   scope "/api", HaberdashWeb do
