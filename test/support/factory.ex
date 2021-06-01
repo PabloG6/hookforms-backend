@@ -2,24 +2,28 @@ defmodule Haberdash.Factory do
   alias Haberdash.{Account, Business, Inventory, Auth, Assoc}
   use ExMachina.Ecto, repo: Haberdash.Repo
 
-  def owner_factory do
-    %Account.Owner{
+  def owner_factory(attrs \\ %{}) do
+    owner = %Account.Owner{
       name: Faker.Person.name(),
       email: Faker.Internet.email(),
       password_hash: Ecto.UUID.generate() |> Bcrypt.hash_pwd_salt,
       phone_number: "+#{Faker.Phone.EnUs.phone()}"
     }
+
+    merge_attributes(owner, attrs)
   end
 
-  def developer_factory do
+  def developer_factory(attrs \\ %{}) do
     owner = insert(:owner)
 
-    %Account.Developer{
+    developer = %Account.Developer{
       name: Faker.Person.name(),
       email: Faker.Internet.email(),
       password_hash: Ecto.UUID.generate() |> Bcrypt.hash_pwd_salt,
       owner_id: owner.id
     }
+
+    merge_attributes(developer, attrs)
   end
 
   def franchise_factory(attrs \\ %{}) do
@@ -39,7 +43,7 @@ defmodule Haberdash.Factory do
     franchise = insert(:franchise)
 
     %Inventory.Products{
-      name: Faker.Food.dish(),
+      name: sequence(Faker.Food.dish()),
       description: Faker.Food.description(),
       price: :rand.uniform(10000),
       franchise_id: franchise.id
@@ -50,7 +54,7 @@ defmodule Haberdash.Factory do
     franchise = insert(:franchise)
 
     %Inventory.Accessories{
-      name: Faker.Food.dish(),
+      name: sequence(Faker.Food.dish()),
       description: Faker.Food.description(),
       price: :rand.uniform(10000),
       franchise_id: franchise.id
