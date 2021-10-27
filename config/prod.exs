@@ -14,7 +14,7 @@ config :forms, FormsWeb.Endpoint,
   cache_static_manifest: "priv/static/cache_manifest.json"
 
   config :cors_plug,
-  origin: ["https://api.hookforms.dev"],
+  origin: ["https://hookforms.dev"],
   max_age: 86400
 
 # Do not print debug messages in production
