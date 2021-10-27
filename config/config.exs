@@ -11,6 +11,10 @@ config :forms,
   ecto_repos: [Forms.Repo],
   generators: [binary_id: true]
 
+config :cors_plug,
+  origin: ["http://localhost:4200"],
+  max_age: 86400
+
 # Configures the endpoint
 config :forms, FormsWeb.Endpoint,
   url: [host: "localhost"],
