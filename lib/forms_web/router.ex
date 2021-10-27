@@ -23,7 +23,7 @@ defmodule FormsWeb.Router do
     get "/", PageController, :index
   end
 
-  scope "/api", FormsWeb do
+  scope "/", FormsWeb do
     pipe_through [:api, :auth]
     resources "/forms", FormController, except: [:new, :edit]
 
@@ -32,7 +32,7 @@ defmodule FormsWeb.Router do
 
 
 
-  scope "/api", FormsWeb do
+  scope "/", FormsWeb do
     pipe_through [:api]
     resources "/owner", OwnerController, except: [:new, :edit, :create]
     post "/signup", OwnerController, :create
@@ -41,7 +41,7 @@ defmodule FormsWeb.Router do
 
 
 
-  scope "/api", FormsWeb do
+  scope "/", FormsWeb do
     post "/owner", OwnerController, :create
   end
 

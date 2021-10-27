@@ -10,10 +10,10 @@ defmodule FormsWeb.OwnerView do
     %{data: render_one(owner, OwnerView, "owner.json")}
   end
 
-  def render("owner.json", %{owner: owner}) do
+  def render("owner.json", %{owner: owner, token: token}) do
     %{id: owner.id,
-      email: owner.email
-
+      email: owner.email,
+      token: token
     }
 
     end
