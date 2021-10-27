@@ -64,4 +64,8 @@ defmodule FormsWeb.OwnerController do
       send_resp(conn, :no_content, "")
     end
   end
+
+  def health(conn, _) do
+    send_resp(conn, :ok, "Healthy")
+  end
 end

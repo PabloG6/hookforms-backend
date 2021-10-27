@@ -37,6 +37,7 @@ defmodule FormsWeb.Router do
     resources "/owner", OwnerController, except: [:new, :edit, :create]
     post "/signup", OwnerController, :create
     post "/login", OwnerController, :login
+    get "/health", OwnerController, :health
   end
 
 
