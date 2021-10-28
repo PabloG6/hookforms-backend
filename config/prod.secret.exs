@@ -23,6 +23,13 @@ secret_key_base =
     You can generate one by calling: mix phx.gen.secret
     """
 
+guardian_secret_key =
+  System.get_env("GUARDIAN_SECRET_KEY") ||
+  raise """
+  environment variable GUARDIAN_SECRET_KEY is missing.
+  You can generate one by calling: mix phx.gen.secret
+  """
+
 config :forms, FormsWeb.Endpoint,
   http: [
     port: String.to_integer(System.get_env("PORT") || "4000"),
@@ -30,6 +37,9 @@ config :forms, FormsWeb.Endpoint,
   ],
   secret_key_base: secret_key_base
 
+  config :forms, Forms.Guardian,
+  issuer: "forms",
+  secret_key: guardian_secret_key
 # ## Using releases (Elixir v1.9+)
 #
 # If you are doing OTP releases, you need to instruct Phoenix

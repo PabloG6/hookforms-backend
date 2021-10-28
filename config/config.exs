@@ -17,7 +17,7 @@ config :cors_plug,
 
 # Configures the endpoint
 config :forms, FormsWeb.Endpoint,
-  url: [host: "localhost"],
+  url: [host: "hookforms.dev", port: 80],
   secret_key_base: "nHb6/vtG7Tzm84tn3L0odfZGRJO+Ce9Plg/hJODO2YbsNYUoRZ+HUTRlxGQjBv/R",
   render_errors: [view: FormsWeb.ErrorView, accepts: ~w(html json), layout: false],
   pubsub_server: Forms.PubSub,
