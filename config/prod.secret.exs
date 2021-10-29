@@ -36,7 +36,7 @@ config :forms, FormsWeb.Endpoint,
     transport_options: [socket_opts: [:inet6]]
   ],
   secret_key_base: secret_key_base,
-  server: true,
+  server: true
 
 config :forms, Forms.Guardian,
   issuer: "forms",
