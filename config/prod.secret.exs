@@ -38,7 +38,7 @@ config :forms, FormsWeb.Endpoint,
   secret_key_base: secret_key_base,
   server: true,
 
-  config :forms, Forms.Guardian,
+config :forms, Forms.Guardian,
   issuer: "forms",
   secret_key: guardian_secret_key
 # ## Using releases (Elixir v1.9+)
@@ -46,7 +46,6 @@ config :forms, FormsWeb.Endpoint,
 # If you are doing OTP releases, you need to instruct Phoenix
 # to start each relevant endpoint:
 #
-#     config :forms, FormsWeb.Endpoint, server: true
 #
 # Then you can assemble a release by calling `mix release`.
 # See `mix help release` for more information.
