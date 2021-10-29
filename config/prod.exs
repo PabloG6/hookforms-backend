@@ -11,9 +11,6 @@ use Mix.Config
 # before starting your production server.
 
 
-config :cors_plug,
-  origin: ["https://hookforms.dev"],
-  max_age: 86400
 
 # Do not print debug messages in production
 config :logger, level: :error
