@@ -16,7 +16,7 @@ config :cors_plug,
   max_age: 86400
 
 # Do not print debug messages in production
-config :logger, level: :info
+config :logger, level: :error
 
 # ## SSL Support
 #
