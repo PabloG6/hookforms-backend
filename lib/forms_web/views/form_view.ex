@@ -14,7 +14,9 @@ defmodule FormsWeb.FormView do
     %{id: form.id,
       title: form.title,
       description: form.description,
+      url: form.url,
       updated_at: form.updated_at,
+
       questions: form.questions}
   end
 end

@@ -12,10 +12,9 @@ defmodule FormsWeb.FormController do
     with %Accounts.Owner{id: owner_id} <- Guardian.Plug.current_resource(conn) do
 
 
+      render(conn, "index.json", form: Folder.list_form(owner_id))
     end
 
-    form = Folder.list_form()
-    render(conn, "index.json", form: form)
   end
 
   def create(conn, form_params) do
@@ -42,6 +41,7 @@ defmodule FormsWeb.FormController do
     form = Folder.get_form!(id)
 
     with {:ok, %Form{} = form} <- Folder.update_form(form, form_params) do
+      IO.inspect form
       render(conn, "show.json", form: form)
     end
   end

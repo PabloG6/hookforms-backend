@@ -8,6 +8,7 @@ defmodule Forms.Folder.Form do
   schema "form" do
     field :description, :string
     field :questions, {:array, :map}
+    field :url, :string
     field :title, :string
     belongs_to :owner, Accounts.Owner
 
@@ -17,7 +18,10 @@ defmodule Forms.Folder.Form do
   @doc false
   def changeset(form, attrs) do
     form
-    |> cast(attrs, [:title, :description, :questions])
-    |> validate_required([:title, :description, :questions])
+    |> cast(attrs, [:title, :description, :questions, :owner_id, :url])
+
+    |> validate_required([:title, :description, :questions, :owner_id, :url])
   end
+
+
 end

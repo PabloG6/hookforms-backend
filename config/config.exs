@@ -11,15 +11,13 @@ config :forms,
   ecto_repos: [Forms.Repo],
   generators: [binary_id: true]
 
-config :cors_plug,
-  origin: ["http://localhost:4200"],
-  max_age: 86400
 
 # Configures the endpoint
 config :forms, FormsWeb.Endpoint,
-  url: [host: "hookforms.dev", port: 80],
+  url: [host: "http://api.hookforms.dev", port: 80],
   secret_key_base: "nHb6/vtG7Tzm84tn3L0odfZGRJO+Ce9Plg/hJODO2YbsNYUoRZ+HUTRlxGQjBv/R",
-  render_errors: [view: FormsWeb.ErrorView, accepts: ~w(html json), layout: false],
+  render_errors: [view: FormsWeb.ErrorView, accepts: ~w(json), format: "json",layout: false],
+  debug_errors: true,
   pubsub_server: Forms.PubSub,
   live_view: [signing_salt: "AoZlWjTy"]
 

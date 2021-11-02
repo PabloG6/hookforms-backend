@@ -22,6 +22,11 @@ config :forms, FormsWeb.Endpoint,
   check_origin: false,
   watchers: []
 
+
+
+config :forms,
+  origin: ["http://localhost:4200"]
+
 # ## SSL Support
 #
 # In order to use HTTPS in development, a self-signed
