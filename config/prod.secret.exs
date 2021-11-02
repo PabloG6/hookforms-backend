@@ -11,13 +11,6 @@ database_url =
     For example: ecto://USER:PASS@HOST/DATABASE
     """
 
-
-
-config :forms, Forms.Repo,
-
-config :forms,
-  origin: ["https://hookforms.dev"]
-
 config :forms, Forms.Repo,
   # ssl: true,
   url: database_url,
