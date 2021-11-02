@@ -51,4 +51,8 @@ config :logger, level: :error
 
 # Finally import the config/prod.secret.exs which loads secrets
 # and configuration from environment variables.
+
+config :forms,
+  origin: ["https://hookforms.dev"]
+
 import_config "prod.secret.exs"
