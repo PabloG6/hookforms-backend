@@ -17,11 +17,7 @@ defmodule FormsWeb.Router do
     plug Forms.Auth.Pipeline
   end
 
-  scope "/", FormsWeb do
-    pipe_through :browser
 
-    get "/", PageController, :index
-  end
 
   scope "/", FormsWeb do
     pipe_through [:api, :auth]
