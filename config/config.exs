@@ -12,6 +12,7 @@ config :forms,
   generators: [binary_id: true]
 
 
+
 # Configures the endpoint
 config :forms, FormsWeb.Endpoint,
   url: [host: "http://api.hookforms.dev", port: 80],
