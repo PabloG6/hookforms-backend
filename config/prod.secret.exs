@@ -32,7 +32,7 @@ guardian_secret_key =
 
 config :forms, FormsWeb.Endpoint,
   http: [
-    port: String.to_integer(System.get_env("PORT") || "4000"),
+    port: String.to_integer(System.get_env("HOOKFORMS_PORT") || "4000"),
 
     transport_options: [socket_opts: [:inet6]]
   ],
