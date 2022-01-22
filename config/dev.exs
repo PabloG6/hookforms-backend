@@ -20,13 +20,7 @@ config :haberdash, HaberdashWeb.Endpoint,
   http: [port: 4000],
   debug_errors: true,
   code_reloader: true,
-  check_origin: false,
-  watchers: [
-    npm: [
-      "start",
-      cd: Path.expand("../static", __DIR__)
-    ]
-  ]
+  check_origin: false
 
 config :haberdash,
   folder_name: "_dev"

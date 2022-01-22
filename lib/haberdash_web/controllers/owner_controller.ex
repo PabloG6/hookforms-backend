@@ -11,6 +11,9 @@ defmodule HaberdashWeb.OwnerController do
     render(conn, "index.json", owner: owner)
   end
 
+  @doc """
+  returns
+  """
   def create(conn, %{"owner" => owner_params}) do
     with {:ok, %Owner{} = owner} <- Account.create_owner(owner_params) do
       conn

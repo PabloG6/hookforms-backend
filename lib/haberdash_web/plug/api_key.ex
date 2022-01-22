@@ -4,7 +4,7 @@ defmodule Haberdash.Plug.ApiKey do
   alias Haberdash.{Account, Auth}
   use Haberdash.Messages
   require Logger
-  import Nebulex.Time
+
   import Poison
   def init(options), do: options
 
@@ -47,7 +47,7 @@ defmodule Haberdash.Plug.ApiKey do
     api_key = Auth.get_api_key_by!(id)
     developer = Account.get_developer!(api_key.developer_id)
 
-    :ok = Auth.Cache.put(id, {developer, api_key}, ttl: expiry_time(10, :minute))
+    :ok = Auth.Cache.put(id, {developer, api_key}, ttl: :timer.minutes(10))
     put_private(conn, :api_key_developer, developer)
   rescue
     Ecto.NoResultsError ->
